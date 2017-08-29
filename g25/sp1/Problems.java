@@ -3,6 +3,7 @@ package cs6301.g25.sp1;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayDeque;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Queue;
@@ -11,10 +12,15 @@ import java.util.Scanner;
 
 public class Problems {
 	
-	
-	/*
+	/**
+	 *Generic merge sort for generic type which extends comparable interface 
+	 */
+	static<T extends Comparable<? super T>> void mergeSort(T[] arr, T[] tmp){
+		mergeSort(arr, tmp, 0, arr.length - 1);
+	}
+	/**
 	 * Implementation of merge sort using generic type.
-	 * */
+	 */
 	static<T extends Comparable<? super T>> void mergeSort(T[] arr, T[] tmp, int p, int r){
 		if(p >= r) return;
 		int q = (p + r) >>> 1;
@@ -35,30 +41,31 @@ public class Problems {
 		}
 	}
 	
-	
+	static void mergeSort(int[] arr, int[] tmp){
+		mergeSort(arr, tmp, 0, arr.length - 1);
+	}
 	/* 
-	 * 
 	 * tmp array is used to store values during the merge operation. 
 	 * */
-//	static void mergeSort(int[] arr, int[] tmp, int p, int r){
-//		if(p >= r) return;
-//		int q = (p + r) >>> 1;
-//		mergeSort(arr, tmp, p, q);
-//		mergeSort(arr, tmp, q+1, r);
-//		//merge operation
-//		for(int i = p; i <= r; i++){
-//			tmp[i] = arr[i];
-//		}
-//		int i = p; 
-//		int j = q+1;
-//		for(int k = p; k <= r; k++){
-//			if( j > r || (i <= q && tmp[i] <= tmp[j])){
-//				arr[k] = tmp[i++];
-//			} else {
-//				arr[k] = tmp[j++];
-//			}		
-//		}
-//	}
+	static void mergeSort(int[] arr, int[] tmp, int p, int r){
+		if(p >= r) return;
+		int q = (p + r) >>> 1;
+		mergeSort(arr, tmp, p, q);
+		mergeSort(arr, tmp, q+1, r);
+		//merge operation
+		for(int i = p; i <= r; i++){
+			tmp[i] = arr[i];
+		}
+		int i = p; 
+		int j = q+1;
+		for(int k = p; k <= r; k++){
+			if( j > r || (i <= q && tmp[i] <= tmp[j])){
+				arr[k] = tmp[i++];
+			} else {
+				arr[k] = tmp[j++];
+			}		
+		}
+	}
 	
 	static void merge(int arr[], int tmp[], int p, int q, int r){
 		for(int i = p; i <= r; i++){
@@ -75,12 +82,12 @@ public class Problems {
 		}
 	
 	}
+	
+
 	static<T extends Comparable<? super T>> void nSquareSort(T[] arr){
 		
 		
 	}
-	
-	
 	
 	static LinkedList<Graph.Vertex> diameter(Graph g) {
 		Random r = new Random();
@@ -136,25 +143,46 @@ public class Problems {
 		return pq.poll();
 	}
 	
-	
-
 	public static void main(String[] args) throws FileNotFoundException { 
+		int n = 16000000;//size of array
 		File in = new File("src/cs6301/g25/sp1/input.txt");
 		Scanner sc = new Scanner(in);
 		
 		Graph graph = Graph.readGraph(sc, false);
-		
-		
 		diameter(graph);
 		
-//		Integer[] a = {3,5,2,4, 2,4,5,3,2,6,7,4,7,7,5,4,6, 8, 9,9,1,4,7,4,6,5,7};
-//		Character[] in1 = {'a', 'c', 'o', 'y', 'h', 'b'};
-//		Character[] in2 = new Character [in1.length];
-//		// Integer[] a = {5,3, 6, 1, 7,2};
-//		Integer[] b = new Integer [a.length];
-//		
-//		mergeSort(in1, in2, 0, in1.length - 1);
-//		System.out.println(Arrays.toString(in1)); 
+		int[] arr = new int[n];
+		int[] tmp = new int[arr.length];
+		for(int i=0; i<n; i++){
+			arr[i] = i;
+		}
+		
+		Character[] cArr = new Character[n];
+		Character[] cTmp = new Character [n];
+		Random r = new Random();
+		final String alphabet = "abcdefghijklmnopqrstuvxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		int N = alphabet.length();
+		for(int i=0; i<n; i++){
+			cArr[i] = alphabet.charAt(r.nextInt(N));
+		}
+		
+		Shuffle.shuffle(arr);
+		
+		//int[] a = {3,5,2,4, 2,4,5,3,2,6,7,4,7,7,5,4,6, 8, 9,9,1,4,7,4,6,5,7};
+		//Character[] in1 = {'a', 'c', 'o', 'y', 'h', 'b'};
+
+		
+		Timer timer = new Timer();
+		timer.start();
+		mergeSort(arr, tmp);
+		timer.end();
+		System.out.println(timer);
+		System.out.println();
+		timer.start();
+		mergeSort(cArr, cTmp);
+		timer.end();
+		System.out.println(timer);
+		//System.out.println(Arrays.toString(in1)); 
 		
 		
 	}
