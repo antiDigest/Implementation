@@ -9,11 +9,11 @@
  *  Corrected memory calculations to 1048576 instead of 1000000
  */
 
-package cs6301.g10;
+package cs6301.g10.utils;
 public class Timer {
     long startTime, endTime, elapsedTime, memAvailable, memUsed;
 
-    Timer() {
+    public Timer() {
 	startTime = System.currentTimeMillis();
     }
 

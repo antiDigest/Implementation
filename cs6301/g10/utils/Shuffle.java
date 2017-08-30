@@ -3,7 +3,7 @@
  *  Ver 1.0: 2017/08/08
  */
 
-package cs6301.g10;
+package cs6301.g10.utils;
 import java.util.Random;
 
 /* Shuffle the elements of an array arr[from..to] randomly */
