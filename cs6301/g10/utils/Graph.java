@@ -1,11 +1,12 @@
 /**
  * Class to represent a graph
- *  @author rbk
- *  Ver 1.1: 2017/08/28.  Updated some methods to public.  Added getName() to Vertex
  *
+ * @author rbk
+ * Ver 1.1: 2017/08/28.  Updated some methods to public.  Added getName() to Vertex
  */
 
 package cs6301.g10.utils;
+
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.Scanner;
 
 public class Graph implements Iterable<Graph.Vertex> {
     Vertex[] v; // vertices of graph
-    int n; // number of verices in the graph
+    int n; // number of vertices in the graph
     boolean directed;  // true if graph is directed, false otherwise
 
 
@@ -31,7 +32,7 @@ public class Graph implements Iterable<Graph.Vertex> {
          * @param n
          *            : int - name of the vertex
          */
-        Vertex(int n) {
+        public Vertex(int n) {
             name = n;
             adj = new LinkedList<Edge>();
             revAdj = new LinkedList<Edge>();   /* only for directed graphs */
@@ -45,13 +46,15 @@ public class Graph implements Iterable<Graph.Vertex> {
             return name;
         }
 
-        public Iterator<Edge> iterator() { return adj.iterator(); }
+        public Iterator<Edge> iterator() {
+            return adj.iterator();
+        }
 
         /**
          * Method to get vertex number.  +1 is needed because [0] is vertex 1.
          */
         public String toString() {
-            return Integer.toString(name+1);
+            return Integer.toString(name + 1);
         }
     }
 
@@ -74,7 +77,7 @@ public class Graph implements Iterable<Graph.Vertex> {
          * @param w
          *            : int - Weight of edge
          */
-        Edge(Vertex u, Vertex v, int w) {
+        public Edge(Vertex u, Vertex v, int w) {
             from = u;
             to = v;
             weight = w;
@@ -87,7 +90,7 @@ public class Graph implements Iterable<Graph.Vertex> {
          * @param u
          *            : Vertex
          * @return
-        : Vertex - other end of edge
+         *             : Vertex - other end of edge
          */
         public Vertex otherEnd(Vertex u) {
             assert from == u || to == u;
@@ -133,22 +136,22 @@ public class Graph implements Iterable<Graph.Vertex> {
      *           : int
      */
     public Vertex getVertex(int n) {
-        return v[n-1];
+        return v[n - 1];
     }
 
     /**
      * Method to add an edge to the graph
      *
-     * @param a
+     * @param from
      *            : int - one end of edge
-     * @param b
+     * @param to
      *            : int - other end of edge
      * @param weight
      *            : int - the weight of the edge
      */
     public void addEdge(Vertex from, Vertex to, int weight) {
         Edge e = new Edge(from, to, weight);
-        if(this.directed) {
+        if (this.directed) {
             from.adj.add(e);
             to.revAdj.add(e);
         } else {

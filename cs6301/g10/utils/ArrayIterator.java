@@ -1,12 +1,14 @@
-/**  Iterator for arrays
- *   @author rbk
- *  Ver 1.0: 2017/08/08
- *  Ver 1.1: 2017/08/28.  Updated some methods to public
+/**
+ * Iterator for arrays
+ *
+ * @author rbk
+ * Ver 1.0: 2017/08/08
+ * Ver 1.1: 2017/08/28.  Updated some methods to public
  */
 
 package cs6301.g10.utils;
+
 import java.util.Iterator;
-import java.lang.UnsupportedOperationException;
 
 public class ArrayIterator<T> implements Iterator<T> {
     T[] arr;
@@ -15,7 +17,7 @@ public class ArrayIterator<T> implements Iterator<T> {
     public ArrayIterator(T[] a) {
         arr = a;
         startIndex = 0;
-        endIndex = a.length-1;
+        endIndex = a.length - 1;
         cursor = -1;
     }
 
