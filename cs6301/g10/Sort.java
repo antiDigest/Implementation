@@ -19,113 +19,89 @@ public class Sort {
     *	Also contains Insertion Sort as an O(n^2) running algorithm.
     *
     */
-    static int n = 6000000;
+    static int n = 3000000;
 
-    public static void intMerge(Integer[] A, int start, int mid, int end) {
+    public static void intMerge(int[] A, int start, int mid, int end, int[] tmp) {
         int n = end - start + 1;
-        Integer[] B = new Integer[n];
-        Integer[] C = new Integer[n];
 
-        int k = 0;
-        for (int i = start; i < mid + 1; i++) {
-            B[k] = A[i];
-            k++;
+        for (int i = start; i <= end; i++) {
+            tmp[i] = A[i];
         }
-        int p = k - 1;
 
-        k = 0;
-        for (int i = mid + 1; i <= end; i++) {
-            C[k] = A[i];
-            k++;
-        }
-        int q = k - 1;
-
-        int i = start, b = 0, c = 0;
-        while (b <= p && c <= q) {
-            if (B[b] > C[c]) {
-                A[i] = C[c];
+        int i = start, b = start, c = mid+1;
+        while (b <= mid && c <= end) {
+            if (tmp[b] < tmp[c]) {
+                A[i] = tmp[c];
                 c++;
                 i++;
-            } else if (B[b] <= C[c]) {
-                A[i] = B[b];
+            } else {
+                A[i] = tmp[b];
                 b++;
                 i++;
             }
         }
 
-        while (b <= p) {
-            A[i] = B[b];
+        while (b <= mid) {
+            A[i] = tmp[b];
             i++;
             b++;
         }
-        while (c <= q) {
-            A[i] = C[c];
-            i++;
-            c++;
-        }
-    }
-
-    public static void intMergeSort(Integer[] A, int start, int end) {
-        if (start < end) {
-            int mid = (start + end) >>> 1;
-            intMergeSort(A, start, mid);
-            intMergeSort(A, mid + 1, end);
-            intMerge(A, start, mid, end);
-        }
-    }
-
-    public static <T extends Comparable<? super T>> void genericMerge(T[] A, int start, int mid, int end) {
-        int n = end - start + 1;
-        T[] B = (T[]) new Comparable[n];
-        T[] C = (T[]) new Comparable[n];
-
-        int k = 0;
-        for (int i = start; i < mid + 1; i++) {
-            B[k] = A[i];
-            k++;
-        }
-        int p = k - 1;
-
-        k = 0;
-        for (int i = mid + 1; i <= end; i++) {
-            C[k] = A[i];
-            k++;
-        }
-        int q = k - 1;
-
-        int i = start, b = 0, c = 0;
-        while (b <= p && c <= q) {
-            int cmp = B[b].compareTo(C[c]);
-            if (cmp < 0) {
-                A[i] = C[c];
-                c++;
-                i++;
-            } else if (cmp >= 0) {
-                A[i] = B[b];
-                b++;
-                i++;
-            }
-        }
-
-        while (b <= p) {
-            A[i] = B[b];
-            i++;
-            b++;
-        }
-        while (c <= q) {
-            A[i] = C[c];
+        while (c <= end) {
+            A[i] = tmp[c];
             i++;
             c++;
         }
 
     }
 
-    public static <T extends Comparable<? super T>> void genericMergeSort(T[] A, int start, int end) {
+    public static void intMergeSort(int[] A, int start, int end, int[] tmp) {
         if (start < end) {
             int mid = (start + end) >>> 1;
-            genericMergeSort(A, start, mid);
-            genericMergeSort(A, mid + 1, end);
-            genericMerge(A, start, mid, end);
+            intMergeSort(A, start, mid, tmp);
+            intMergeSort(A, mid + 1, end, tmp);
+            intMerge(A, start, mid, end, tmp);
+        }
+    }
+
+    public static <T extends Comparable<? super T>> void merge(T[] A, int start, int mid, int end, T[] tmp) {
+        int n = end - start + 1;
+
+        for (int i = start; i <= end; i++) {
+            tmp[i] = A[i];
+        }
+
+        int i = start, b = start, c = mid+1;
+        while (b <= mid && c <= end) {
+            if (tmp[b].compareTo(tmp[c]) < 0) {
+                A[i] = tmp[c];
+                c++;
+                i++;
+            } else {
+                A[i] = tmp[b];
+                b++;
+                i++;
+            }
+        }
+
+        while (b <= mid) {
+            A[i] = tmp[b];
+            i++;
+            b++;
+        }
+        while (c <= end) {
+            A[i] = tmp[c];
+            i++;
+            c++;
+        }
+
+    }
+
+    public static <T extends Comparable<? super T>> void genericMergeSort(T[] A, int start, int end, T[] tmp) {
+        if (start < end) {
+            int mid = (start + end) >>> 1;
+            genericMergeSort(A, start, mid, tmp);
+            genericMergeSort(A, mid + 1, end, tmp);
+            merge(A, start, mid, end, tmp);
         }
     }
 
@@ -147,7 +123,7 @@ public class Sort {
         return A;
     }
 
-    public static <T extends Comparable<? super T>> void genericInsertionSort(T[] A, int start, int end) {
+    public static <T extends Comparable<? super T>> void nSquareSort(T[] A, int start, int end) {
         for (int i = start + 1; i <= end; i++) {
             int j = i - 1;
             int cmp = A[j].compareTo(A[j + 1]);
@@ -167,11 +143,15 @@ public class Sort {
             A1[i] = i + 1;
         }
         Shuffle.shuffle(A1);
+        int[] A = new int[n];
+        for (int i = 0; i < n; i++) {
+            A[i] = A1[i];
+        }
         System.out.println("Int Merge Sort");
         Timer t = new Timer();
         t.start();
-        Integer[] B1 = new Integer[n];
-        intMergeSort(A1, 0, n - 1);
+        int[] tmp = new int[n];
+        intMergeSort(A, 0, n - 1, tmp);
         t.end();
         System.out.println(t);
 
@@ -182,8 +162,8 @@ public class Sort {
         Shuffle.shuffle(A2);
         System.out.println("Generic Merge Sort");
         t.start();
-        ItemExt[] B2 = new ItemExt[n];
-        genericMergeSort(A2, 0, n - 1);
+        ItemExt[] tmp2 = new ItemExt[n];
+        genericMergeSort(A2, 0, n - 1, tmp2);
         t.end();
         System.out.println(t);
 
@@ -199,15 +179,15 @@ public class Sort {
         t.end();
         System.out.println(t);
 
-        ItemExt[] A = new ItemExt[n];
+        ItemExt[] A4 = new ItemExt[n];
         for (int i = 0; i < n; i++) {
-            A[i] = new ItemExt(i + 1);
+            A4[i] = new ItemExt(i + 1);
         }
-        Shuffle.shuffle(A);
+        Shuffle.shuffle(A4);
         System.out.println("Generic Insertion Sort");
         t.start();
         ItemExt[] B = new ItemExt[n];
-        genericInsertionSort(A, 0, n - 1);
+        nSquareSort(A4, 0, n - 1);
         t.end();
         System.out.println(t);
 
