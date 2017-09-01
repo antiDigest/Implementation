@@ -1,27 +1,36 @@
-/**  Java example: Simple class that stores just a single int
- *   @author rbk
- *  Ver 1.0: 2017/08/08
+/**
+ * Item class for generics programming
+ *
+ * @author Antriksh, Gunjan, Atif
+ * Short Project 1: 2017/08/28
  */
 
 package cs6301.g10.utils;
+
 public class Item implements Comparable<Item> {
-    private int element;
+    public int element;
 
-    public Item(int x) { element = x; }
-
-    public int getItem() { return element; }
-
-    public void setItem(int x) { element = x; }
-
-    public int compareTo(Item another) {
-        if (this.element < another.element) { return -1; }
-        else if (this.element > another.element) { return 1; }
-        else return 0;
+    Item(int x) {
+        element = x;
     }
 
-    public String toString() { return Integer.toString(element); }
-}
+    public int getItem() {
+        return element;
+    }
 
-/* Sample output:
-Binary search for 8: true
-*/
+    public void setItem(int x) {
+        element = x;
+    }
+
+    public String toString() {
+        return Integer.toString(element);
+    }
+
+    public int compareTo(Item another) {
+        if (this.element < another.element) {
+            return 1;
+        } else if (this.element > another.element) {
+            return -1;
+        } else return 0;
+    }
+}
