@@ -23,7 +23,7 @@ public class Graph implements Iterable<Graph.Vertex> {
      */
 
     public static class Vertex implements Iterable<Edge> {
-        int name; // name of the vertex
+        public int name; // name of the vertex
         List<Edge> adj, revAdj; // adjacency list; use LinkedList or ArrayList
 
         /**
@@ -63,8 +63,8 @@ public class Graph implements Iterable<Graph.Vertex> {
      */
 
     public static class Edge {
-        Vertex from; // head vertex
-        Vertex to; // tail vertex
+        public Vertex from; // head vertex
+        public Vertex to; // tail vertex
         int weight;// weight of edge
 
         /**

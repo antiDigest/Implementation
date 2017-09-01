@@ -7,6 +7,7 @@
 
 package cs6301.g10;
 
+import cs6301.g10.utils.ItemExt;
 import cs6301.g10.utils.Shuffle;
 import cs6301.g10.utils.Timer;
 
@@ -163,7 +164,7 @@ public class Sort {
 
         Integer[] A1 = new Integer[n];
         for (int i = 0; i < n; i++) {
-            A1[i] = new Integer(i + 1);
+            A1[i] = i + 1;
         }
         Shuffle.shuffle(A1);
         System.out.println("Int Merge Sort");
