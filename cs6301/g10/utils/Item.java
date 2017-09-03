@@ -10,7 +10,7 @@ package cs6301.g10.utils;
 public class Item implements Comparable<Item> {
     public int element;
 
-    Item(int x) {
+    public Item(int x) {
         element = x;
     }
 
@@ -28,9 +28,9 @@ public class Item implements Comparable<Item> {
 
     public int compareTo(Item another) {
         if (this.element < another.element) {
-            return 1;
-        } else if (this.element > another.element) {
             return -1;
+        } else if (this.element > another.element) {
+            return 1;
         } else return 0;
     }
 }

@@ -1,3 +1,10 @@
+/**
+ * Sort class which will contain all sort functions.
+ *
+ * @author Antriksh, Gunjan
+ * Ver 1.0: 2017/08/28
+ */
+
 package cs6301.g10;
 
 import cs6301.g10.utils.Graph;
@@ -11,6 +18,15 @@ public class Diameter {
 
     public Diameter(){}
 
+    /**
+     * Diameter
+     * Runs BFS, starting at an arbitrary node as root.  Let u be a node
+     * at maximum distance from the root.  Runs BFS again, with u as the root to
+     * get a path from u to a node at maximum distance from u.
+     *
+     * @param g: Input Graph
+     * @return diameter: path from u to a node at maximum distance from u.
+     */
     public static LinkedList<Graph.Vertex> diameter(Graph g){
         BFS bfs = new BFS(g);
 
@@ -32,8 +48,6 @@ public class Diameter {
             l = l.prev;
             diameter++;
         }
-//        System.out.println("Diameter: "+diameter);
-
         return list;
     }
 

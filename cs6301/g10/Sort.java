@@ -1,196 +1,219 @@
 /**
  * Sort class which will contain all sort functions.
  *
- * @author Antriksh, Gunjan, Atif
+ * @author Antriksh, Gunjan
  * Ver 1.0: 2017/08/28
  */
 
 package cs6301.g10;
 
-import cs6301.g10.utils.ItemExt;
-import cs6301.g10.utils.Shuffle;
+import cs6301.g10.utils.Item;
 import cs6301.g10.utils.Timer;
+import cs6301.g10.utils.Shuffle;
+
+import java.util.*;
 
 public class Sort {
-    /*  Contains Merge Sort in the form of mand int sorting.
-    *	Usage: mergeSort(A, start, end)
-    *			mergeSort(A, start, end) -- uses ItemExt class.
-    *
-    *	Also contains Insertion Sort as an O(n^2) running algorithm.
-    *
-    */
-    static int n = 6000000;
+    static int n = 10;
 
-    public static void merge(int[] A, int start, int mid, int end, int[] tmp) {
-        int n = end - start + 1;
+    /**
+     * Merge Procedure
+     * Usage: merge(A, start, end, tmp)
+     *
+     * @param start = start location of merge
+     * @param end   = end location
+     */
+    public static void merge(int[] arr, int start, int end, int[] tmp) {
+        int mid = (start + end) / 2;
+        int p = start;
+        int q = mid + 1;
 
+        int k = 0;
         for (int i = start; i <= end; i++) {
-            tmp[i] = A[i];
+            if (p > mid)
+                tmp[k++] = arr[q++];
+            else if (q > end)
+                tmp[k++] = arr[p++];
+            else if (arr[p] < arr[q])
+                tmp[k++] = arr[p++];
+            else
+                tmp[k++] = arr[q++];
         }
 
-        int i = start, b = start, c = mid+1;
-        while (b <= mid && c <= end) {
-            if (tmp[b] < tmp[c]) {
-                A[i] = tmp[c];
-                c++;
-                i++;
-            } else {
-                A[i] = tmp[b];
-                b++;
-                i++;
-            }
+        for (int r = 0; r < k; r++) {
+            arr[start++] = tmp[r];
         }
-
-        while (b <= mid) {
-            A[i] = tmp[b];
-            i++;
-            b++;
-        }
-        while (c <= end) {
-            A[i] = tmp[c];
-            i++;
-            c++;
-        }
-
     }
 
+    /**
+     * Merge Sort
+     * Sorts the input array in ascending order, using the temporary array in the merge procedure.
+     * Usage: mergeSort(A, tmp)
+     */
     public static void mergeSort(int[] A, int[] tmp) {
         mergeSort(A, 0, A.length-1, tmp);
     }
 
+    /** Merge Sort
+     * Sorts the input array A[start..end] in ascending order, using the temporary array in the merge procedure.
+     * @param A: input array
+     * @param start: start index in array
+     * @param end: end index of array
+     * @param tmp: temporary array for merge
+     */
+
     public static void mergeSort(int[] A, int start, int end, int[] tmp) {
         if (start < end) {
-            int mid = (start + end) >>> 1;
+            int mid = (start + end) / 2;
             mergeSort(A, start, mid, tmp);
             mergeSort(A, mid + 1, end, tmp);
-            merge(A, start, mid, end, tmp);
+            merge(A, start, end, tmp);
         }
     }
 
-    public static <T extends Comparable<? super T>> void merge(T[] A, int start, int mid, int end, T[] tmp) {
-        int n = end - start + 1;
+    /** Merge Procedure
+     *  Generic Merge procedure of the divide and conquer merge sort algorithm. Merges the two sorted halves.
+     *  Usage: merge(A, start, end, tmp)
+     *
+     *  @param start = start index of merge
+     *  @param end = end index
+     */
+    public static <T extends Comparable<? super T>> void merge(T[] A, int start, int end, T[] tmp) {
+        int mid = (start + end) / 2;
+        int p = start;
+        int q = mid + 1;
 
+        int m = 0;
         for (int i = start; i <= end; i++) {
-            tmp[i] = A[i];
+            if (p > mid)
+                tmp[m++] = A[q++];
+            else if (q > end)
+                tmp[m++] = A[p++];
+            else if (A[p].compareTo(A[q]) < 0)
+                tmp[m++] = A[p++];
+            else
+                tmp[m++] = A[q++];
         }
 
-        int i = start, b = start, c = mid+1;
-        while (b <= mid && c <= end) {
-            if (tmp[b].compareTo(tmp[c]) < 0) {
-                A[i] = tmp[c];
-                c++;
-                i++;
-            } else {
-                A[i] = tmp[b];
-                b++;
-                i++;
-            }
+        for (int r = 0; r < m; r++) {
+            A[start++] = tmp[r];
         }
-
-        while (b <= mid) {
-            A[i] = tmp[b];
-            i++;
-            b++;
-        }
-        while (c <= end) {
-            A[i] = tmp[c];
-            i++;
-            c++;
-        }
-
     }
+
+    /**
+     * Generic Merge Sort
+     * Sorts the input array A in ascending order, using the temporary array in the merge procedure.
+     *
+     * @param A:   input array
+     * @param tmp: temporary array for merge
+     */
 
     public static <T extends Comparable<? super T>> void mergeSort(T[] A, T[] tmp) {
         mergeSort(A, 0, A.length-1, tmp);
     }
 
+    /** Generic Merge Sort
+     * Sorts the input array A[start..end] in ascending order, using the temporary array in the merge procedure.
+     * @param A: input array
+     * @param start: start index in array
+     * @param end: end index of array
+     * @param tmp: temporary array for merge
+     */
     public static <T extends Comparable<? super T>> void mergeSort(T[] A, int start, int end, T[] tmp) {
         if (start < end) {
-            int mid = (start + end) >>> 1;
+            int mid = (start + end) / 2;
             mergeSort(A, start, mid, tmp);
             mergeSort(A, mid + 1, end, tmp);
-            merge(A, start, mid, end, tmp);
+            merge(A, start, end, tmp);
         }
     }
 
-    public static <T> void swap(T[] arr, int x, int y) {
-        T tmp = arr[x];
-        arr[x] = arr[y];
-        arr[y] = tmp;
+    /**
+     * Swap
+     * swap values at i and j in the array.
+     *
+     * @param A: input array
+     * @param i: first index
+     * @param j: second index
+     */
+    public static <T> void swap(T[] A, int i, int j) {
+        T temp;
+        temp = A[i];
+        A[i] = A[j];
+        A[j] = temp;
     }
 
-    public static Integer[] intInsertionSort(Integer[] A, int start, int end) {
-        for (int i = start + 1; i <= end; i++) {
-            int j = i - 1;
-            while (j >= start && A[j] > A[j + 1]) {
-                swap(A, j, j + 1);
-                j--;
-            }
-        }
-
-        return A;
+    /**
+     * Generic Insertion Sort
+     * Sorts the input array A in ascending order.
+     * RunTime: O(n^2)
+     *
+     * @param A: input array
+     */
+    public static <T extends Comparable<? super T>> void nSquareSort(T[] A) {
+        nSquareSort(A, 0, A.length - 1);
     }
 
-    public static <T extends Comparable<? super T>> void nSquareSort(T[] A){
-        nSquareSort(A, 0, A.length-1);
-    }
-
+    /**
+     * Generic Insertion Sort
+     * Sorts the input array A[start..end] in ascending order.
+     * RunTime: O(n^2)
+     *
+     * @param A:     input array
+     * @param start: start index
+     * @param end:   end index
+     */
     public static <T extends Comparable<? super T>> void nSquareSort(T[] A, int start, int end) {
         for (int i = start + 1; i <= end; i++) {
             int j = i - 1;
-            int cmp = A[j].compareTo(A[j + 1]);
-            while (j >= start && cmp < 0) {
-                swap(A, j, j + 1);
+            while (j >= start) {
+                if (A[j].compareTo(A[j + 1]) > 0) {
+                    swap(A, j, j + 1);
+                }
                 j--;
-                if (j >= start)
-                    cmp = A[j].compareTo(A[j + 1]);
             }
         }
     }
 
     public static void main(String[] args) {
 
-        Integer[] A1 = new Integer[n];
+        System.out.println("n = " + n);
+        Integer[] B = new Integer[n];
         for (int i = 0; i < n; i++) {
-            A1[i] = i + 1;
+            B[i] = i + 1;
         }
-        Shuffle.shuffle(A1);
-        int[] A = new int[n];
+        Shuffle.shuffle(B);
+        int[] B1 = new int[n];
         for (int i = 0; i < n; i++) {
-            A[i] = A1[i];
+            B1[i] = B[i];
         }
-        System.out.println("Int Merge Sort");
+        System.out.println("Integer Merge Sort");
         Timer t = new Timer();
-        t.start();
         int[] tmp = new int[n];
-        mergeSort(A, tmp);
+        t.start();
+        mergeSort(B1, tmp);
         t.end();
         System.out.println(t);
 
-        ItemExt[] A2 = new ItemExt[n];
+
+        Item[] A = new Item[n];
         for (int i = 0; i < n; i++) {
-            A2[i] = new ItemExt(i + 1);
+            A[i] = new Item(i+1);
         }
-        Shuffle.shuffle(A2);
+        Shuffle.shuffle(A);
         System.out.println("Generic Merge Sort");
+        Item[] tmp1 = new Item[n];
         t.start();
-        ItemExt[] tmp2 = new ItemExt[n];
-        mergeSort(A2, tmp2);
+        mergeSort(A, tmp1);
         t.end();
         System.out.println(t);
 
-        ItemExt[] A4 = new ItemExt[n];
-        for (int i = 0; i < n; i++) {
-            A4[i] = new ItemExt(i + 1);
-        }
-        Shuffle.shuffle(A4);
-        System.out.println("n Square Sort");
+
+        Shuffle.shuffle(A);
+        System.out.println("Generic n Square Sort");
         t.start();
-        ItemExt[] B = new ItemExt[n];
-        nSquareSort(A4, 0, n - 1);
+        nSquareSort(A);
         t.end();
         System.out.println(t);
-
     }
-
 }
