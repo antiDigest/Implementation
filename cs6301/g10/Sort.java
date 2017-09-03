@@ -12,16 +12,16 @@ import cs6301.g10.utils.Shuffle;
 import cs6301.g10.utils.Timer;
 
 public class Sort {
-    /*  Contains Merge Sort in the form of generic and int sorting.
-    *	Usage: intMergeSort(A, start, end)
-    *			genericMergeSort(A, start, end) -- uses ItemExt class.
+    /*  Contains Merge Sort in the form of mand int sorting.
+    *	Usage: mergeSort(A, start, end)
+    *			mergeSort(A, start, end) -- uses ItemExt class.
     *
     *	Also contains Insertion Sort as an O(n^2) running algorithm.
     *
     */
-    static int n = 3000000;
+    static int n = 6000000;
 
-    public static void intMerge(int[] A, int start, int mid, int end, int[] tmp) {
+    public static void merge(int[] A, int start, int mid, int end, int[] tmp) {
         int n = end - start + 1;
 
         for (int i = start; i <= end; i++) {
@@ -54,12 +54,16 @@ public class Sort {
 
     }
 
-    public static void intMergeSort(int[] A, int start, int end, int[] tmp) {
+    public static void mergeSort(int[] A, int[] tmp) {
+        mergeSort(A, 0, A.length-1, tmp);
+    }
+
+    public static void mergeSort(int[] A, int start, int end, int[] tmp) {
         if (start < end) {
             int mid = (start + end) >>> 1;
-            intMergeSort(A, start, mid, tmp);
-            intMergeSort(A, mid + 1, end, tmp);
-            intMerge(A, start, mid, end, tmp);
+            mergeSort(A, start, mid, tmp);
+            mergeSort(A, mid + 1, end, tmp);
+            merge(A, start, mid, end, tmp);
         }
     }
 
@@ -96,11 +100,15 @@ public class Sort {
 
     }
 
-    public static <T extends Comparable<? super T>> void genericMergeSort(T[] A, int start, int end, T[] tmp) {
+    public static <T extends Comparable<? super T>> void mergeSort(T[] A, T[] tmp) {
+        mergeSort(A, 0, A.length-1, tmp);
+    }
+
+    public static <T extends Comparable<? super T>> void mergeSort(T[] A, int start, int end, T[] tmp) {
         if (start < end) {
             int mid = (start + end) >>> 1;
-            genericMergeSort(A, start, mid, tmp);
-            genericMergeSort(A, mid + 1, end, tmp);
+            mergeSort(A, start, mid, tmp);
+            mergeSort(A, mid + 1, end, tmp);
             merge(A, start, mid, end, tmp);
         }
     }
@@ -121,6 +129,10 @@ public class Sort {
         }
 
         return A;
+    }
+
+    public static <T extends Comparable<? super T>> void nSquareSort(T[] A){
+        nSquareSort(A, 0, A.length-1);
     }
 
     public static <T extends Comparable<? super T>> void nSquareSort(T[] A, int start, int end) {
@@ -151,7 +163,7 @@ public class Sort {
         Timer t = new Timer();
         t.start();
         int[] tmp = new int[n];
-        intMergeSort(A, 0, n - 1, tmp);
+        mergeSort(A, tmp);
         t.end();
         System.out.println(t);
 
@@ -163,19 +175,7 @@ public class Sort {
         System.out.println("Generic Merge Sort");
         t.start();
         ItemExt[] tmp2 = new ItemExt[n];
-        genericMergeSort(A2, 0, n - 1, tmp2);
-        t.end();
-        System.out.println(t);
-
-        Integer[] A3 = new Integer[n];
-        for (int i = 0; i < n; i++) {
-            A3[i] = new Integer(i + 1);
-        }
-        Shuffle.shuffle(A3);
-        System.out.println("Int Insertion Sort");
-        t.start();
-        Integer[] B3 = new Integer[n];
-        intInsertionSort(A3, 0, n - 1);
+        mergeSort(A2, tmp2);
         t.end();
         System.out.println(t);
 
@@ -184,7 +184,7 @@ public class Sort {
             A4[i] = new ItemExt(i + 1);
         }
         Shuffle.shuffle(A4);
-        System.out.println("Generic Insertion Sort");
+        System.out.println("n Square Sort");
         t.start();
         ItemExt[] B = new ItemExt[n];
         nSquareSort(A4, 0, n - 1);

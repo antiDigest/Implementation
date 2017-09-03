@@ -1,3 +1,3 @@
 # CS6301
 
-Antriksh Agarwal, Gunjan Tomer and Mohammad Atif Hussain working.
+Antriksh Agarwal and Gunjan Tomer working.

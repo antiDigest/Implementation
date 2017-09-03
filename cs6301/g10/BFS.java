@@ -2,12 +2,8 @@ package cs6301.g10;
 
 import cs6301.g10.utils.Graph;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
-import java.util.Scanner;
 
 public class BFS {
     public class BFSVertex {
