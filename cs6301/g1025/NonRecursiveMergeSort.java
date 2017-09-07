@@ -1,14 +1,14 @@
-package cs6301.g10;
+package cs6301.g1025;
 
-import cs6301.g10.utils.Shuffle;
-import cs6301.g10.utils.Timer;
+import cs6301.g1025.utils.Shuffle;
+import cs6301.g1025.utils.Timer;
 
 import java.util.Arrays;
 
 
 public class NonRecursiveMergeSort {
 
-    final static int n = 100000000;
+    final static int n = 10000000;
     public static void merge(int[] arr, int start, int end, int[] tmp) {
 
         int[] swap;

@@ -29,7 +29,7 @@ public class IO {
     }
 }
 /* Sample execution:
-> java cs6301.g10.utils.g00.IO
+> java cs6301.g1025.utils.g00.IO
 15                  <---- Input line
 2.3E2               <---- Input line (in scientific notation; it is 2.3*10^2)
 s: 15 t: 230.0      <---- Output line
