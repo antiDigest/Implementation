@@ -5,7 +5,7 @@
  * Ver 1.0: 2017/09/05
  */
 
-package cs6301.g10;
+package cs6301.g1025;
 
 import java.util.LinkedList;
 import java.util.Queue;
