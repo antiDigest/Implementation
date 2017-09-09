@@ -10,7 +10,7 @@
  * Corrected memory calculations to 1048576 instead of 1000000
  */
 
-package cs6301.g1025.utils;
+package cs6301.g00;
 
 public class Timer {
     long startTime, endTime, elapsedTime, memAvailable, memUsed;

@@ -5,8 +5,7 @@
  * Ver 1.1: 2017/08/28.  Updated some methods to public.  Added getName() to Vertex
  */
 
-package cs6301.g1025.utils;
-
+package cs6301.g00;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;

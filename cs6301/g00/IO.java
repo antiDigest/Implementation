@@ -5,7 +5,8 @@
  **/
 
 
-package cs6301.g1025.utils;
+package cs6301.g00;
+
 import java.util.Scanner;
 import java.io.FileNotFoundException;
 import java.io.File;
