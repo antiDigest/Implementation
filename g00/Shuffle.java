@@ -3,7 +3,7 @@
  *  Ver 1.1: 2017/08/28.  Updated some methods to public.  Added shuffle for int[]
  */
 
-package cs6301.g25.sp1;
+package cs6301.g00;
 import java.util.Random;
 
 /* Shuffle the elements of an array arr[from..to] randomly */

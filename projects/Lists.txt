@@ -1,0 +1,33 @@
+Standard:
+S1. Given a linked list with more than k nodes, find the element that is k links away from the end of the list.  [Similar: Find the middle element of a singly linked list.]
+
+S2. Write a (iterative/recursive) procedure to reverse a singly linked list.
+
+
+Advanced:
+A1. Given two sorted lists representing two sets, write procedures union and intersection, that output the sorted lists corresponding to the union and intersection of the two sets.  Use only List interface operations.
+
+A2. Given two sorted linked lists, L1 and L2, write a procedure that merges L2 into L1, so that the result is also a sorted list, using only O(1) extra space.  This function is a method defined in the list class.  It should be written using the internal details of lists.  No additional space should be created for the elements.
+
+A3. Given a list L, and items a and b, rearrange the elements of L by moving all elements that are between a and b to the front, followed by the elements outside this range.  Your program should use only O(1) extra space, and it should not change the order of elements in each of the two sets.
+
+A4. Write code for "contains(x)" method for a list L that behaves as follows.  If x is not contained in L, it returns false.  Otherwise, it returns true, after moving the first node of L that contains x to the front of the list.  The order of the remaining elements should not change.
+
+A5. Write procedures "add" and "addAll" for a sorted list that represents a set.
+
+A6. Given a list L, an item x, and an integer k, return a list with the k biggest elements of L that are less than x.  Output list should retain the order of those elements in L.
+
+Challenge:
+C1. Given a Stack implementation, show how to implement a queue using just stack operations.
+
+C2. Write a procedure to remove duplicates from an unsorted linked list of elements, using at most O(log n) extra space.  What about O(1) extra space?  You may rearrange the elements of the list.  
+
+C3. Sort a singly-linked list of unknown size using O(1) extra space.  How about O(log n) space?  Write the procedure that solves this problem without calculating n.
+
+C4. Different versions of the same problem: Given a linked list L, test if L has a cycle.  If so, what is its length?  Find the first node of the list on this cycle.  Given two linked lists L1 and L2, find the number of nodes common to both lists, and the first node that is common to both lists (i.e., the node where the two lists merge).  Given two lists, find if they intersect.  Can it be done with O(1) extra space, and RT of O(k), where k is the sum of the path-lengths, up to the node where the lists meet?  Given two linked lists L1 and L2, find the number of nodes common to both lists, and the first node that is common to both lists (i.e., the node where the two lists merge).  Your answer should work even if there is a cycle in the lists.
+
+
+Trick:
+T1. Given a reference to a node (cursor) in a singly linked list, delete that node from the list.
+
+T2. Write a procedure to print the elements of a singly linked list in reverse order, using only O(1) extra space.
