@@ -1,14 +1,14 @@
 package cs6301.g1025;
 
-import cs6301.g1025.utils.Shuffle;
-import cs6301.g1025.utils.Timer;
+import cs6301.g00.Shuffle;
+import cs6301.g00.Timer;
 
 import java.util.Arrays;
 
 
 public class NonRecursiveMergeSort {
 
-    final static int n = 10000000;
+    final static int n = 100;
     public static void merge(int[] arr, int start, int end, int[] tmp) {
 
         int[] swap;
@@ -78,12 +78,12 @@ public class NonRecursiveMergeSort {
         for(int i=0; i<n; i++){
             A1[i] = A[i];
         }
-        //System.out.println(Arrays.toString(A1));
+        System.out.println(Arrays.toString(A1));
         int[] tmp = new int[n];
         t.start();
         mergeSort(A1, tmp);
         t.end();
-       // System.out.println(Arrays.toString(A1));
+        System.out.println(Arrays.toString(A1));
         System.out.println(t);
 
     }

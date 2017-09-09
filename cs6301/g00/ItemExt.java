@@ -5,7 +5,7 @@
  * Short Project 1: 2017/08/28
  */
 
-package cs6301.g10.utils;
+package cs6301.g00;
 
 import java.util.Comparator;
 
