@@ -28,9 +28,9 @@ public class Item implements Comparable<Item> {
 
     public int compareTo(Item another) {
         if (this.element < another.element) {
-            return 1;
-        } else if (this.element > another.element) {
             return -1;
+        } else if (this.element > another.element) {
+            return 1;
         } else return 0;
     }
 }

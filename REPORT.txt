@@ -1,0 +1,35 @@
+Project done by Antriksh Agarwal and Gunjan Tomer.
+
+Time scores for Sort procedures:
+
+n = 1000000
+Int Merge Sort
+Time: 592 msec.
+Memory: 38 MB / 220 MB.
+Generic Merge Sort
+Time: 1130 msec.
+Memory: 149 MB / 220 MB.
+n Square Sort
+Time: 2455679 msec.
+Memory: 76 MB / 377 MB.
+
+n = 3000000
+Int Merge Sort
+Time: 697 msec.
+Memory: 81 MB / 155 MB.
+Generic Merge Sort
+Time: 2066 msec.
+Memory: 93 MB / 199 MB.
+n Square Sort
+Time: >2 min.
+
+n = 6000000
+Int Merge Sort
+Time: 962 msec.
+Memory: 161 MB / 318 MB.
+Generic Merge Sort
+Time: 5255 msec.
+Memory: 183 MB / 504 MB.
+n Square Sort
+Time: >2 min.
+
