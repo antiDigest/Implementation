@@ -8,7 +8,7 @@ import java.util.Arrays;
 
 public class NonRecursiveMergeSort {
 
-    final static int n = 100;
+    final static int n = 16;
     public static void merge(int[] arr, int start, int end, int[] tmp) {
 
         int[] swap;
@@ -16,7 +16,7 @@ public class NonRecursiveMergeSort {
         while(k < n){
             int left = start;
             int i,j = k;
-            int right = k << 1;
+            int right = k * 2;
             while(j < n){
                 if(right > n){
                     right = n;
@@ -50,7 +50,7 @@ public class NonRecursiveMergeSort {
             swap = arr;
             arr = tmp;
             tmp = swap;
-            k = k << 1;
+            k = k * 2;
            // System.out.println(Arrays.toString(arr));
         }
         //System.out.print(Arrays.toString(arr));
@@ -78,12 +78,12 @@ public class NonRecursiveMergeSort {
         for(int i=0; i<n; i++){
             A1[i] = A[i];
         }
-        System.out.println(Arrays.toString(A1));
+      //  System.out.println(Arrays.toString(A1));
         int[] tmp = new int[n];
         t.start();
         mergeSort(A1, tmp);
         t.end();
-        System.out.println(Arrays.toString(A1));
+      //  System.out.println(Arrays.toString(A1));
         System.out.println(t);
 
     }

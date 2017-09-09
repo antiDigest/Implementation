@@ -12,7 +12,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
-public class SinglyLinkedList<T> implements Iterable<T> {
+public class RevLinkedList<T> implements Iterable<T> {
 
     /** Class Entry holds a single node of the list */
     public static class Entry<T> {
@@ -29,7 +29,7 @@ public class SinglyLinkedList<T> implements Iterable<T> {
     Entry<T> head, tail;
     int size;
 
-    public SinglyLinkedList() {
+    public RevLinkedList() {
         head = new Entry<T>(null, null);
         tail = head;
         size = 0;
@@ -38,11 +38,11 @@ public class SinglyLinkedList<T> implements Iterable<T> {
     public Iterator<T> iterator() { return new SLLIterator<>(this); }
 
     public class SLLIterator<E> implements Iterator<E> {
-        SinglyLinkedList<E> list;
+        RevLinkedList<E> list;
         Entry<E> cursor, prev;
         boolean ready;  // is item ready to be removed?
 
-        SLLIterator(SinglyLinkedList<E> list) {
+        SLLIterator(RevLinkedList<E> list) {
             this.list = list;
             cursor = list.head;
             prev = null;
@@ -104,10 +104,10 @@ public class SinglyLinkedList<T> implements Iterable<T> {
 
     public Entry<T> revList(Entry<T> head) {
 
-            Entry<T> node = head;
-            SinglyLinkedList.Entry<T> prev = null;
-            SinglyLinkedList.Entry<T> curr = node;
-            SinglyLinkedList.Entry<T> nxt;
+            Entry<T> node = head.next;
+            RevLinkedList.Entry<T> prev = null;
+            RevLinkedList.Entry<T> curr = node;
+            RevLinkedList.Entry<T> nxt = null;
 
             while(curr != null){
                 nxt = curr.next;
@@ -117,8 +117,8 @@ public class SinglyLinkedList<T> implements Iterable<T> {
             }
 
             node = prev;
-            head = node;
-            return head;
+            //head = node;
+            return node;
 
         }
 
@@ -168,7 +168,7 @@ public class SinglyLinkedList<T> implements Iterable<T> {
             n = Integer.parseInt(args[0]);
         }
 
-        SinglyLinkedList<Integer> lst = new SinglyLinkedList<>();
+        RevLinkedList<Integer> lst = new RevLinkedList<>();
         for(int i=1; i<=n; i++) {
             lst.add(new Integer(i));
         }
@@ -200,7 +200,7 @@ public class SinglyLinkedList<T> implements Iterable<T> {
 
         lst.printList();
       //  System.out.println(lst.head.element);
-        lst.head = lst.revList(lst.head);
+        lst.head.next = lst.revList(lst.head);
         System.out.println(lst.head.element);
        // lst.unzip();
         lst.printList();
