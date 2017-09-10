@@ -6,12 +6,15 @@
  *  to the list, code would do the wrong thing.
  */
 
-package cs6301.g00;
-import java.util.Iterator;
-import java.util.Scanner;
-import java.util.NoSuchElementException;
+package cs6301.g1025;
 
-public class SinglyLinkedList<T> implements Iterable<T> {
+import cs6301.g00.SinglyLinkedList;
+
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.Scanner;
+
+public class RevLinkedList<T> implements Iterable<T> {
 
     /** Class Entry holds a single node of the list */
     public static class Entry<T> {
@@ -28,8 +31,8 @@ public class SinglyLinkedList<T> implements Iterable<T> {
     Entry<T> head, tail;
     int size;
 
-    public SinglyLinkedList() {
-        head = new Entry<>(null, null);
+    public RevLinkedList() {
+        head = new Entry<T>(null, null);
         tail = head;
         size = 0;
     }
@@ -37,11 +40,11 @@ public class SinglyLinkedList<T> implements Iterable<T> {
     public Iterator<T> iterator() { return new SLLIterator<>(this); }
 
     public class SLLIterator<E> implements Iterator<E> {
-        SinglyLinkedList<E> list;
+        RevLinkedList<E> list;
         Entry<E> cursor, prev;
         boolean ready;  // is item ready to be removed?
 
-        SLLIterator(SinglyLinkedList<E> list) {
+        SLLIterator(RevLinkedList<E> list) {
             this.list = list;
             cursor = list.head;
             prev = null;
@@ -101,6 +104,46 @@ public class SinglyLinkedList<T> implements Iterable<T> {
         System.out.println();
     }
 
+    public Entry<T> revListNonRecursive(Entry<T> head) {
+
+
+            if(size == 0) System.out.println("The list is empty.");
+
+            if(size == 1) return head.next;
+
+            Entry<T> node = head.next;
+            RevLinkedList.Entry<T> prev = null;
+            RevLinkedList.Entry<T> curr = node;
+            RevLinkedList.Entry<T> nxt = null;
+
+            while(curr != null){
+                nxt = curr.next;
+                curr.next = prev;
+                prev = curr;
+                curr = nxt;
+            }
+
+            node = prev;
+            //head = node;
+            return node;
+
+    }
+
+    public Entry<T> revListRecursive(Entry<T> curr) {
+
+        if(curr == null || curr.next == null) return curr;
+
+        Entry<T> tmp = curr.next;
+        curr.next = null;
+        Entry<T> left = revListRecursive(tmp);
+        tmp.next = curr;
+        return left;
+    }
+
+
+
+
+
     // Rearrange the elements of the list by linking the elements at even index
     // followed by the elements at odd index. Implemented by rearranging pointers
     // of existing elements without allocating any new elements.
@@ -136,20 +179,25 @@ public class SinglyLinkedList<T> implements Iterable<T> {
         tail1.next = null;
     }
 
+
+
     public static void main(String[] args) throws NoSuchElementException {
-        int n = 10;
+        //reverse r = new reverse();
+        int n = 30;
         if(args.length > 0) {
             n = Integer.parseInt(args[0]);
         }
 
-        SinglyLinkedList<Integer> lst = new SinglyLinkedList<>();
+        RevLinkedList<Integer> lst = new RevLinkedList<>();
+        RevLinkedList<Integer> lst2 = new RevLinkedList<>();
         for(int i=1; i<=n; i++) {
             lst.add(new Integer(i));
         }
-        lst.printList();
+        //lst.printList();
 
         Iterator<Integer> it = lst.iterator();
         Scanner in = new Scanner(System.in);
+        /*
         whileloop:
         while(in.hasNext()) {
             int com = in.nextInt();
@@ -169,8 +217,14 @@ public class SinglyLinkedList<T> implements Iterable<T> {
                     break whileloop;
             }
         }
+        */
+
         lst.printList();
-        lst.unzip();
+      //  System.out.println(lst.head.element);
+       lst.head.next = lst.revListNonRecursive(lst.head);
+       lst2.head.next = lst.revListRecursive(lst.head.next);
+        //System.out.println(lst.head.element);
+       // lst.unzip();
         lst.printList();
     }
 }
