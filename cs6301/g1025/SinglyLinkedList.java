@@ -197,26 +197,27 @@ public class SinglyLinkedList<T> implements Iterable<T> {
 
     public static void main(String[] args) throws NoSuchElementException {
         //reverse r = new reverse();
-        int n = 30;
+        int n1 = 20;
+        int n2 = 15;
         if (args.length > 0) {
-            n = Integer.parseInt(args[0]);
+            n1 = Integer.parseInt(args[0]);
         }
 
         SinglyLinkedList<Integer> lst = new SinglyLinkedList<>();
         SinglyLinkedList<Integer> lst2 = new SinglyLinkedList<>();
 
-        for (int i = 1; i <= n; i++) {
+        for (int i = 1; i <= n1; i++) {
             lst.add(new Integer(i));
         }
 
-        for (int i = 1; i <= n; i++) {
+        for (int i = 1; i <= n2; i++) {
             lst2.add(new Integer(i));
         }
-        //lst.printList();
 
-        Iterator<Integer> it = lst.iterator();
-        Scanner in = new Scanner(System.in);
         /*
+        Iterator<Integer> it = lst.iterator();
+       Scanner in = new Scanner(System.in);
+
         whileloop:
         while(in.hasNext()) {
             int com = in.nextInt();
