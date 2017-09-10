@@ -6,6 +6,7 @@
  */
 
 package cs6301.g00;
+
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,8 +29,7 @@ public class Graph implements Iterable<Graph.Vertex> {
         /**
          * Constructor for the vertex
          *
-         * @param n
-         *            : int - name of the vertex
+         * @param n : int - name of the vertex
          */
         public Vertex(int n) {
             name = n;
@@ -39,7 +39,6 @@ public class Graph implements Iterable<Graph.Vertex> {
 
         /**
          * Method to get name of a vertex.
-         *
          */
         public int getName() {
             return name;
@@ -69,12 +68,9 @@ public class Graph implements Iterable<Graph.Vertex> {
         /**
          * Constructor for Edge
          *
-         * @param u
-         *            : Vertex - Vertex from which edge starts
-         * @param v
-         *            : Vertex - Vertex on which edge lands
-         * @param w
-         *            : int - Weight of edge
+         * @param u : Vertex - Vertex from which edge starts
+         * @param v : Vertex - Vertex on which edge lands
+         * @param w : int - Weight of edge
          */
         public Edge(Vertex u, Vertex v, int w) {
             from = u;
@@ -86,10 +82,8 @@ public class Graph implements Iterable<Graph.Vertex> {
          * Method to find the other end end of an edge, given a vertex reference
          * This method is used for undirected graphs
          *
-         * @param u
-         *            : Vertex
-         * @return
-         *             : Vertex - other end of edge
+         * @param u : Vertex
+         * @return : Vertex - other end of edge
          */
         public Vertex otherEnd(Vertex u) {
             assert from == u || to == u;
@@ -117,8 +111,7 @@ public class Graph implements Iterable<Graph.Vertex> {
     /**
      * Constructor for Graph
      *
-     * @param n
-     *            : int - number of vertices
+     * @param n : int - number of vertices
      */
     public Graph(int n) {
         this.n = n;
@@ -131,8 +124,8 @@ public class Graph implements Iterable<Graph.Vertex> {
 
     /**
      * Find vertex no. n
-     * @param n
-     *           : int
+     *
+     * @param n : int
      */
     public Vertex getVertex(int n) {
         return v[n - 1];
@@ -141,12 +134,9 @@ public class Graph implements Iterable<Graph.Vertex> {
     /**
      * Method to add an edge to the graph
      *
-     * @param from
-     *            : int - one end of edge
-     * @param to
-     *            : int - other end of edge
-     * @param weight
-     *            : int - the weight of the edge
+     * @param from   : int - one end of edge
+     * @param to     : int - other end of edge
+     * @param weight : int - the weight of the edge
      */
     public void addEdge(Vertex from, Vertex to, int weight) {
         Edge e = new Edge(from, to, weight);

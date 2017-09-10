@@ -8,82 +8,78 @@ import java.util.Arrays;
 
 public class NonRecursiveMergeSort {
 
-    final static int n = 100;
-    public static void merge(int[] arr, int start, int end, int[] tmp) {
+    private static int N = 4;
 
-        int[] swap;
-        int k = 1, temp;
-        while(k < n){
-            int left = start;
-            int i,j = k;
-            int right = k << 1;
-            while(j < n){
-                if(right > n){
-                    right = n;
-                }
-                temp = left;
-                i = j;
-                while(left < j && i < right){
-                    if(arr[left] <= arr[i]){
-                        tmp[temp++] = arr[left++];
-                    }
-                    else {
-                        tmp[temp++] = arr[i++];
-                    }
-                }
-                while(left < j){
-                    tmp[temp++] = arr[left++];
-                }
-                while(i < right){
-                    tmp[temp++] = arr[i++];
-                }
+    public static void merge(int[] A, int start, int mid, int end, int[] tmp) {
+        int n = end - start + 1;
 
-                left = right;
-                j = left + k;
-                right = j +  k;
-            }
-
-            while(left < n){
-                tmp[left] = arr[left++];
-            }
-
-            swap = arr;
-            arr = tmp;
-            tmp = swap;
-            k = k << 1;
-           // System.out.println(Arrays.toString(arr));
+        for (int i = start; i < end; i++) {
+            tmp[i] = A[i];
         }
-        //System.out.print(Arrays.toString(arr));
-        //return arr;
+
+        int i = start, b = start, c = mid + 1;
+        while (b <= mid && c < end) {
+            if (tmp[b] < tmp[c]) {
+                A[i] = tmp[b];
+                b++;
+                i++;
+            } else {
+                A[i] = tmp[c];
+                c++;
+                i++;
+            }
+        }
+
+        while (b <= mid) {
+            A[i] = tmp[b];
+            i++;
+            b++;
+        }
+        while (c < end) {
+            A[i] = tmp[c];
+            i++;
+            c++;
+        }
+
+    }
+
+    public static void mergeSort(int[] A, int start, int end, int[] tmp) {
+        int n = end - start + 1;
+        for (int size = 1; size <= n; size *= 2) {
+            for (int limit = 0; limit < n; limit += size) {
+                int s = limit;
+                int e = Math.min(limit + size, n);
+                int mid = (s + e) >>> 1;
+//                System.out.println();
+                merge(A, s, mid, e, tmp);
+            }
+        }
+    }
+
+    public static void mergeSort(int[] A, int[] tmp) {
+        mergeSort(A, 0, A.length - 1, tmp);
     }
 
 
-    public static void mergeSort(int[] A, int[] tmp){
-
-        merge(A, 0, A.length - 1, tmp);
-       // System.out.println(Arrays.toString(A));
-    }
-
-
-    public static void main(String[] args){
+    public static void main(String[] args) {
 
         Timer t = new Timer();
-        System.out.println("n = " + n);
-        Integer [] A = new Integer[n];
-        for(int i = 0; i < n; i++){
-            A[i] = i;
+        System.out.println("n = " + N);
+        Integer[] A = new Integer[N];
+        for (int i = 0; i < N; i++) {
+            A[i] = i + 1;
         }
         Shuffle.shuffle(A);
-        int[] A1 = new int[n];
-        for(int i=0; i<n; i++){
+        int[] A1 = new int[N];
+        for (int i = 0; i < N; i++) {
             A1[i] = A[i];
         }
-        System.out.println(Arrays.toString(A1));
-        int[] tmp = new int[n];
+        System.out.println("Unsorted: " + Arrays.toString(A1));
+        int[] tmp = new int[N];
         t.start();
         mergeSort(A1, tmp);
         t.end();
-        System.out.println(Arrays.toString(A1));
+        System.out.println("Sorted: " + Arrays.toString(A1));
         System.out.println(t);
 
     }

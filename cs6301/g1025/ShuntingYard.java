@@ -3,6 +3,7 @@
  *
  * @author Antriksh
  * Ver 1.0: 2017/09/05
+ * Ver 1.1: 2017/09/06: Added evaluation of postfix expressions
  */
 
 package cs6301.g1025;
@@ -17,7 +18,8 @@ public class ShuntingYard {
     public String prefix = "";
     public String infix;
 
-    public ShuntingYard() {}
+    public ShuntingYard() {
+    }
 
     public String toString() {
         return prefix;
@@ -169,15 +171,16 @@ public class ShuntingYard {
         return prefix;
     }
 
-    /** Items Required
+    /**
+     * Items Required
      * Returning items required to perform the operation using the input operator
      *
      * @param op: input operator
      * @return Integer 2/1
      * @throws IllegalArgumentException
      */
-    Integer itemsRequired(Character op){
-        switch(op){
+    Integer itemsRequired(Character op) {
+        switch (op) {
             case '+':
             case '-':
             case '*':
@@ -191,22 +194,28 @@ public class ShuntingYard {
         }
     }
 
-    /** Evaluate Operator
+    /**
+     * Evaluate Operator
      * Performs operator input on two Integers
      *
-     * @param op input operator
-     * @param first first Integer popped
+     * @param op     input operator
+     * @param first  first Integer popped
      * @param second second Integer popped
      * @return Integer after performing operation
      * @throws IllegalArgumentException
      */
-    Integer evalOperator(Character op, Integer first, Integer second){
-        switch(op){
-            case '+': return first+second;
-            case '-': return first-second;
-            case '*': return first*second;
-            case '/': return first/second;
-            case '^': return (int) Math.pow(first, second);
+    Integer evalOperator(Character op, Integer first, Integer second) {
+        switch (op) {
+            case '+':
+                return first + second;
+            case '-':
+                return first - second;
+            case '*':
+                return first * second;
+            case '/':
+                return first / second;
+            case '^':
+                return (int) Math.pow(first, second);
             default:
                 throw new IllegalArgumentException("Operator not found.");
         }
@@ -214,13 +223,14 @@ public class ShuntingYard {
 
     /**
      * Calculating factorial
+     *
      * @param a input integer
      * @return Integer value of factorial
      */
-    Integer factorial(Integer a){
-        Integer fact=1;
-        for(int i=2;i<a;i++){
-            fact = fact*i;
+    Integer factorial(Integer a) {
+        Integer fact = 1;
+        for (int i = 2; i < a; i++) {
+            fact = fact * i;
         }
         return fact;
     }
@@ -228,14 +238,15 @@ public class ShuntingYard {
     /**
      * Evaluates operators that require only single Integer
      *
-     * @param op Operator
+     * @param op    Operator
      * @param first Integer
      * @return Integer value after performing operation
      * @throws IllegalArgumentException
      */
-    Integer evalOperator(Character op, Integer first){
-        switch(op){
-            case '!': return factorial(first);
+    Integer evalOperator(Character op, Integer first) {
+        switch (op) {
+            case '!':
+                return factorial(first);
             default:
                 throw new IllegalArgumentException("Operator not found.");
         }
@@ -247,24 +258,22 @@ public class ShuntingYard {
      * @param postfix String postfix expression input
      * @return Integer value
      */
-    public Integer evaluate(String postfix){
+    public Integer evaluate(String postfix) {
         Stack<Integer> stack = new Stack<Integer>();
 
-        for(int i=0;i < postfix.length();i++){
+        for (int i = 0; i < postfix.length(); i++) {
             Character token = postfix.charAt(i);
             if (token == ' ')
                 continue;
             if (token >= '0' && token <= '9') {
                 Integer num = Character.getNumericValue(token);
                 stack.push(num);
-            }
-            else if(isOperator(token)){
-                if(itemsRequired(token)==2){
+            } else if (isOperator(token)) {
+                if (itemsRequired(token) == 2) {
                     Integer item1 = stack.pop();
                     Integer item2 = stack.pop();
                     stack.push(evalOperator(token, item1, item2));
-                }
-                else{
+                } else {
                     Integer item = stack.pop();
                     stack.push(evalOperator(token, item));
                 }

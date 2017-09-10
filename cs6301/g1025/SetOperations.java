@@ -7,7 +7,10 @@
 
 package cs6301.g1025;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
 
 public class SetOperations {
     private static int n = 10;

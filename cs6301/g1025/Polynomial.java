@@ -9,17 +9,20 @@ import java.util.Scanner;
 
 public class Polynomial {
 
-    static class Tuple implements Comparable<Tuple>{
+    static class Tuple implements Comparable<Tuple> {
         final Integer coefficient;
         final Integer exponent;
-        Tuple(Integer coefficient, Integer exponent){
+
+        Tuple(Integer coefficient, Integer exponent) {
             this.coefficient = coefficient;
             this.exponent = exponent;
         }
-        public String toString(){
-            return "("+this.coefficient + ", "+this.exponent+")";
+
+        public String toString() {
+            return "(" + this.coefficient + ", " + this.exponent + ")";
         }
-        public int compareTo(Tuple other){
+
+        public int compareTo(Tuple other) {
             if (this.exponent < other.exponent) {
                 return -1;
             } else if (this.exponent > other.exponent) {
@@ -28,18 +31,19 @@ public class Polynomial {
         }
     }
 
-    static<T> T next(Iterator<T> it) {
+    static <T> T next(Iterator<T> it) {
         return (it.hasNext() ? it.next() : null);
     }
 
-    public Polynomial(){ }
+    public Polynomial() {
+    }
 
-    public static List<Tuple> readPolynomial(Scanner in){
+    public static List<Tuple> readPolynomial(Scanner in) {
 
         int lines = in.nextInt();
 
         List<Tuple> poly = new LinkedList<>();
-        for(int i=0;i<lines;i++){
+        for (int i = 0; i < lines; i++) {
             int a = in.nextInt();
             int b = in.nextInt();
             poly.add(new Polynomial.Tuple(a, b));
@@ -47,25 +51,23 @@ public class Polynomial {
         return poly;
     }
 
-    public void add(List<Tuple> poly1, List<Tuple> poly2, List<Tuple> outPoly){
+    public void add(List<Tuple> poly1, List<Tuple> poly2, List<Tuple> outPoly) {
         Iterator<Tuple> it1 = poly1.iterator();
         Iterator<Tuple> it2 = poly2.iterator();
 
         Tuple item1 = next(it1);
         Tuple item2 = next(it2);
 
-        while(item1!=null && item2!=null){
-            if(item1.compareTo(item2) < 0){
+        while (item1 != null && item2 != null) {
+            if (item1.compareTo(item2) < 0) {
                 outPoly.add(item1);
                 item1 = next(it1);
-            }
-            else if(item1.compareTo(item2) > 0){
+            } else if (item1.compareTo(item2) > 0) {
                 outPoly.add(item2);
                 item2 = next(it2);
-            }
-            else{
+            } else {
                 Integer coeff = item1.coefficient + item2.coefficient;
-                if(coeff>0) outPoly.add(new Tuple(coeff, item1.exponent));
+                if (coeff > 0) outPoly.add(new Tuple(coeff, item1.exponent));
                 item1 = next(it1);
                 item2 = next(it2);
             }
@@ -80,14 +82,14 @@ public class Polynomial {
         }
     }
 
-    public void multiply(List<Tuple> poly1, List<Tuple> poly2, List<Tuple> outPoly){
+    public void multiply(List<Tuple> poly1, List<Tuple> poly2, List<Tuple> outPoly) {
         return;
     }
 
-    public double evaluate(List<Tuple> poly1, Integer x){
+    public double evaluate(List<Tuple> poly1, Integer x) {
 
         double sum = 0;
-        for(Tuple item:poly1){
+        for (Tuple item : poly1) {
             sum += (item.coefficient * Math.pow(x, item.exponent));
         }
         return sum;
@@ -115,9 +117,6 @@ public class Polynomial {
         Polynomial poly = new Polynomial();
         poly.add(poly1, poly2, outPoly);
         System.out.println(outPoly);
-
-//        outPoly = new LinkedList<>();
-//        poly.multiply(poly1, poly2, outPoly);
 
         System.out.println(poly.evaluate(outPoly, 5));
     }
