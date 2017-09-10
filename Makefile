@@ -1,5 +1,5 @@
 CC = javac
-FILE = cs6301/g10/
+FILE = cs6301/g1025/
 
 all: Timer Shuffle Item ItemExt Sort run
 

@@ -35,7 +35,8 @@ public class RevLinkedList<T> extends SinglyLinkedList<T> {
 
         while (curr != null) {
             /**
-             * Loop invariant: List node returned by method points to the
+             * Loop invariant:
+             * List node returned by method points to the
              * first element at the front of reversed linked list
              * prev: points to the first node of the reversed linked list
              * curr: points to the first node in the right-most elements

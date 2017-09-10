@@ -16,7 +16,6 @@ public class NonRecursiveMergeSort {
         for (int i = start; i < end; i++) {
             tmp[i] = A[i];
         }
-
         int i = start, b = start, c = mid + 1;
         while (b <= mid && c < end) {
             if (tmp[b] < tmp[c]) {
@@ -80,6 +79,7 @@ public class NonRecursiveMergeSort {
         mergeSort(A1, tmp);
         t.end();
         System.out.println("Sorted: " + Arrays.toString(A1));
+
         System.out.println(t);
 
     }
