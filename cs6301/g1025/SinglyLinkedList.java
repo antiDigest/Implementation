@@ -1,20 +1,19 @@
-/** @author rbk
- *  Singly linked list: for instructional purposes only
- *  Ver 1.0: 2017/08/08
- *  Ver 1.1: 2017/08/30: Fixed error: If last element of list is removed,
- *  "tail" is no longer a valid value.  Subsequently, if items are added
- *  to the list, code would do the wrong thing.
+/**
+ * @author rbk
+ * Singly linked list: for instructional purposes only
+ * Ver 1.0: 2017/08/08
+ * Ver 1.1: 2017/08/30: Fixed error: If last element of list is removed,
+ * "tail" is no longer a valid value.  Subsequently, if items are added
+ * to the list, code would do the wrong thing.
  */
 
 package cs6301.g1025;
-
-import cs6301.g00.SinglyLinkedList;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
-public class RevLinkedList<T> implements Iterable<T> {
+public class SinglyLinkedList<T> implements Iterable<T> {
 
     /** Class Entry holds a single node of the list */
     public static class Entry<T> {
@@ -31,20 +30,22 @@ public class RevLinkedList<T> implements Iterable<T> {
     Entry<T> head, tail;
     int size;
 
-    public RevLinkedList() {
+    public SinglyLinkedList() {
         head = new Entry<T>(null, null);
         tail = head;
         size = 0;
     }
 
-    public Iterator<T> iterator() { return new SLLIterator<>(this); }
+    public Iterator<T> iterator() {
+        return new SLLIterator<>(this);
+    }
 
     public class SLLIterator<E> implements Iterator<E> {
-        RevLinkedList<E> list;
+        SinglyLinkedList<E> list;
         Entry<E> cursor, prev;
         boolean ready;  // is item ready to be removed?
 
-        SLLIterator(RevLinkedList<E> list) {
+        SLLIterator(SinglyLinkedList<E> list) {
             this.list = list;
             cursor = list.head;
             prev = null;
@@ -65,12 +66,12 @@ public class RevLinkedList<T> implements Iterable<T> {
         // Removes the current element (retrieved by the most recent next())
         // Remove can be called only if next has been called and the element has not been removed
         public void remove() {
-            if(!ready) {
+            if (!ready) {
                 throw new NoSuchElementException();
             }
             prev.next = cursor.next;
             // Handle case when tail of a list is deleted
-            if(cursor == list.tail) {
+            if (cursor == list.tail) {
                 list.tail = prev;
             }
             cursor = prev;
@@ -87,7 +88,7 @@ public class RevLinkedList<T> implements Iterable<T> {
     }
 
     public void printList() {
-	/* Code without using implicit iterator in for each loop:
+    /* Code without using implicit iterator in for each loop:
 
         Entry<T> x = head.next;
         while(x != null) {
@@ -97,41 +98,58 @@ public class RevLinkedList<T> implements Iterable<T> {
 	*/
 
         System.out.print(this.size + ": ");
-        for(T item: this) {
+        for (T item : this) {
             System.out.print(item + " ");
         }
 
         System.out.println();
     }
 
+    /**
+     * Non recursive method to reverse a singly linked list
+     * head of SLL passed as parameter
+     * returns a node element as the first element after the dummy header
+     * @param head
+     * @return node
+     *
+     * Loop invariant: List node returned by method points to the first element at the front of reversed linked list
+     */
     public Entry<T> revListNonRecursive(Entry<T> head) {
 
 
-            if(size == 0) System.out.println("The list is empty.");
+        if (size == 0) System.out.println("The list is empty.");
 
-            if(size == 1) return head.next;
+        if (size == 1) return head.next;
 
-            Entry<T> node = head.next;
-            RevLinkedList.Entry<T> prev = null;
-            RevLinkedList.Entry<T> curr = node;
-            RevLinkedList.Entry<T> nxt = null;
+        Entry<T> node = head.next;
+        SinglyLinkedList.Entry<T> prev = null;
+        SinglyLinkedList.Entry<T> curr = node;
+        SinglyLinkedList.Entry<T> nxt = null;
 
-            while(curr != null){
-                nxt = curr.next;
-                curr.next = prev;
-                prev = curr;
-                curr = nxt;
-            }
+        while (curr != null) {
+            nxt = curr.next;
+            curr.next = prev;
+            prev = curr;
+            curr = nxt;
+        }
 
-            node = prev;
-            //head = node;
-            return node;
+        node = prev;
+        return node;
 
     }
 
+    /**
+     * Recursive method to perform reversal of SLL
+     * takes parameter the first element in the list after dummy header
+     * returns list node 'left'
+     * @param curr
+     * @return left
+     *
+     * Loop Invariant: List node 'left' contains the most recent element  added to the front of linked list
+     */
     public Entry<T> revListRecursive(Entry<T> curr) {
 
-        if(curr == null || curr.next == null) return curr;
+        if (curr == null || curr.next == null) return curr;
 
         Entry<T> tmp = curr.next;
         curr.next = null;
@@ -141,14 +159,11 @@ public class RevLinkedList<T> implements Iterable<T> {
     }
 
 
-
-
-
     // Rearrange the elements of the list by linking the elements at even index
     // followed by the elements at odd index. Implemented by rearranging pointers
     // of existing elements without allocating any new elements.
     public void unzip() {
-        if(size < 3) {  // Too few elements.  No change.
+        if (size < 3) {  // Too few elements.  No change.
             return;
         }
 
@@ -163,8 +178,8 @@ public class RevLinkedList<T> implements Iterable<T> {
         // c is current element to be processed.
         // state indicates the state of the finite state machine
         // state = i indicates that the current element is added after taili (i=0,1).
-        while(c != null) {
-            if(state == 0) {
+        while (c != null) {
+            if (state == 0) {
                 tail0.next = c;
                 tail0 = c;
                 c = c.next;
@@ -180,18 +195,22 @@ public class RevLinkedList<T> implements Iterable<T> {
     }
 
 
-
     public static void main(String[] args) throws NoSuchElementException {
         //reverse r = new reverse();
         int n = 30;
-        if(args.length > 0) {
+        if (args.length > 0) {
             n = Integer.parseInt(args[0]);
         }
 
-        RevLinkedList<Integer> lst = new RevLinkedList<>();
-        RevLinkedList<Integer> lst2 = new RevLinkedList<>();
-        for(int i=1; i<=n; i++) {
+        SinglyLinkedList<Integer> lst = new SinglyLinkedList<>();
+        SinglyLinkedList<Integer> lst2 = new SinglyLinkedList<>();
+
+        for (int i = 1; i <= n; i++) {
             lst.add(new Integer(i));
+        }
+
+        for (int i = 1; i <= n; i++) {
+            lst2.add(new Integer(i));
         }
         //lst.printList();
 
@@ -219,13 +238,17 @@ public class RevLinkedList<T> implements Iterable<T> {
         }
         */
 
+        System.out.println("The first list is: ");
         lst.printList();
-      //  System.out.println(lst.head.element);
-       lst.head.next = lst.revListNonRecursive(lst.head);
-       lst2.head.next = lst.revListRecursive(lst.head.next);
-        //System.out.println(lst.head.element);
-       // lst.unzip();
+        System.out.println("The first list reversed using a recursive method is:");
+        lst.head.next = lst.revListRecursive(lst.head.next);
         lst.printList();
+        System.out.println("The second list is: ");
+        lst2.printList();
+        System.out.println("The second list reversed using a non recursive method is:");
+        lst2.head.next = lst2.revListNonRecursive(lst2.head);
+        // lst.unzip();
+        lst2.printList();
     }
 }
 
