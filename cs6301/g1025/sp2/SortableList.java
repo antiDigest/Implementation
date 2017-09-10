@@ -1,6 +1,7 @@
 package cs6301.g1025.sp2;
 
 import cs6301.g00.Shuffle;
+import cs6301.g00.SinglyLinkedList;
 
 //import java.util.Iterator;
 //import java.util.Scanner;

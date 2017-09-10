@@ -6,7 +6,7 @@
  *  to the list, code would do the wrong thing.
  */
 
-package cs6301.g1025.sp2;
+package cs6301.g00;
 
 import java.util.Iterator;
 import java.util.Scanner;
@@ -15,9 +15,9 @@ import java.util.NoSuchElementException;
 public class SinglyLinkedList<T> implements Iterable<T> {
 
 	/** Class Entry holds a single node of the list */
-	static class Entry<T> {
-		T element;
-		Entry<T> next;
+	public static class Entry<T> {
+		public T element;
+		public Entry<T> next;
 
 		public Entry(T x, Entry<T> nxt) {
 			element = x;
@@ -26,8 +26,9 @@ public class SinglyLinkedList<T> implements Iterable<T> {
 	}
 
 	// Dummy header is used. tail stores reference of tail element of list
-	Entry<T> head, tail;
-	int size;
+	protected Entry<T> head;
+	protected Entry<T> tail;
+	protected int size;
 
 	public SinglyLinkedList() {
 		head = new Entry<>(null, null);
