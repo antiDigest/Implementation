@@ -63,8 +63,10 @@ public class Graph implements Iterable<Graph.Vertex> {
 		}
 
 		public List<Edge> getAdj() {
-			// TODO Auto-generated method stub
 			return adj;
+		}
+		public List<Edge> getRevAdj() {
+			return revAdj;
 		}
 	}
 
@@ -169,7 +171,7 @@ public class Graph implements Iterable<Graph.Vertex> {
 			to.adj.add(e);
 		}
 	}
-
+	
 	public int size() {
 		return n;
 	}
