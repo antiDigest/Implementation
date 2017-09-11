@@ -50,6 +50,15 @@ public class SparsePolynomial extends SinglyLinkedList<SimpleEntry<Integer,Integ
 		
 	}
 	
+	public double evaluate(double val){
+		double res = 0.0;
+		Entry<SimpleEntry<Integer, Integer>> cursor = this.head.next;
+		while(cursor != null){
+			res += Math.pow(val, cursor.element.getKey())*cursor.element.getValue();
+			cursor = cursor.next;
+		}
+		return res;
+	}
 	/**
 	 *Updates the size of a polynomial after it is modified
 	 */
@@ -173,6 +182,7 @@ public class SparsePolynomial extends SinglyLinkedList<SimpleEntry<Integer,Integ
 		System.out.print("Polynomial B ");
 		sp2.printList();
 		
+		System.out.println(sp1.evaluate(1));
 		/*System.out.print("Sum: ");
 		SparsePolynomial sp1tmp = sp1.getDuplicate();
 		sp1tmp.add(sp2);

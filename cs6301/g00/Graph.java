@@ -2,6 +2,7 @@
  * Class to represent a graph
  *  @author rbk
  *  Ver 1.1: 2017/08/28.  Updated some methods to public.  Added getName() to Vertex
+ *  Ver 1.2: 2017/09/08.  Added getVertex() method for GraphAlgorithm.java
  *
  */
 
@@ -36,10 +37,6 @@ public class Graph implements Iterable<Graph.Vertex> {
 			adj = new LinkedList<Edge>();
 			revAdj = new LinkedList<Edge>(); /* only for directed graphs */
 		}
-		
-		public List<Edge> getAdj(){
-			return adj;
-		}
 
 		/**
 		 * Method to get name of a vertex.
@@ -53,11 +50,21 @@ public class Graph implements Iterable<Graph.Vertex> {
 			return adj.iterator();
 		}
 
+		// Helper function for parallel arrays used to store vertex attributes
+		public static <T> T getVertex(T[] node, Vertex u) {
+			return node[u.name];
+		}
+
 		/**
 		 * Method to get vertex number. +1 is needed because [0] is vertex 1.
 		 */
 		public String toString() {
 			return Integer.toString(name + 1);
+		}
+
+		public List<Edge> getAdj() {
+			// TODO Auto-generated method stub
+			return adj;
 		}
 	}
 
