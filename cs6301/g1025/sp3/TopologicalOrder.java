@@ -19,6 +19,10 @@ public class TopologicalOrder extends GraphAlgorithm<TopologicalOrder.TOPVertex>
 	int cNo;
 	int topNum;
 	List<Graph.Vertex> decFinList;
+	
+	public TOPVertex top(Graph.Vertex u){
+		return Graph.Vertex.getVertex(node, u);
+	}
 
 	public TopologicalOrder(Graph g) {
 		super(g);
@@ -49,14 +53,14 @@ public class TopologicalOrder extends GraphAlgorithm<TopologicalOrder.TOPVertex>
 		}
 	}
 
-//	int getInDegree(Graph.Vertex v) {
-//		return getVertex(v).inDegree;
-//	}
+	int getInDegree(Graph.Vertex v) {
+		return getVertex(v).inDegree;
+	}
 //
-//	void setInDegree(Graph.Vertex v, int val) {
-//		TOPVertex tv = getVertex(v);
-//		tv.inDegree = val;
-//	}
+	void setInDegree(Graph.Vertex v, int val) {
+		TOPVertex tv = getVertex(v);
+		tv.inDegree = val;
+	}
 
 //	Graph.Vertex getParent(Graph.Vertex u) {
 //		return getVertex(u).parent;
@@ -102,22 +106,22 @@ public class TopologicalOrder extends GraphAlgorithm<TopologicalOrder.TOPVertex>
 		Queue<Graph.Vertex> q = new ArrayDeque<Graph.Vertex>();
 		List<Graph.Vertex> topList = new ArrayList<Graph.Vertex>();
 		for (Graph.Vertex u : g) {
-			getVertex(u).inDegree = u.getRevAdj().size();
+			top(u).inDegree = u.getRevAdj().size();
 			//setInDegree(v, v.getRevAdj().size());
-			if (getVertex(u).inDegree == 0)
+			if (top(u).inDegree == 0)
 				q.add(u);
 		}
 
 		while (!q.isEmpty()) {
 			Graph.Vertex u = q.poll();
-			getVertex(u).top = ++topNum;
+			top(u).top = ++topNum;
 			// top(u, ++topNum);
 			topList.add(u);
 			for (Graph.Edge e : u) {
 				Graph.Vertex v = e.otherEnd(u);
-				getVertex(u).inDegree--;
+				top(v).inDegree--;
 				//setInDegree(v, getInDegree(v) - 1);
-				if (getVertex(v).inDegree == 0)
+				if (top(v).inDegree == 0)
 					q.add(v);
 			}
 		}
