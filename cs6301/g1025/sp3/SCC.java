@@ -9,8 +9,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 
-public class SCC
-		extends GraphAlgorithm<SCC.SCCVertex> {
+public class SCC extends GraphAlgorithm<SCC.SCCVertex> {
 
 	public SCC(Graph g) {
 		super(g);
@@ -52,30 +51,28 @@ public class SCC
 	int dfsRev(List<Graph.Vertex> lst) {
 		int components = 0;
 
-		for (Graph.Vertex v : lst) {
+		for (int i=lst.size()-1; i>=0;i--) {
+		  Graph.Vertex v=lst.get(i);
 			if (!seen(v)) {
 				components = components + 1;
-				dfsRevVisit(v, components);
+				dfsRevUtil(v, components);
 			}
 		}
 		return components;
 
 	}
 
-	void dfsRevVisit(Graph.Vertex u, int componentno) {
+	void dfsRevUtil(Graph.Vertex u, int componentno) {
 		visit(u);
 		assignComponentno(u, componentno);
 		for (Graph.Edge e : u.getRevAdj()) {
 			Graph.Vertex v = e.otherEnd(u);
 
 			if (!seen(v)) {
-
-				visit(v);
-				dfsRevVisit(v, componentno);
+				dfsRevUtil(v, componentno);
 			}
 		}
 
-		visit(u);
 	}
 
 	public static void main(String[] args) throws FileNotFoundException {
@@ -95,39 +92,47 @@ public class SCC
 
 	}
 
-	int stronglyConnectedComponents(Graph g) { 
-		DFS d = new DFS(g, null);
-		d.dfs();
-
-		List<Graph.Vertex> lst1 = findOrderFinishTimes(d);
-
-		return this.dfsRev(lst1);
+	List<Graph.Vertex> dfsStraight() {
+		List<Graph.Vertex> l = new ArrayList<Graph.Vertex>();
+		for (Graph.Vertex u : this.g) {
+			if (!seen(u)) {
+				dfsStraightUtil(u, l);
+			}
+		}
+		return l;
 
 	}
 
-     List<Graph.Vertex> findOrderFinishTimes(DFS d) {
-		List<Graph.Vertex> lst = new ArrayList<Graph.Vertex>();
-        for(Graph.Vertex u :d.g){
-        	lst.add(u);
-        }
-		Comparator<Graph.Vertex> cmp = new Comparator<Graph.Vertex>() {
+	void dfsStraightUtil(Graph.Vertex u, List<Graph.Vertex> l) {
+		visit(u);
 
-			@Override
-			public int compare(Graph.Vertex o1, Graph.Vertex o2) {
+		for (Graph.Edge e : u.getAdj()) {
+			Graph.Vertex v = e.otherEnd(u);
 
-				if (d.getVertex(o1).fin < d.getVertex(o2).fin) {
-					return 1;
-				} else if (d.getVertex(o1).fin > d.getVertex(o2).fin) {
-					return -1;
-				} else {
-					return 0;
-				}
-
+			if (!seen(v)) {
+				dfsStraightUtil(v, l);
 			}
-		};
-		Collections.sort(lst, cmp);
-		return lst;
+		}
 
+		l.add(u);
+
+	}
+
+	int stronglyConnectedComponents(Graph g) {
+		List<Graph.Vertex> order = this.dfsStraight();
+
+		reinitialize();
+		return this.dfsRev(order);
+
+	}
+
+	void reinitialize() {
+
+		for (Graph.Vertex u : g) {
+			SCCVertex v = this.getVertex(u);
+			v.seen = false;
+
+		}
 	}
 
 }
