@@ -1,4 +1,4 @@
-package cs6301.g1025.sp3;
+package cs6301.g1025;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -17,13 +17,16 @@ public class TopologicalOrder extends GraphAlgorithm<TopologicalOrder.TOPVertex>
 	Graph.Vertex src;
 	int time;
 	int cNo;
-	int topNum;
-	List<Graph.Vertex> decFinList;
+	int topNum;//global topological number
+	List<Graph.Vertex> decFinList;//LinkedList of vertices with decreasing fin times
 	
 	public TOPVertex top(Graph.Vertex u){
 		return Graph.Vertex.getVertex(node, u);
 	}
-
+	
+	/**
+	 *Constructor 
+	 */
 	public TopologicalOrder(Graph g) {
 		super(g);
 		node = new TOPVertex[g.size()];
@@ -53,50 +56,6 @@ public class TopologicalOrder extends GraphAlgorithm<TopologicalOrder.TOPVertex>
 		}
 	}
 
-	int getInDegree(Graph.Vertex v) {
-		return getVertex(v).inDegree;
-	}
-//
-	void setInDegree(Graph.Vertex v, int val) {
-		TOPVertex tv = getVertex(v);
-		tv.inDegree = val;
-	}
-
-//	Graph.Vertex getParent(Graph.Vertex u) {
-//		return getVertex(u).parent;
-//	}
-
-//	boolean seen(Graph.Vertex u) {
-//		return getVertex(u).seen;
-//	}
-
-//	void visit(Graph.Vertex v) {
-//		TOPVertex dv = getVertex(v);
-//		dv.seen = true;
-//
-//	}
-
-//	void parent(Graph.Vertex u, Graph.Vertex v) {
-//		TOPVertex dv = getVertex(v);
-//		dv.parent = u;
-//	}
-
-//	void discover(Graph.Vertex v) {
-//		TOPVertex dv = getVertex(v);
-//		dv.dis = ++time;
-//
-//	}
-
-//	void finish(Graph.Vertex v) {
-//		TOPVertex dv = getVertex(v);
-//		dv.fin = ++time;
-//	}
-
-//	void top(Graph.Vertex u, int val) {
-//		TOPVertex tv = getVertex(u);
-//		tv.top = val;
-//	}
-
 	/**
 	 * Algorithm 1. Remove vertices with no incoming edges, one at a time, along
 	 * with their incident edges, and add them to a list.
@@ -107,7 +66,6 @@ public class TopologicalOrder extends GraphAlgorithm<TopologicalOrder.TOPVertex>
 		List<Graph.Vertex> topList = new ArrayList<Graph.Vertex>();
 		for (Graph.Vertex u : g) {
 			top(u).inDegree = u.getRevAdj().size();
-			//setInDegree(v, v.getRevAdj().size());
 			if (top(u).inDegree == 0)
 				q.add(u);
 		}
@@ -115,12 +73,10 @@ public class TopologicalOrder extends GraphAlgorithm<TopologicalOrder.TOPVertex>
 		while (!q.isEmpty()) {
 			Graph.Vertex u = q.poll();
 			top(u).top = ++topNum;
-			// top(u, ++topNum);
 			topList.add(u);
 			for (Graph.Edge e : u) {
 				Graph.Vertex v = e.otherEnd(u);
 				top(v).inDegree--;
-				//setInDegree(v, getInDegree(v) - 1);
 				if (top(v).inDegree == 0)
 					q.add(v);
 			}
@@ -148,13 +104,12 @@ public class TopologicalOrder extends GraphAlgorithm<TopologicalOrder.TOPVertex>
 		time = 0;
 		cNo = 0;
 		decFinList = new LinkedList<Graph.Vertex>();
-		// for u in V do u.seen = false
 		for (Graph.Vertex u : g) {
-			getVertex(u).seen = false;
+			top(u).seen = false;
 		}
 		while (it.hasNext()) {
 			Graph.Vertex u = it.next();
-			if (!getVertex(u).seen) {
+			if (!top(u).seen) {
 				cNo++;
 				dfsVisit(u);
 			}
@@ -162,18 +117,18 @@ public class TopologicalOrder extends GraphAlgorithm<TopologicalOrder.TOPVertex>
 	}
 
 	void dfsVisit(Graph.Vertex u) {
-		getVertex(u).seen = true;
-		getVertex(u).dis = ++time;
-		getVertex(u).cno = cNo;
+		top(u).seen = true;
+		top(u).dis = ++time;
+		top(u).cno = cNo;
 		for (Graph.Edge e : u) {
 			Graph.Vertex v = e.otherEnd(u);
-			if (!getVertex(v).seen) {
-				getVertex(v).parent = u;
+			if (!top(v).seen) {
+				top(v).parent = u;
 				dfsVisit(v);
 			}
 		}
-		getVertex(u).fin = ++time;
-		getVertex(u).top = topNum--;
+		top(u).fin = ++time;
+		top(u).top = topNum--;
 		decFinList.add(0, u);
 	}
 
