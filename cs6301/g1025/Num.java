@@ -20,7 +20,7 @@ public class Num implements Comparable<Num> {
 	Num(String s) {
 
 	}
-
+//Constructor for Num of type long
 	Num(long x) {
 
 		if (x < 0) {
