@@ -3,3 +3,5 @@
 .idea/
 cs6301.iml
 out/
+in/
+.DS_Store

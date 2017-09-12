@@ -3,7 +3,7 @@
  * Ver 1.0: 2017/08/08
  */
 
-package cs6301.g10.utils;
+package cs6301.g00;
 
 import java.util.Random;
 

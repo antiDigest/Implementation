@@ -5,16 +5,13 @@
  * Short Project 1: 2017/08/28
  */
 
-package cs6301.g10.utils;
+package cs6301.g00;
 
-import java.util.Comparator;
+public class Item implements Comparable<Item> {
+    public int element;
 
-public class ItemExt extends Item implements Comparator<ItemExt> {
-    private int extra;
-
-    public ItemExt(int x) {
-        super(x);
-        extra = -x;
+    Item(int x) {
+        element = x;
     }
 
     public int getItem() {
@@ -29,10 +26,10 @@ public class ItemExt extends Item implements Comparator<ItemExt> {
         return Integer.toString(element);
     }
 
-    public int compare(ItemExt first, ItemExt second) {
-        if (first.extra > second.extra) {
+    public int compareTo(Item another) {
+        if (this.element < another.element) {
             return 1;
-        } else if (first.extra < second.extra) {
+        } else if (this.element > another.element) {
             return -1;
         } else return 0;
     }
