@@ -1,10 +1,9 @@
-/**
- * @author rbk : based on algorithm described in a book
- * Ver 1.0: 2017/08/08
+/** @author rbk : based on algorithm described in a book
+ *  Ver 1.0: 2017/08/08
+ *  Ver 1.1: 2017/08/28.  Updated some methods to public.  Added shuffle for int[]
  */
 
 package cs6301.g00;
-
 import java.util.Random;
 
 /* Shuffle the elements of an array arr[from..to] randomly */
@@ -50,10 +49,12 @@ public class Shuffle {
         printArray(arr, "Before:");
         shuffle(arr);
         printArray(arr, "After:");
+
     }
 }
 
 /** Sample output:
+<<<<<<< HEAD
  Before: 0 1 2 3 4 5 6 7 8 9
  After: 3 7 9 8 2 4 6 1 0 5
  */

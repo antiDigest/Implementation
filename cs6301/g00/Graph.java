@@ -1,8 +1,10 @@
 /**
  * Class to represent a graph
  *
- * @author rbk
- * Ver 1.1: 2017/08/28.  Updated some methods to public.  Added getName() to Vertex
+ *  @author rbk
+ *  Ver 1.1: 2017/08/28.  Updated some methods to public.  Added getName() to Vertex
+ *  Ver 1.2: 2017/09/08.  Added getVertex() method for GraphAlgorithm.java
+ *
  */
 
 package cs6301.g00;
@@ -197,5 +199,4 @@ public class Graph implements Iterable<Graph.Vertex> {
         }
         return g;
     }
-
 }
