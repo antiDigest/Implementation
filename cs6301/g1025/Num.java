@@ -11,6 +11,7 @@ import java.util.LinkedList;
 public class Num implements Comparable<Num> {
 
 	static long TEN = 10; // This can be changed to what you want it to
+
 	// To check base
 	long base = TEN; // Change as needed
 
@@ -43,14 +44,20 @@ public class Num implements Comparable<Num> {
 			}
 	}
 
-	//Constructor for Num of type long
-	Num(long x) {
+	//constructor for 
+	Num(long x, long base) {
+		this(x);
+		this.base = base;
+	}
 
+	// Constructor for Num of type long
+	Num(long x) {
+		this();
 		if (x < 0) {
 			sign = true;
 		}
 		x = Math.abs(x);
-		num = new LinkedList<Long>();
+		// num = new LinkedList<Long>();
 		if (x == 0) {
 			this.num.add(x);
 		} else {
@@ -60,6 +67,10 @@ public class Num implements Comparable<Num> {
 				x /= base;
 			}
 		}
+	}
+	//constructor added to create an empty num class
+	Num() {
+		num = new LinkedList<Long>();
 	}
 
 	static long nextInt(Iterator<Long> it) {
@@ -79,7 +90,8 @@ public class Num implements Comparable<Num> {
 		long carry = 0l;
 		Iterator<Long> ita = a.num.iterator();
 		Iterator<Long> itb = a.num.iterator();
-		Num res = new Num(0);
+		Num res = new Num("");
+
 		if (a.sign == true && b.sign == true) {
 			res.sign = true;
 		}
@@ -151,10 +163,37 @@ public class Num implements Comparable<Num> {
 			return null;
 	}
 
+	private static Num productHelper(Num n, long b) {
+		Iterator<Long> it = n.num.iterator();
+		long carry = 0l;
+		Num res = new Num();
+		res.base = n.base;
+		while (it.hasNext() || carry > 0) {
+			long sum = (nextInt(it) * b + carry);
+			res.num.add(sum % res.base);
+			carry = sum / res.base;
+
+		}
+		return res;
+	}
+
 	// Implement Karatsuba algorithm for excellence credit
+	//temporary product, n^2 algorithm .. basic multiplication of two nums
+	//haven't tested on negative nums
 	static Num product(Num a, Num b) {
-//		TODO
-		return null;
+		Num res = new Num(0l, a.base);
+		Iterator<Long> ib = b.num.iterator();
+		int offset = 0;
+		while (ib.hasNext()) {
+			Num local = productHelper(a, nextInt(ib));
+			int shift = offset++;
+			while (shift > 0) {
+				leftShift(local);
+				shift--;
+			}
+			res = add(res, local);
+		}
+		return res;
 	}
 
 	// Use divide and conquer
@@ -192,16 +231,6 @@ public class Num implements Comparable<Num> {
 		}
 		System.out.println(res);
 
-		return a;
-	}
-
-	static Num shiftRight(Num a) {
-		//TODO
-		return a;
-	}
-
-	static Num shiftLeft(Num a) {
-		//TODO
 		return a;
 	}
 
@@ -253,6 +282,15 @@ public class Num implements Comparable<Num> {
 		}
 
 	}
+	static void leftShift(Num n){
+		n.num.addFirst(0l);
+//		return n;
+	}
+
+	static Num rightShift(Num n){
+		n.num.removeFirst();
+		return n;
+	}
 
 	// Output using the format "base: elements of list ..."
 	// For example, if base=100, and the number stored corresponds to 10965,
@@ -260,15 +298,46 @@ public class Num implements Comparable<Num> {
 	void printList() {
 
 		Iterator<Long> iterator = num.iterator();
-		System.out.print(base + " : ");
+		System.out.print(base + ": ");
 		while (iterator.hasNext())
 			System.out.print(iterator.next() + " ");
+		System.out.println();
 
+	}
+
+	public Num baseConverter(long base) {
+		Num result = new Num();
+		result.base = base;
+
+		return result;
 	}
 
 	// Return number to a string in base 10
 	public String toString() {
-		return this.base + ": " + (sign ? "-" : "") + "" + this.num;
+//		return this.base + ": " + (sign ? "-" : "") + "" + this.num;
+		/*
+		 * Iterator<Long> it = this.num.iterator(); Long sum = 0l; int pow = 0;
+		 * while(it.hasNext()){ sum += (long) Math.pow(this.base,
+		 * pow)*it.next(); pow++; }
+		 * 
+		 * return sum.toString();
+		 */
+		
+
+		Iterator<Long> it = this.num.iterator();
+		Num nBaseTen = new Num();
+		nBaseTen.base = 10l;
+		Num base = new Num(this.base);
+		long pow = 0l;
+		while (it.hasNext()) {
+			Num x = power(base, pow++);
+			Num coeff = new Num(it.next());
+			x = nBaseTen.product(coeff, x);
+			nBaseTen = nBaseTen.add(x, nBaseTen);
+
+		}
+		nBaseTen.printList();
+		return "";
 	}
 
 	public long base() {
