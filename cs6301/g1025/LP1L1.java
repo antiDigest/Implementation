@@ -5,12 +5,14 @@ package cs6301.g1025;
 
 public class LP1L1 {
     public static void main(String[] args) {
-	Num x = new Num(999);
-	Num y = new Num("8");
-	Num z = Num.add(x, y);
-	System.out.println(z);
-	Num a = Num.power(x, 8);
-	System.out.println(a);
-	z.printList();
+        Num x = new Num("9087");
+        System.out.println(x);
+        Num y = new Num("9086");
+        System.out.println(y);
+        System.out.println(Num.subtract(x, y));
+        Num.convertBase(10, x, 2);
+//		Num a = Num.power(x, 8);
+//		System.out.println(a);
+//		z.printList();
     }
 }

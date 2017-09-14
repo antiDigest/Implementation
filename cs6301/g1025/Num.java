@@ -10,17 +10,40 @@ import java.util.LinkedList;
 
 public class Num implements Comparable<Num> {
 
-	static long defaultBase = 15; // This can be changed to what you want it to
+	static long TEN = 10; // This can be changed to what you want it to
 	// To check base
-	long base = defaultBase; // Change as needed
+	long base = TEN; // Change as needed
+
 	public LinkedList<Long> num;
 	boolean sign = false;
 
 	/* Start of Level 1 */
 	Num(String s) {
-
+		long x = 0;
+		int n = 0;
+		num = new LinkedList<Long>();
+		Character token;
+		if (s != "")
+			try {
+				token = s.charAt(n);
+				if (token == '-') {
+					sign = true;
+					n++;
+				}
+				for (int i = n; i < s.length(); i++) {
+					token = s.charAt(i);
+					if (Tokenizer.tokenize(token.toString()) == Tokenizer.Token.NUM) {
+						this.num.addFirst(Long.parseLong(token.toString())); // Added in base 10
+					} else {
+						break;
+					}
+				}
+			} catch (Exception e) {
+				System.out.println("Java Unhandled Exception: " + e.getMessage());
+			}
 	}
-//Constructor for Num of type long
+
+	//Constructor for Num of type long
 	Num(long x) {
 
 		if (x < 0) {
@@ -29,23 +52,18 @@ public class Num implements Comparable<Num> {
 		x = Math.abs(x);
 		num = new LinkedList<Long>();
 		if (x == 0) {
-			num.add(x);
+			this.num.add(x);
 		} else {
 			while (x > 0) {
 				long digit = x % base;
 				this.num.add(digit);
 				x /= base;
-
 			}
 		}
-
 	}
 
-	static long next(Iterator<Long> it) {
-		if (!it.hasNext()) {
-			return 0;
-		} else
-			return it.next();
+	static long nextInt(Iterator<Long> it) {
+		return it.hasNext() ? it.next() : -1;
 
 	}
 
@@ -59,49 +77,67 @@ public class Num implements Comparable<Num> {
 			return subtract(b, a);
 		}
 		long carry = 0l;
-		Iterator<Long> ai = a.num.iterator();
-		Iterator<Long> bi = a.num.iterator();
-		Num res = new Num("");
+		Iterator<Long> ita = a.num.iterator();
+		Iterator<Long> itb = a.num.iterator();
+		Num res = new Num(0);
 		if (a.sign == true && b.sign == true) {
 			res.sign = true;
 		}
 		long sum = 0;
-		while (ai.hasNext() || bi.hasNext() || carry > 0) {
-			sum = next(ai) + next(bi) + carry;
+		long ai = nextInt(ita);
+		long bi = nextInt(itb);
+		while (ai > 0 || bi > 0 || carry > 0) {
+			sum = ai + bi + carry;
 
 			res.num.add(sum % res.base);
 			carry = sum / res.base;
-
+			System.out.println(sum + " " + carry);
+			ai = nextInt(ita);
+			bi = nextInt(itb);
 		}
-
 		return res;
 	}
 
-	static Num subtractHelper(Num c, Num d) {
-		return null;
+	static Num xor(Num a, Num b) {
+		Num res = new Num("");
 
+		Iterator ita = a.num.iterator();
+		Iterator itb = b.num.iterator();
+
+		long ai = nextInt(ita);
+		long bi = nextInt(itb);
+		long diff = 0;
+		while (ai > -1 && bi > -1) {
+			diff = ai ^ bi;
+
+			res.num.add(diff);
+			ai = nextInt(ita);
+			bi = nextInt(itb);
+		}
+//		System.out.println(res);
+		return res;
 	}
 
 	static Num subtract(Num a, Num b) {
-		Num res = new Num(0);
-		if (a.sign == false) {
-			if (b.sign == true) {
+		Num res = new Num("");
+		if (!a.sign) {
+			if (b.sign) {
 				b.sign = false;
 				return add(a, b);
 			} else {
 				if (a.compareTo(b) <= 0) {
-					res = subtractHelper(b, a);
+					res = xor(b, a);
 					res.sign = true;
 					return res;
 
 				} else {
-					res = subtractHelper(a, b);
+					res = xor(a, b);
 					return res;
 				}
 			}
-		} else if (a.sign == true) {
+		} else if (a.sign) {
 			a.sign = false;
-			if (b.sign == false) {
+			if (!b.sign) {
 				res = add(a, b);
 				res.sign = true;
 				return res;
@@ -117,6 +153,7 @@ public class Num implements Comparable<Num> {
 
 	// Implement Karatsuba algorithm for excellence credit
 	static Num product(Num a, Num b) {
+//		TODO
 		return null;
 	}
 
@@ -138,24 +175,57 @@ public class Num implements Comparable<Num> {
 		}
 
 	}
+
+	static Num convertBase(long baseA, Num a, long baseB) {
+		//TODO
+		String value = "";
+		Num res = new Num("");
+		res.sign = a.sign;
+		res.base = 2;
+		int n = 0;
+		for (Long item : a.num) {
+			while (item != 0) {
+				long x = item % baseB;
+				res.num.add(x);
+				item = item / baseB;
+			}
+		}
+		System.out.println(res);
+
+		return a;
+	}
+
+	static Num shiftRight(Num a) {
+		//TODO
+		return a;
+	}
+
+	static Num shiftLeft(Num a) {
+		//TODO
+		return a;
+	}
+
 	/* End of Level 1 */
 
 	/* Start of Level 2 */
 	static Num divide(Num a, Num b) {
+//		TODO
 		return null;
 	}
 
 	static Num mod(Num a, Num b) {
+//		TODO
 		return null;
 	}
 
 	// Use divide and conquer
 	static Num power(Num a, Num n) {
+//		TODO
 		return null;
 	}
 
 	static Num squareRoot(Num a) {
-
+//		TODO
 		return null;
 	}
 	/* End of Level 2 */
@@ -198,9 +268,7 @@ public class Num implements Comparable<Num> {
 
 	// Return number to a string in base 10
 	public String toString() {
-
-		
-
+		return this.base + ": " + (sign ? "-" : "") + "" + this.num;
 	}
 
 	public long base() {
