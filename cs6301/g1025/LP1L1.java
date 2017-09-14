@@ -4,13 +4,14 @@
 package cs6301.g1025;
 
 public class LP1L1 {
-    public static void main(String[] args) {
-	Num x = new Num(999);
-	Num y = new Num("8");
-	Num z = Num.add(x, y);
-	System.out.println(z);
-	Num a = Num.power(x, 8);
-	System.out.println(a);
-	z.printList();
-    }
+	public static void main(String[] args) {
+		Num x = new Num(25);
+		Num y = new Num(25);
+		Num z = Num.add(x, y);
+		Num w = Num.product(x, y);
+		Num t = Num.power(x, 4);
+		t.printList();
+		w.printList();
+		z.printList();
+	}
 }
