@@ -14,6 +14,7 @@ public class Num implements Comparable<Num> {
 	// To check base
 	long base = defaultBase; // Change as needed
 	public LinkedList<Long> num;
+	int size = num.size();
 	boolean sign = false;
 
 	/* Start of Level 1 */
@@ -140,7 +141,7 @@ public class Num implements Comparable<Num> {
 		return res;
 	}
 
-	// Implement Karatsuba algorithm for excellence credit
+	// Implement Karatsuba's algorithm for excellence credit
 	//temporary product, n^2 algorithm .. basic multiplication of two nums
 	//haven't tested on negative nums
 	static Num product(Num a, Num b) {
@@ -157,6 +158,19 @@ public class Num implements Comparable<Num> {
 			res = add(res, local);
 		}
 		return res;
+	}
+
+	//Implementation of Product using Karatsuba's algorithm
+	static Num altProduct(Num a, Num b){
+		long k = ((a.size > b.size) ? a.size : b.size);
+		k = (k/2) + (k % 2);
+
+		Num m = power(Long.toString(a.base), k);
+
+		Num p = a.shiftRight(k);							//shiftRight and shiftLeft need to be implemented
+		Num q = subtract(a, p.shiftLeft(k));
+		Num r = b.shiftRigth(k);
+		Num s = subtract(b, r.shiftLeft(k));
 	}
 
 	// Use divide and conquer
