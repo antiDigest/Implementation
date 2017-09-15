@@ -188,26 +188,34 @@ public class Num implements Comparable<Num> {
 		while (ib.hasNext()) {
 			Num local = productHelper(a, nextInt(ib));
 			int shift = offset++;
-			while (shift > 0) {
+		/*	while (shift > 0) {
 				leftShift(local);
 				shift--;
 			}
+		*/
+			leftShift(local, shift);
 			res = add(res, local);
 		}
 		return res;
 	}
 
 	//Implementation of Product using Karatsuba's algorithm
-	static Num altProduct(Num a, Num b){
+	static Num karatsuba(Num a, Num b){
 		long k = ((a.size > b.size) ? a.size : b.size);
 		k = (k/2) + (k % 2);
 
-		Num m = power(Long.toString(a.base), k);
+		//Num m = power(Long.toString(a.base), k);
 
-		Num p = a.shiftRight(k);							//shiftRight and shiftLeft need to be implemented
-		Num q = subtract(a, p.shiftLeft(k));
-		Num r = b.shiftRigth(k);
-		Num s = subtract(b, r.shiftLeft(k));
+		Num al = rightShift(a,k);							//shiftRight and shiftLeft need to be tested
+		Num ah = subtract(a, leftShift(al, k));
+		Num bl = rightShift(b,k);
+		Num bh = subtract(b, leftShift(bl, k));
+
+		Num ahbh = karatsuba(ah, bh);
+		Num albl  =karatsuba(al ,bl);
+		Num alahblbh = karatsuba(add(al, ah), add(bl, bh));
+
+		return add(add(leftShift(albl, 2*k), leftShift(subtract(alahblbh, add(ahbh, albl)), k)), albl);
 	}
 
 	// Use divide and conquer
@@ -296,13 +304,17 @@ public class Num implements Comparable<Num> {
 		}
 
 	}
-	static void leftShift(Num n){
-		n.num.addFirst(0l);
-//		return n;
+	static Num leftShift(Num n, long k){
+		for(int i = 0; i < k; i++ ){
+			n.num.addFirst(0l);
+		}
+		return n;
 	}
 
-	static Num rightShift(Num n){
-		n.num.removeFirst();
+	static Num rightShift(Num n, long k){
+		for(int i =0; i < k; i++ ){
+			n.num.removeFirst();
+		}
 		return n;
 	}
 

@@ -17,7 +17,7 @@ public class LP1L1 {
     	x = new Num(25);
 		y = new Num(25);
 		Num z = Num.add(x, y);
-		Num w = Num.product(x, y);
+		Num w = Num.karasuba(x, y);
 		Num t = Num.power(x, 4);
 		t.printList();
 		w.printList();
