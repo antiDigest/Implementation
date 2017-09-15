@@ -1,4 +1,4 @@
-package cs6301.g1025.sp2;
+package sp2.cs6301.g1025;
 
 import cs6301.g00.Utils;
 import cs6301.g00.SinglyLinkedList;

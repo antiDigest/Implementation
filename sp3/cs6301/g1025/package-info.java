@@ -5,4 +5,4 @@
  * @author swaroop
  *
  */
-package cs6301.g1025.sp3;
+package sp3.cs6301.g1025;

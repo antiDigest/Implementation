@@ -1,4 +1,4 @@
-package cs6301.projects;
+package projects.cs6301;
 
 import java.io.File;
 import java.io.FileNotFoundException;
