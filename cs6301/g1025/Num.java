@@ -13,7 +13,7 @@ public class Num implements Comparable<Num> {
 	static long TEN = 10; // This can be changed to what you want it to
 
 	// To check base
-	long base = TEN; // Change as needed
+	long base = 10; // Change as needed
 
 	public LinkedList<Long> num;
 	boolean sign = false;
@@ -44,7 +44,7 @@ public class Num implements Comparable<Num> {
 			}
 	}
 
-	//constructor for 
+	//constructor for initialising base
 	Num(long x, long base) {
 		this(x);
 		this.base = base;
@@ -68,6 +68,7 @@ public class Num implements Comparable<Num> {
 			}
 		}
 	}
+
 	//constructor added to create an empty num class
 	Num() {
 		num = new LinkedList<Long>();
@@ -103,7 +104,6 @@ public class Num implements Comparable<Num> {
 
 			res.num.add(sum % res.base);
 			carry = sum / res.base;
-			System.out.println(sum + " " + carry);
 			ai = nextInt(ita);
 			bi = nextInt(itb);
 		}
@@ -121,12 +121,11 @@ public class Num implements Comparable<Num> {
 		long diff = 0;
 		while (ai > -1 && bi > -1) {
 			diff = ai ^ bi;
-
 			res.num.add(diff);
 			ai = nextInt(ita);
 			bi = nextInt(itb);
 		}
-//		System.out.println(res);
+
 		return res;
 	}
 
@@ -219,32 +218,42 @@ public class Num implements Comparable<Num> {
 		//TODO
 		String value = "";
 		Num res = new Num("");
-		res.sign = a.sign;
-		res.base = 2;
-		int n = 0;
-		for (Long item : a.num) {
-			while (item != 0) {
-				long x = item % baseB;
-				res.num.add(x);
-				item = item / baseB;
-			}
-		}
-		System.out.println(res);
-
-		return a;
+		Num B = new Num(baseB);
+//		res.sign = a.sign;
+//		res.base = 2;
+//		int n = 0;
+//		for (Long item : a.num) {
+//			while (item != 0) {
+////				long x = mod(item, B);
+//				res.num.add(x);
+//				item = item / baseB;
+//			}
+//		}
+		return res;
 	}
 
 	/* End of Level 1 */
 
 	/* Start of Level 2 */
 	static Num divide(Num a, Num b) {
-//		TODO
-		return null;
+		Num start = new Num(1);
+		Num end = a;
+		Num mid = new Num();
+		while(start.compareTo(end) <= 0){
+			mid = divide(add(start, end), new Num(2));
+			if(product(mid, b).compareTo(a) > 0){
+				end = mid;
+			}
+			else if(product(mid, b).compareTo(a) <= 0){
+				start = mid;
+			}
+		}
+		return mid;
 	}
 
 	static Num mod(Num a, Num b) {
-//		TODO
-		return null;
+		Num res = subtract(a, product(divide(a, b), b));
+		return res;
 	}
 
 	// Use divide and conquer
@@ -287,9 +296,9 @@ public class Num implements Comparable<Num> {
 //		return n;
 	}
 
-	static Num rightShift(Num n){
+	static void rightShift(Num n){
 		n.num.removeFirst();
-		return n;
+//		return n;
 	}
 
 	// Output using the format "base: elements of list ..."
@@ -301,7 +310,7 @@ public class Num implements Comparable<Num> {
 		System.out.print(base + ": ");
 		while (iterator.hasNext())
 			System.out.print(iterator.next() + " ");
-		System.out.println();
+//		System.out.println();
 
 	}
 
@@ -314,6 +323,8 @@ public class Num implements Comparable<Num> {
 
 	// Return number to a string in base 10
 	public String toString() {
+		this.printList();
+		return "";
 //		return this.base + ": " + (sign ? "-" : "") + "" + this.num;
 		/*
 		 * Iterator<Long> it = this.num.iterator(); Long sum = 0l; int pow = 0;
@@ -324,20 +335,20 @@ public class Num implements Comparable<Num> {
 		 */
 		
 
-		Iterator<Long> it = this.num.iterator();
-		Num nBaseTen = new Num();
-		nBaseTen.base = 10l;
-		Num base = new Num(this.base);
-		long pow = 0l;
-		while (it.hasNext()) {
-			Num x = power(base, pow++);
-			Num coeff = new Num(it.next());
-			x = nBaseTen.product(coeff, x);
-			nBaseTen = nBaseTen.add(x, nBaseTen);
-
-		}
-		nBaseTen.printList();
-		return "";
+//		Iterator<Long> it = this.num.iterator();
+//		Num nBaseTen = new Num();
+//		nBaseTen.base = 10l;
+//		Num base = new Num(this.base);
+//		long pow = 0l;
+//		while (it.hasNext()) {
+//			Num x = power(base, pow++);
+//			Num coeff = new Num(it.next());
+//			x = nBaseTen.product(coeff, x);
+//			nBaseTen = nBaseTen.add(x, nBaseTen);
+//
+//		}
+//		nBaseTen.printList();
+//		return "";
 	}
 
 	public long base() {
