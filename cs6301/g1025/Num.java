@@ -206,14 +206,14 @@ public class Num implements Comparable<Num> {
 
 		//Num m = power(Long.toString(a.base), k);
 
-		Num al = rightShift(a,k);							//shiftRight and shiftLeft need to be tested
+		Num al = rightShift(a,k);							//rightShift and leftShift need to be tested
 		Num ah = subtract(a, leftShift(al, k));
 		Num bl = rightShift(b,k);
 		Num bh = subtract(b, leftShift(bl, k));
 
 		Num ahbh = karatsuba(ah, bh);
-		Num albl  =karatsuba(al ,bl);
-		Num alahblbh = karatsuba(add(al, ah), add(bl, bh));
+		Num albl = karatsuba(al ,bl);
+		Num alahblbh = karatsuba(add(al, ah), add(bl, bh));				//need better variable names
 
 		return add(add(leftShift(albl, 2*k), leftShift(subtract(alahblbh, add(ahbh, albl)), k)), albl);
 	}
@@ -305,14 +305,14 @@ public class Num implements Comparable<Num> {
 
 	}
 	static Num leftShift(Num n, long k){
-		for(int i = 0; i < k; i++ ){
+		for(long i = 0; i < k; i++ ){
 			n.num.addFirst(0l);
 		}
 		return n;
 	}
 
 	static Num rightShift(Num n, long k){
-		for(int i =0; i < k; i++ ){
+		for(long i =0; i < k; i++ ){
 			n.num.removeFirst();
 		}
 		return n;
