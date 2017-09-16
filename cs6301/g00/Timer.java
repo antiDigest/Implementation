@@ -1,11 +1,13 @@
-/** Timer class for roughly calculating running time of programs
- *  @author rbk
- *  Ver 1.0: 2017/08/08
- *  Usage:  Timer timer = new Timer();
- *          timer.start();
- *          timer.end();
- *          System.out.println(timer);  // output statistics
- *  Corrected memory calculations to 1048576 instead of 1000000
+/**
+ * Timer class for roughly calculating running time of programs
+ *
+ * @author rbk
+ * Ver 1.0: 2017/08/08
+ * Usage:  Timer timer = new Timer();
+ * timer.start();
+ * timer.end();
+ * System.out.println(timer);  // output statistics
+ * Corrected memory calculations to 1048576 instead of 1000000
  */
 
 package cs6301.g00;

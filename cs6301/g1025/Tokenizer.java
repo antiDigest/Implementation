@@ -1,7 +1,5 @@
 package cs6301.g1025;
 
-import java.util.List;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Tokenizer {
