@@ -1,4 +1,5 @@
-package cs6301.g1025.sp3;
+package cs6301.g1025;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
