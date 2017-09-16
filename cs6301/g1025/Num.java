@@ -16,6 +16,7 @@ public class Num implements Comparable<Num> {
 	long base = 10; // Change as needed
 
 	public LinkedList<Long> num;
+	int size = num.size();
 	boolean sign = false;
 
 	/* Start of Level 1 */
@@ -176,7 +177,7 @@ public class Num implements Comparable<Num> {
 		return res;
 	}
 
-	// Implement Karatsuba algorithm for excellence credit
+	// Implement Karatsuba's algorithm for excellence credit
 	//temporary product, n^2 algorithm .. basic multiplication of two nums
 	//haven't tested on negative nums
 	static Num product(Num a, Num b) {
@@ -186,13 +187,34 @@ public class Num implements Comparable<Num> {
 		while (ib.hasNext()) {
 			Num local = productHelper(a, nextInt(ib));
 			int shift = offset++;
-			while (shift > 0) {
+		/*	while (shift > 0) {
 				leftShift(local);
 				shift--;
 			}
+		*/
+			leftShift(local, shift);
 			res = add(res, local);
 		}
 		return res;
+	}
+
+	//Implementation of Product using Karatsuba's algorithm
+	static Num karatsuba(Num a, Num b){
+		long k = ((a.size > b.size) ? a.size : b.size);
+		k = (k/2) + (k % 2);
+
+		//Num m = power(Long.toString(a.base), k);
+
+		Num al = rightShift(a,k);							//rightShift and leftShift need to be tested
+		Num ah = subtract(a, leftShift(al, k));
+		Num bl = rightShift(b,k);
+		Num bh = subtract(b, leftShift(bl, k));
+
+		Num ahbh = karatsuba(ah, bh);
+		Num albl = karatsuba(al ,bl);
+		Num alahblbh = karatsuba(add(al, ah), add(bl, bh));				//need better variable names
+
+		return add(add(leftShift(albl, 2*k), leftShift(subtract(alahblbh, add(ahbh, albl)), k)), albl);
 	}
 
 	// Use divide and conquer
@@ -291,9 +313,11 @@ public class Num implements Comparable<Num> {
 		}
 
 	}
-	static void leftShift(Num n){
-		n.num.addFirst(0l);
-//		return n;
+	static Num leftShift(Num n, long k){
+		for(long i = 0; i < k; i++ ){
+			n.num.addFirst(0l);
+		}
+		return n;
 	}
 
 	static void rightShift(Num n){
