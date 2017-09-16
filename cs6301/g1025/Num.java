@@ -47,9 +47,6 @@ public class Num implements Comparable<Num> {
     public LinkedList<Long> num;
     boolean sign = false;
 
-    // Needed for Karatsuba Multiplication
-    static long productCarry = 0;
-
     /**
      * Start of Constructors
      */
@@ -145,22 +142,10 @@ public class Num implements Comparable<Num> {
             res.sign = true;
         }
         long sum = 0;
-        long ai = nextInt(ita);
-        long bi = nextInt(itb);
-        while (ai > -1 || bi > -1 || carry > 0) {
-            if (ai > -1 && bi > -1)
-                sum = ai + bi + carry;
-            else if (ai > -1)
-                sum = ai + carry;
-            else if (bi > -1)
-                sum = bi + carry;
-            else
-                sum = carry;
-
+        while (ita.hasNext() || itb.hasNext() || carry > 0) {
+            sum = next(ita) + next(itb) + carry;
             res.num.add(sum % res.base);
             carry = sum / res.base;
-            ai = nextInt(ita);
-            bi = nextInt(itb);
         }
         return res;
     }
@@ -172,23 +157,16 @@ public class Num implements Comparable<Num> {
         Iterator itb = b.num.iterator();
 
         long borrow = 0;
-        long ai = nextInt(ita);
-        long bi = nextInt(itb);
-        long diff = 0;
-        while (ai > -1 || bi > -1 || borrow > 0) {
-            if (bi >= 0)
-                diff = ai - bi - borrow;
-            else
-                diff = ai - borrow;
+        long diff;
+        while (ita.hasNext() || itb.hasNext() || borrow > 0) {
+            diff = next(ita) - next(itb) - borrow;
             borrow = 0;
             if (diff < 0) {
                 diff += res.base;
                 borrow = 1;
             }
-            if (!(bi < 0 && diff == 0))
+            if (!(!itb.hasNext() && diff == 0))
                 res.num.add(diff);
-            ai = nextInt(ita);
-            bi = nextInt(itb);
         }
 
         return res;
@@ -227,7 +205,7 @@ public class Num implements Comparable<Num> {
             return null;
     }
 
-    private static Num productHelper(Num n, long b) {
+    private static Num product(Num n, long b) {
         Iterator<Long> it = n.num.iterator();
         long carry = 0l;
         Num res = new Num();
@@ -243,24 +221,11 @@ public class Num implements Comparable<Num> {
     }
 
     // Implement Karatsuba algorithm for excellence credit
-    //temporary product, n^2 algorithm .. basic multiplication of two nums
-    //haven't tested on negative nums
     static Num product(Num a, Num b) {
-        Num res = new Num(0l, a.base);
-        Iterator<Long> ib = b.num.iterator();
-        int offset = 0;
-        long nextb = nextInt(ib);
-        while (nextb > -1) {
-            Num local = productHelper(a, nextb);
-            int shift = offset++;
-            while (shift > 0) {
-                leftShift(local);
-                shift--;
-            }
-            res = add(res, local);
-            nextb = nextInt(ib);
-        }
-        return res;
+        if (size(a) >= size(b)) {
+            return karatsubaSplit(a, b);
+        } else
+            return karatsubaSplit(b, a);
     }
 
     /**
@@ -273,12 +238,8 @@ public class Num implements Comparable<Num> {
      * @return: Num - a*b
      */
     static Num karatsubaProduct(Num a, Num b) {
-        if (size(a) == 1 && size(b) == 1) {
-            Num res = new Num();
-
-            long sum = productCarry + a.num.getFirst() * b.num.getFirst();
-            res.num.add(sum % res.base);
-            productCarry = sum / res.base;
+        if (size(b) == 1) {
+            Num res = product(a, b.num.getFirst());
             return res;
         } else if (size(a) == 0 || size(b) == 0) {
             Num res = a;
@@ -318,7 +279,6 @@ public class Num implements Comparable<Num> {
         Num aLHbLHProd = karatsubaProduct(aLaHSum, bLbHSum);
         Num part2 = subtract(subtract(aLHbLHProd, aHbHProd), part3);
         leftShift(part2, k);
-        System.out.println(part1 + "+" + part2 + "+" + part3);
 
         return add(add(part1, part2), part3);
     }
@@ -359,22 +319,46 @@ public class Num implements Comparable<Num> {
      * @param b: Num
      * @return Num - quotient of a/b
      */
-    static Num divide(Num a, Num b) {
-        Num start = new Num(1);
-        Num end = a;
-        Num mid = null;
-        while (start.compareTo(end) <= 0) {
-            mid = add(start, end);
-            rightShift(mid);
-            if (product(mid, b).compareTo(a) <= 0 && product(add(mid, new Num(1)), b).compareTo(a) > 0) {
+//    static Num divide(Num a, Num b) {
+//        Num start = new Num(1);
+//        Num end = a;
+//        Num mid = null;
+//
+//        return mid;
+//    }
+    static long search(long a, Num b) {
+        long start = 0;
+        long end = a;
+        long mid = 0;
+        while (start <= end) {
+            mid = (start + end) >>> 1;
+            Num midNum = new Num(mid);
+            Num aNum = new Num(a);
+            if (product(midNum, b).compareTo(aNum) <= 0 &&
+                    product(new Num(mid + 1), b).compareTo(aNum) > 0) {
                 return mid;
-            } else if (product(mid, b).compareTo(a) > 0) {
+            } else if (product(midNum, b).compareTo(aNum) > 0) {
                 end = mid;
-            } else if (product(mid, b).compareTo(a) < 0) {
+            } else if (product(midNum, b).compareTo(aNum) < 0) {
                 start = mid;
             }
         }
         return mid;
+    }
+
+    static Num divide(Num a, Num b) {
+        Num quotient = new Num();
+        long borrow = 0;
+        long rem = 0;
+        long q;
+        while (a.num.peekLast() != null || borrow > 0) {
+            long ai = last(a);
+            rem = borrow * a.base + ai;
+            q = search(rem, b);
+            borrow = rem - Long.parseLong(product(b, q).toString());
+            quotient.num.addFirst(q);
+        }
+        return quotient;
     }
 
     /**
@@ -477,6 +461,7 @@ public class Num implements Comparable<Num> {
     /**
      * Now follow all the helper functions:
      * nextInt
+     * next
      * size
      * traverseToCompare
      * leftShift
@@ -488,6 +473,14 @@ public class Num implements Comparable<Num> {
         return it.hasNext() ? it.next() : -1;
     }
 
+    static long next(Iterator<Long> it) {
+        return it.hasNext() ? it.next() : 0;
+    }
+
+    static long last(Num a) {
+        return (a.num.peekLast() != null) ? a.num.removeLast() : 0;
+    }
+
     static long size(Num a) {
         return a.num.size();
     }
@@ -496,17 +489,12 @@ public class Num implements Comparable<Num> {
         if (size(a) > size(b)) return 1;
         else if (size(a) < size(b)) return -1;
         else {
-            Iterator ita = a.num.iterator();
-            Iterator itb = b.num.iterator();
-
-            Long ai = nextInt(ita);
-            Long bi = nextInt(itb);
-            while (ai > -1 && bi > -1) {
+            while (a.num.peekLast() != null) {
+                Long ai = last(a);
+                Long bi = last(b);
                 if (ai.compareTo(bi) != 0) {
                     return ai.compareTo(bi);
                 }
-                ai = nextInt(ita);
-                bi = nextInt(itb);
             }
             return 0;
         }
