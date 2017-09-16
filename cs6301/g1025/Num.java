@@ -53,7 +53,6 @@ public class Num implements Comparable<Num> {
 
 
     Num(String s) {
-        long x = 0;
         int n = 0;
         num = new LinkedList<Long>();
         Character token;
@@ -153,8 +152,8 @@ public class Num implements Comparable<Num> {
     static Num xor(Num a, Num b) {
         Num res = new Num();
 
-        Iterator ita = a.num.iterator();
-        Iterator itb = b.num.iterator();
+        Iterator<Long> ita = a.num.iterator();
+        Iterator<Long> itb = b.num.iterator();
 
         long borrow = 0;
         long diff;
@@ -524,9 +523,9 @@ public class Num implements Comparable<Num> {
 
     static Num convertBase(long baseA, Num a, long baseB) {
         //TODO
-        String value = "";
+//        String value = "";
         Num res = new Num("");
-        Num B = new Num(baseB);
+//        Num B = new Num(baseB);
 //		res.sign = a.sign;
 //		res.base = 2;
 //		int n = 0;
