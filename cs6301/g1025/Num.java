@@ -4,8 +4,17 @@
 // Changed type of base to long: 1:15 PM, 2017-09-08.
 package cs6301.g1025;
 
+package LongProject1;
+
+// Starter code for lp1.
+
+// Change following line to your group number
+
 import java.util.Iterator;
 import java.util.LinkedList;
+
+
+
 
 public class Num implements Comparable<Num> {
 
@@ -37,10 +46,12 @@ public class Num implements Comparable<Num> {
 		}
 	}
 
-	static long TEN = 10; // This can be changed to what you want it to
+	static long defaultBase = 78; // This can be changed to what you want it to
+	// be.
+	long base = defaultBase; // Change as needed
 
 	// To check base
-	long base = 10; // Change as needed
+	// long base = 20; // Change as needed
 
 	public LinkedList<Long> num;
 	boolean sign = false;
@@ -49,48 +60,50 @@ public class Num implements Comparable<Num> {
 	 * Start of Constructors
 	 */
 
+	// constructor for initializing input string to default base
 	Num(String s) {
-		int n = 0;
-		num = new LinkedList<Long>();
+		this(s, defaultBase);
+
+	}
+
+	// constructor for initializing input string with given base
+	Num(String s, long base) {
+		this();
+		this.base = base;
+		Num res = new Num();
+		res.base = base;
+		Num baseW = new Num(10, base);
 		Character token;
+		int n = 0;
 		if (s != "")
 			try {
 				token = s.charAt(n);
 				if (token == '-') {
-					sign = true;
+					this.sign = true;
 					n++;
 				}
 				for (int i = n; i < s.length(); i++) {
 					token = s.charAt(i);
 					if (Tokenizer.tokenize(token.toString()) == Tokenizer.Token.NUM) {
-						this.num.addFirst(Long.parseLong(token.toString())); // added
-																				// in
-																				// base
-																				// 10
+
+						res = add(product(res, baseW), new Num(Integer.parseInt(s.charAt(i) + "")));
+
 					} else {
 						break;
 					}
 				}
+				this.num = res.num;
+
 			} catch (Exception e) {
 				System.out.println("Java Unhandled Exception: " + e.getMessage());
 			}
-	}
 
-	// constructor for initialising base with string input
-	Num(String s, long base) {
-		this(s);
-		this.base = base;
 	}
 
 	// constructor for initialising base with long input
 	Num(long x, long base) {
-		this(x);
-		this.base = base;
-	}
-
-	// Constructor for Num of type long
-	Num(long x) {
 		this();
+		this.base = base;
 		if (x < 0) {
 			sign = true;
 		}
@@ -99,11 +112,17 @@ public class Num implements Comparable<Num> {
 			this.num.add(x);
 		} else {
 			while (x > 0) {
-				long digit = x % base;
+				long digit = x % this.base;
 				this.num.add(digit);
-				x /= base;
+				x /= this.base;
 			}
 		}
+
+	}
+
+	// Constructor for Num of type long
+	Num(long x) {
+		this(x, defaultBase);
 	}
 
 	// constructor added to create an empty num class
@@ -141,7 +160,8 @@ public class Num implements Comparable<Num> {
 	 * set based on the previous method's input
 	 */
 	static Num unsignedSubtract(Num a, Num b, boolean sign) {
-		Num res = new Num();
+		Num res = new Num("",a.base);
+		
 		Iterator<Long> ita = a.num.iterator();
 		Iterator<Long> itb = b.num.iterator();
 		long borrow = 0l;
@@ -175,7 +195,7 @@ public class Num implements Comparable<Num> {
 	 * Sum of two unsigned big integers
 	 */
 	static Num unsignedAdd(Num a, Num b) {
-		Num res = new Num();
+		Num res = new Num("",a.base);
 		long carry = 0l;
 		Iterator<Long> ita = a.num.iterator();
 		Iterator<Long> itb = b.num.iterator();
@@ -220,8 +240,8 @@ public class Num implements Comparable<Num> {
 	private static Num product(Num n, long b) {
 		Iterator<Long> it = n.num.iterator();
 		long carry = 0l;
-		Num res = new Num();
-		res.base = n.base;
+		Num res = new Num("",n.base);
+		
 		while (it.hasNext() || carry > 0) {
 			long sum = (next(it) * b + carry);
 			res.num.add(sum % res.base);
@@ -260,8 +280,8 @@ public class Num implements Comparable<Num> {
 			Num res = product(a, b.num.getFirst());
 			return res;
 		} else if (size(a) == 0 || size(b) == 0) {
-			Num res = a;
-			res.num.add(0l);
+			Num res = new Num("",a.base);
+		
 			return res;
 		} else if (size(a) >= size(b)) {
 			return karatsubaSplit(a, b);
@@ -272,7 +292,7 @@ public class Num implements Comparable<Num> {
 	static Num karatsubaSplit(Num a, Num b) {
 
 		int k = (int) size(b) / 2;
-		Num part1 = new Num();
+		Num part1 = new Num("",a.base);
 
 		// Splitting a to aL and aH
 		Split split = a.new Split();
@@ -479,14 +499,18 @@ public class Num implements Comparable<Num> {
 
 	// Return number to a string in base 10
 	public String toString() {
-		Iterator<Long> it = this.num.iterator();
-		String sum = "";
-		long next = nextInt(it);
-		while (next > -1) {
-			sum = (int) (next) + sum;
-			next = nextInt(it);
+		Num targetBase = convertBase(this, 10);
+
+		StringBuilder sb = new StringBuilder();
+
+		Iterator<Long> it = targetBase.num.iterator();
+		long digit = nextInt(it);
+		while (digit != -1) {
+			sb.insert(0, digit);
+			digit = nextInt(it);
 		}
-		return (this.sign ? '-' : "") + sum;
+		return (this.sign ? '-' : "") + sb.toString();
+
 	}
 
 	public long base() {
@@ -557,22 +581,25 @@ public class Num implements Comparable<Num> {
 		}
 	}
 
-	static Num convertBase(long baseA, Num a, long baseB) {
-		// TODO
-		// String value = "";
-		Num res = new Num("");
-		// Num B = new Num(baseB);
-		// res.sign = a.sign;
-		// res.base = 2;
-		// int n = 0;
-		// for (Long item : a.num) {
-		// while (item != 0) {
-		//// long x = mod(item, B);
-		// res.num.add(x);
-		// item = item / baseB;
-		// }
-		// }
+	static Num convertBase(Num a, long baseB) {
+		Iterator<Long> it = a.num.iterator();
+		long baseA = a.base;
+
+		Num res= convertbaseHelper(new Num(baseA, baseB), it, nextInt(it), baseB);
+		res.sign=a.sign;
 		return res;
+
+	}
+
+	static Num convertbaseHelper(Num A, Iterator<Long> it, long digit, long baseB) {
+
+		if (digit == -1) {
+			return new Num("", baseB);
+
+		}
+
+		return add(product(convertbaseHelper(A, it, nextInt(it), baseB), A), new Num(digit, baseB));
+
 	}
 
 	@Override
@@ -583,7 +610,7 @@ public class Num implements Comparable<Num> {
 		} else if (!this.sign && other.sign) {
 			return 1;
 		} else {
-			if(size(this) != size(other))
+			if (size(this) != size(other))
 				return size(this) < size(other) ? -1 : 1;
 			else
 				return traverseToCompare(this, other);
