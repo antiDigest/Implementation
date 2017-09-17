@@ -209,12 +209,11 @@ public class Num implements Comparable<Num> {
         long carry = 0l;
         Num res = new Num();
         res.base = n.base;
-        long next = nextInt(it);
-        while (next > -1 || carry > 0) {
-            long sum = (next * b + carry);
+        //long next = nextInt(it);
+        while (it.hasNext() || carry > 0) {
+            long sum = (next(it) * b + carry);
             res.num.add(sum % res.base);
             carry = sum / res.base;
-            next = nextInt(it);
         }
         return res;
     }
@@ -222,9 +221,9 @@ public class Num implements Comparable<Num> {
     // Implement Karatsuba algorithm for excellence credit
     static Num product(Num a, Num b) {
         if (size(a) >= size(b)) {
-            return karatsubaSplit(a, b);
+            return karatsubaProduct(a, b);
         } else
-            return karatsubaSplit(b, a);
+            return karatsubaProduct(b, a);
     }
 
     /**
@@ -479,6 +478,10 @@ public class Num implements Comparable<Num> {
     static long last(Num a) {
         return (a.num.peekLast() != null) ? a.num.removeLast() : 0;
     }
+    
+    static long getLast(Num a){
+    	return (a.num.peekLast() != null) ? a.num.getLast() : 0;
+    }
 
     static long size(Num a) {
         return a.num.size();
@@ -488,9 +491,9 @@ public class Num implements Comparable<Num> {
         if (size(a) > size(b)) return 1;
         else if (size(a) < size(b)) return -1;
         else {
-            while (a.num.peekLast() != null) {
-                Long ai = last(a);
-                Long bi = last(b);
+            while (a.num.getLast() != null) {
+                Long ai = getLast(a);
+                Long bi = getLast(b);
                 if (ai.compareTo(bi) != 0) {
                     return ai.compareTo(bi);
                 }
