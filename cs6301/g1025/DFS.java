@@ -55,12 +55,12 @@ public class DFS extends GraphAlgorithm<DFS.DFSVertex>{
 			Graph.Vertex v = e.otherEnd(u);
 			if(!seen(v)){
 				parent(u,v);
-				visit(v);
+			
 				dfsVisit(v);
 			}
 		}
 		finish(u);
-		visit(u);
+		
 	}
 	
 	Graph.Vertex getParent(Graph.Vertex u) {
