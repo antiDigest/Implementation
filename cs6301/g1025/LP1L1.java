@@ -3,11 +3,18 @@
 // Change following line to your group number
 package cs6301.g1025;
 
+import java.math.BigInteger;
+
 public class LP1L1 {
     public static void main(String[] args) {
-        Num x = new Num("4500");
-        Num y = new Num("223");
-        //System.out.println(Num.karatsubaProduct(x, y));
-        System.out.println(Num.divide(x, y));
+        Num x = new Num("1234567891234567891234567891234567891234567890");
+        Num y = new Num("9876543219876543219876543219876543219876543210");
+        Num z = Num.product(x, y);
+        BigInteger a = new BigInteger("1234567891234567891234567891234567891234567890");
+        BigInteger b = new BigInteger("9876543219876543219876543219876543219876543210");
+        BigInteger c = a.multiply(b);
+        System.out.println(c);
+        System.out.println(z);
+        System.out.println(c.toString().compareTo(z.toString()));
     }
 }

@@ -65,10 +65,7 @@ public class Num implements Comparable<Num> {
 				for (int i = n; i < s.length(); i++) {
 					token = s.charAt(i);
 					if (Tokenizer.tokenize(token.toString()) == Tokenizer.Token.NUM) {
-						this.num.addFirst(Long.parseLong(token.toString())); // Added
-																				// in
-																				// base
-																				// 10
+						this.num.addFirst(Long.parseLong(token.toString())); //added in base 10
 					} else {
 						break;
 					}
@@ -118,55 +115,29 @@ public class Num implements Comparable<Num> {
 	 */
 
 	/**
-	 * Start of Level 1 operation functions: add xor subtract product
+	 * Start of Level 1 operation functions: add, subtract, product
 	 */
 
-//	static Num xor(Num a, Num b) {
-//		Num res = new Num();
-//
-//		Iterator<Long> ita = a.num.iterator();
-//		Iterator<Long> itb = b.num.iterator();
-//
-//		long borrow = 0;
-//		long diff;
-//		while (ita.hasNext() || itb.hasNext() || borrow > 0) {
-//			diff = next(ita) - next(itb) - borrow;
-//			borrow = 0;
-//			if (diff < 0) {
-//				diff += res.base;
-//				borrow = 1;
-//			}
-//			if (!(!itb.hasNext() && diff == 0))
-//				res.num.add(diff);
-//		}
-//
-//		return res;
-//	}
-
+	/**
+	 * Difference of two signed big integers 
+	 * 
+	 * @param a:
+	 *            Num
+	 * @param b:
+	 *            Num
+	 * @return: Num (a - b)
+	 */
 	static Num subtract(Num a, Num b) {
 		if (a.sign ^ b.sign) //opp sign
 			return unsignedAdd(a, b);
 		 else
-			return subHelper(a, b);
+			return a.compareTo(b) <= 0 ? unsignedSubtract(b, a, !b.sign) : unsignedSubtract(a, b, a.sign);
 
-	}
-	
-	static Num subHelper(Num a, Num b){
-		if(a.num.size() > b.num.size())
-			return unsignedSubtract(a, b, false);
-		else if(a.num.size() < b.num.size())
-			return unsignedSubtract(b, a, true);
-		else{
-			if(a.compareTo(b) >= 0){// a >= b hence, (a - b) or -(a - b), sign is of a
-				return unsignedSubtract(a, b, a.sign);
-			}else{ // b > a hence -(b - a) or (b - a) sign is !sign of b//inverse
-				return  unsignedSubtract(b, a, !b.sign);
-			}
-		}
 	}
 
 	/**
-	 *Always abs(a) >= abs(b) sign is set based on the previous method's input
+	 * Difference of two unsigned big integers
+	 * Always abs(a) >= abs(b), sign is set based on the previous method's input
 	 */
 	static Num unsignedSubtract(Num a, Num b, boolean sign) {
 		Num res = new Num();
@@ -188,7 +159,9 @@ public class Num implements Comparable<Num> {
 		return res;
 	}
 	
-	//Done
+	/**
+	 * Sum of two unsigned big integers
+	 */
 	static Num unsignedAdd(Num a, Num b) {
 		Num res = new Num();
 		long carry = 0l;
@@ -204,53 +177,38 @@ public class Num implements Comparable<Num> {
 		res.sign = a.sign;
 		return res;
 	}
-	//Done
+	
+	/**
+	 * Sum of two signed big integers
+	 * 
+	 * @param a:
+	 *            Num
+	 * @param b:
+	 *            Num
+	 * @return: Num - a + b
+	 */
 	static Num add(Num a, Num b) {
 		if (!(a.sign ^ b.sign)) {// if both signs are same, xor will be false
 			return unsignedAdd(a, b);
 		} else
-			return a.sign ? subtract(b, a) : subtract(a, b);
+			return a.compareTo(b) <= 0 ? unsignedSubtract(b, a, a.sign) : unsignedSubtract(a, b, !b.sign);
 	}
 
-//	static Num subtractOld(Num a, Num b) {
-//		Num res;
-//		if (!a.sign) {
-//			if (b.sign) {
-//				b.sign = false;
-//				return add(a, b);
-//			} else {
-//				if (a.compareTo(b) <= 0) {
-//					res = xor(b, a);
-//					res.sign = true;
-//					return res;
-//
-//				} else {
-//					res = xor(a, b);
-//					return res;
-//				}
-//			}
-//		} else if (a.sign) {
-//			a.sign = false;
-//			if (!b.sign) {
-//				res = add(a, b);
-//				res.sign = true;
-//				return res;
-//			} else {
-//				b.sign = false;
-//				res = add(a, b);
-//				res.sign = !res.sign;
-//				return res;
-//			}
-//		} else
-//			return null;
-//	}
-
+	
+	/**
+	 * Product of a Num and long
+	 * 
+	 *  @param n Num 
+	 *  
+	 *  @param b long
+	 *  
+	 *  return Num a*b
+	 */
 	private static Num product(Num n, long b) {
 		Iterator<Long> it = n.num.iterator();
 		long carry = 0l;
 		Num res = new Num();
 		res.base = n.base;
-		// long next = nextInt(it);
 		while (it.hasNext() || carry > 0) {
 			long sum = (next(it) * b + carry);
 			res.num.add(sum % res.base);
@@ -259,7 +217,15 @@ public class Num implements Comparable<Num> {
 		return res;
 	}
 
-	// Implement Karatsuba algorithm for excellence credit
+	/**
+	 *  Product Num * Num
+	 *
+	 * @param a:
+	 *            Num
+	 * @param b:
+	 *            Num
+	 * @return: Num - a*b
+	 */
 	static Num product(Num a, Num b) {
 		if (size(a) >= size(b)) {
 			return karatsubaProduct(a, b);
@@ -468,22 +434,12 @@ public class Num implements Comparable<Num> {
 	// otherwise
 
 	/**
-	 * CompareTo implemented from Comparable
+	 * CompareTo implemented from Comparable, (unsigned compare)
 	 *
 	 * @param other:
 	 *            Num
 	 * @return Num
 	 */
-//	public int compareTo(Num other) {
-//		if (!this.sign && other.sign) {
-//			return -1;
-//		} else if (!this.sign && other.sign) {
-//			return 1;
-//		} else {
-//			return traverseToCompare(this, other);
-//		}
-//	}
-	
 	public int compareTo(Num other) {
 		if (size(this) < size(other)) {
 			return -1;
@@ -548,6 +504,10 @@ public class Num implements Comparable<Num> {
 		return a.num.size();
 	}
 
+	/**
+	 * Compares two nums by traversing from the back and
+	 * returns the comparison of two numbers
+	 */
 	static int traverseToCompare(Num a, Num b) {
 		Iterator<Long> ita = a.num.descendingIterator();
 		Iterator<Long> itb = b.num.descendingIterator();
