@@ -1,10 +1,13 @@
 // Starter code for lp1.
 
+
+
+
 // Change following line to your group number
 // Changed type of base to long: 1:15 PM, 2017-09-08.
 package cs6301.g1025;
 
-package LongProject1;
+
 
 // Starter code for lp1.
 
