@@ -6,7 +6,9 @@
  *
  */
 
-package cs6301.g00;
+package cs6301.g1025;
+import cs6301.g00.ArrayIterator;
+
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -58,6 +60,13 @@ public class Graph implements Iterable<Graph.Vertex> {
          */
         public String toString() {
             return Integer.toString(name+1);
+        }
+
+        public List<Edge> getAdj() {
+            return adj;
+        }
+        public List<Edge> getRevAdj() {
+            return revAdj;
         }
     }
 

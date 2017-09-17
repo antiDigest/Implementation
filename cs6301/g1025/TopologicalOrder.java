@@ -1,3 +1,9 @@
+/**
+ * Class to represent a graph
+ *  @author swaroop, saikumar
+ *
+ */
+
 package cs6301.g1025;
 
 import java.io.File;
@@ -9,8 +15,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Scanner;
-
-import cs6301.g00.Graph;
 
 public class TopologicalOrder extends GraphAlgorithm<TopologicalOrder.TOPVertex> {
 
@@ -99,6 +103,10 @@ public class TopologicalOrder extends GraphAlgorithm<TopologicalOrder.TOPVertex>
 
 	}
 
+	/**
+	 * Initialization of DFS
+	 * @param it
+	 */
 	void dfs(Iterator<Graph.Vertex> it) {
 		topNum = g.size();
 		time = 0;
@@ -116,6 +124,10 @@ public class TopologicalOrder extends GraphAlgorithm<TopologicalOrder.TOPVertex>
 		}
 	}
 
+	/**
+	 * DFS Visit Procedure
+	 * @param u: Vertex
+	 */
 	void dfsVisit(Graph.Vertex u) {
 		top(u).seen = true;
 		top(u).dis = ++time;

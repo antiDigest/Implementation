@@ -1,12 +1,14 @@
+/**
+ * Class to represent a graph
+ *  @author swaroop, saikumar, antriksh
+ *
+ */
+
 package cs6301.g1025;
 
-import cs6301.g00.Graph;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 
@@ -21,6 +23,9 @@ public class SCC extends GraphAlgorithm<SCC.SCCVertex> {
 		}
 	}
 
+	/**
+	 * Wrapper to store component numbers
+	 */
 	static class SCCVertex {
 		boolean seen;
 		int componentno;
@@ -32,23 +37,41 @@ public class SCC extends GraphAlgorithm<SCC.SCCVertex> {
 		}
 	}
 
+	/**
+	 * Assign Component Number to vertex
+	 * @param u: vertex
+	 * @param componentno: integer
+	 */
 	void assignComponentno(Graph.Vertex u, int componentno) {
 
 		SCCVertex sc = getVertex(u);
 		sc.componentno = componentno;
 	}
 
+	/**
+	 * u seen or not
+	 * @param u
+	 * @return: boolean
+	 */
 	boolean seen(Graph.Vertex u) {
 		return getVertex(u).seen;
 	}
 
-	// Visit a node v from u
+	/**
+	 * Visit v
+	 * @param v: Vertex
+	 */
 	void visit(Graph.Vertex v) {
 		SCCVertex sc = getVertex(v);
 		sc.seen = true;
 
 	}
 
+	/**
+	 * Reverse DFS
+	 * @param lst: List of Vertices
+	 * @return number of components
+	 */
 	int dfsRev(List<Graph.Vertex> lst) {
 		int components = 0;
 
@@ -63,10 +86,15 @@ public class SCC extends GraphAlgorithm<SCC.SCCVertex> {
 
 	}
 
+	/**
+	 * Utility to reverse graph
+	 * @param u: Vertex
+	 * @param componentno: preserve component number of vertex
+	 */
 	void dfsRevUtil(Graph.Vertex u, int componentno) {
 		visit(u);
 		assignComponentno(u, componentno);
-		for (Graph.Edge e : u.getRevAdj()) {
+		for (Graph.Edge e : u.revAdj) {
 			Graph.Vertex v = e.otherEnd(u);
 
 			if (!seen(v)) {
@@ -93,6 +121,10 @@ public class SCC extends GraphAlgorithm<SCC.SCCVertex> {
 
 	}
 
+	/**
+	 * Initializing DFS
+	 * @return List of vertices visited (Finish order)
+	 */
 	List<Graph.Vertex> dfsStraight() {
 		List<Graph.Vertex> l = new ArrayList<Graph.Vertex>();
 		for (Graph.Vertex u : this.g) {
@@ -104,10 +136,15 @@ public class SCC extends GraphAlgorithm<SCC.SCCVertex> {
 
 	}
 
+	/**
+	 * DFS Visit procedure
+	 * @param u: start vertex
+	 * @param l: List of vertices storing finish order
+	 */
 	void dfsStraightUtil(Graph.Vertex u, List<Graph.Vertex> l) {
 		visit(u);
 
-		for (Graph.Edge e : u.getAdj()) {
+		for (Graph.Edge e : u.adj) {
 			Graph.Vertex v = e.otherEnd(u);
 
 			if (!seen(v)) {
@@ -119,6 +156,11 @@ public class SCC extends GraphAlgorithm<SCC.SCCVertex> {
 
 	}
 
+	/**
+	 * Main program to find SCC
+	 * @param g: graph
+	 * @return Number of components
+	 */
 	int stronglyConnectedComponents(Graph g) {
 		List<Graph.Vertex> order = this.dfsStraight();
 
@@ -127,6 +169,9 @@ public class SCC extends GraphAlgorithm<SCC.SCCVertex> {
 
 	}
 
+	/**
+	 * Re-Initialise graph, reset everything
+	 */
 	void reinitialize() {
 
 		for (Graph.Vertex u : g) {

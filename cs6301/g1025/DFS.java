@@ -1,11 +1,15 @@
+/**
+ * Class to represent a graph
+ *  @author swaroop, saikumar, antriksh
+ *
+ */
+
 package cs6301.g1025;
 
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
-
-import cs6301.g00.Graph;
 
 
 public class DFS extends GraphAlgorithm<DFS.DFSVertex>{
@@ -21,7 +25,10 @@ public class DFS extends GraphAlgorithm<DFS.DFSVertex>{
 	}
 	
 	Graph.Vertex src;
-	
+
+	/**
+	 * Wrapper class for Graph.Vertex
+	 */
 	static class DFSVertex {
 		boolean seen;
 		int dis;//discovered time
@@ -36,8 +43,6 @@ public class DFS extends GraphAlgorithm<DFS.DFSVertex>{
 		}
 	}
 	
-
-	
 	void dfs(){
 		time = 0;
 		for(Graph.Vertex v : g){
@@ -47,7 +52,11 @@ public class DFS extends GraphAlgorithm<DFS.DFSVertex>{
 		}
 
 	}
-	
+
+	/**
+	 * DFS Visit Procedure
+	 * @param u: start vertex
+	 */
 	void dfsVisit(Graph.Vertex u){
 		visit(u);
 		discover(u);
@@ -62,37 +71,69 @@ public class DFS extends GraphAlgorithm<DFS.DFSVertex>{
 		finish(u);
 		visit(u);
 	}
-	
+
+	/**
+	 * get u's parent
+	 * @param u: vertex
+	 * @return vertex
+	 */
 	Graph.Vertex getParent(Graph.Vertex u) {
 		return getVertex(u).parent;
 	}
 
+	/**
+	 * u seen or not
+	 * @param u: vertex
+	 * @return boolean
+	 */
 	boolean seen(Graph.Vertex u) {
 		return getVertex(u).seen;
 	}
-	
-	// Visit a node v from u
+
+	/**
+	 * Visit node v from u
+	 * @param v: vertex
+	 */
 	void visit(Graph.Vertex v) {
 		DFSVertex dv = getVertex(v);
 		dv.seen = true;
 		
 	}
-	
+
+	/**
+	 * set parent u of v
+	 * @param u: Vertex
+	 * @param v: Vertex
+	 */
 	void parent(Graph.Vertex u, Graph.Vertex v){
 		DFSVertex dv = getVertex(v);
 		dv.parent = u;
 	}
+
+	/**
+	 * Set discovered
+	 * @param v
+	 */
 	void discover(Graph.Vertex v){
 		DFSVertex dv = getVertex(v);
 		dv.dis = ++time;
 		
 	}
-	
+
+	/**
+	 * set finish time
+	 * @param v
+	 */
 	void finish(Graph.Vertex v){
 		DFSVertex dv = getVertex(v);
 		dv.fin = ++time;
 	}
-	
+
+	/**
+	 * Get finish time
+	 * @param v
+	 * @return integer
+	 */
 	int getFinishTime(Graph.Vertex v){
 		DFSVertex dv = getVertex(v);
 		return dv.fin;

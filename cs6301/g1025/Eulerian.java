@@ -1,10 +1,14 @@
+/**
+ * Class to represent a graph
+ *  @author swaroop, saikumar
+ *
+ */
+
 package cs6301.g1025;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
-
-import cs6301.g00.Graph;
 
 
 class Eulerian {
@@ -29,7 +33,7 @@ class Eulerian {
 	boolean testEulerian(Graph g) {
 
 		for (Graph.Vertex u : g) {
-			if (u.getAdj().size() != u.getRevAdj().size()) {
+			if (u.adj.size() != u.revAdj.size()) {
 				return false;
 			}
 		}

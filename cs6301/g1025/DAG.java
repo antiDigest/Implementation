@@ -1,3 +1,9 @@
+/**
+ * Class to represent a graph
+ *  @author swaroop, saikumar
+ *
+ */
+
 package cs6301.g1025;
 
 import java.util.List;
@@ -5,8 +11,6 @@ import java.util.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-
-import cs6301.g00.Graph;
 
 public class DAG {
 	
