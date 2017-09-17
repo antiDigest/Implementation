@@ -374,7 +374,7 @@ public class Num implements Comparable<Num> {
 		long start = 0;
 		long end = a;
 		long mid = 0;
-		while (start <= end) {
+		while (start < end) {
 			mid = (start + end) >>> 1;
 			Num midNum = new Num(mid);
 			Num aNum = new Num(a);
@@ -390,7 +390,15 @@ public class Num implements Comparable<Num> {
 	}
 
 	static Num divide(Num a, Num b) {
+		int ret = a.compareTo(b); 
 		Num quotient = new Num();
+		if(ret < 0) return new Num(0l, a.base);
+		else if(ret == 0) {
+			quotient.num.add(1l);
+			quotient.sign = a.sign ^ b.sign;
+			return quotient;
+		}
+		
 		long borrow = 0;
 		long rem = 0;
 		long q;
