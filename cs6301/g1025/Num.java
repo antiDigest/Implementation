@@ -342,13 +342,7 @@ public class Num implements Comparable<Num> {
 	 *            Num
 	 * @return Num - quotient of a/b
 	 */
-	// static Num divide(Num a, Num b) {
-	// Num start = new Num(1);
-	// Num end = a;
-	// Num mid = null;
-	//
-	// return mid;
-	// }
+
 	static long search(long a, Num b) {
 		long start = 0;
 		long end = a;
@@ -424,23 +418,23 @@ public class Num implements Comparable<Num> {
 	 * @return Num - a^(1/2)
 	 */
 	static Num squareRoot(Num a) {
-		Num start = new Num(1);
-		Num end = a;
-		Num mid = null;
-		while (start.compareTo(end) <= 0) {
-			mid = add(start, end);
-			rightShift(mid);
-			if (product(mid, mid).compareTo(a) <= 0
-					&& product(add(mid, new Num(1)), add(mid, new Num(1))).compareTo(a) > 0) {
-				return mid;
-			} else if (product(mid, mid).compareTo(a) > 0) {
-				end = mid;
-			} else if (product(mid, mid).compareTo(a) < 0) {
-				start = mid;
-			}
-		}
-		return mid;
+        Num start = new Num(0);
+        Num end = a;
+        Num mid = new Num();
+        while (start.compareTo(end)<=0) {
+            mid = divide(add(start, end), new Num(2));
+            if (product(mid, mid).compareTo(a) <= 0 &&
+                    product(add(mid, new Num(1)), add(mid, new Num(1))).compareTo(a) > 0) {
+                return mid;
+            } else if (product(mid, mid).compareTo(a) > 0) {
+                end = mid;
+            } else if (product(mid, mid).compareTo(a) < 0) {
+                start = mid;
+            }
+        }
+        return mid;
 	}
+
 	/* End of Level 2 */
 
 	// Utility functions

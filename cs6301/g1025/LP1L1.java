@@ -30,6 +30,7 @@ public class LP1L1 {
         
         System.out.println(c);
         System.out.println(z);
+
         //System.out.println(c.toString().compareTo(z.toString()));
     }
 }
