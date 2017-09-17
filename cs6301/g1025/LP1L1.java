@@ -9,27 +9,27 @@ import cs6301.g00.Timer;
 
 public class LP1L1 {
     public static void main(String[] args) {
-        Num x = new Num("123456");
-        Num y = new Num("444");
+        Num x = new Num("50");
+        Num y = new Num("-100");
         
-        BigInteger a = new BigInteger("123456");
-        //BigInteger b = new BigInteger("9876543219876543219876543219876543219876543210");
+        BigInteger a = new BigInteger("3");
+        BigInteger b = new BigInteger("4");
         
         
         Timer timer = new Timer();
         timer.start();
-        Num z = Num.power(x, y );
+        Num z = Num.add(x, y );
         timer.end();
         System.out.println("Num class: "+ timer);
         System.out.println();
         
         timer.start();
-        BigInteger c = a.pow(4444444);
+        BigInteger c = a.multiply(b);
         timer.end();
         System.out.println("BigInteger: " + timer);
         
-        //System.out.println(c);
-        //System.out.println(z);
+        System.out.println(c);
+        System.out.println(z);
         //System.out.println(c.toString().compareTo(z.toString()));
     }
 }

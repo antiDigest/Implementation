@@ -132,7 +132,7 @@ public class Num implements Comparable<Num> {
 		if (a.sign ^ b.sign) // opp sign
 			return unsignedAdd(a, b);
 		else
-			return a.compareTo(b) <= 0 ? unsignedSubtract(b, a, !b.sign) : unsignedSubtract(a, b, a.sign);
+			return a.unsignedCompareTo(b) <= 0 ? unsignedSubtract(b, a, !b.sign) : unsignedSubtract(a, b, a.sign);
 
 	}
 
@@ -160,13 +160,13 @@ public class Num implements Comparable<Num> {
 		res.sign = sign;
 		return res;
 	}
-	
-	void trim(){
-		
-		while(this.num.peekLast() == 0){
-			if(size(this) == 1) 
+
+	void trim() {
+
+		while (this.num.peekLast() == 0) {
+			if (size(this) == 1)
 				return;
-			else 
+			else
 				this.num.removeLast();
 		}
 	}
@@ -203,7 +203,7 @@ public class Num implements Comparable<Num> {
 		if (!(a.sign ^ b.sign)) {// if both signs are same, xor will be false
 			return unsignedAdd(a, b);
 		} else
-			return a.compareTo(b) <= 0 ? unsignedSubtract(b, a, b.sign) : unsignedSubtract(a, b, a.sign);
+			return a.unsignedCompareTo(b) <= 0 ? unsignedSubtract(b, a, b.sign) : unsignedSubtract(a, b, a.sign);
 	}
 
 	/**
@@ -454,7 +454,7 @@ public class Num implements Comparable<Num> {
 	 *            Num
 	 * @return Num
 	 */
-	public int compareTo(Num other) {
+	public int unsignedCompareTo(Num other) {
 		if (size(this) < size(other)) {
 			return -1;
 		} else if (size(this) > size(other)) {
@@ -573,5 +573,21 @@ public class Num implements Comparable<Num> {
 		// }
 		// }
 		return res;
+	}
+
+	@Override
+	public int compareTo(Num other) {
+
+		if (!this.sign && other.sign) {
+			return -1;
+		} else if (!this.sign && other.sign) {
+			return 1;
+		} else {
+			if(size(this) != size(other))
+				return size(this) < size(other) ? -1 : 1;
+			else
+				return traverseToCompare(this, other);
+		}
+
 	}
 }
