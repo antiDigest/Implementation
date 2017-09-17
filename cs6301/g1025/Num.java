@@ -203,7 +203,7 @@ public class Num implements Comparable<Num> {
 		if (!(a.sign ^ b.sign)) {// if both signs are same, xor will be false
 			return unsignedAdd(a, b);
 		} else
-			return a.compareTo(b) <= 0 ? unsignedSubtract(b, a, a.sign) : unsignedSubtract(a, b, !b.sign);
+			return a.compareTo(b) <= 0 ? unsignedSubtract(b, a, b.sign) : unsignedSubtract(a, b, a.sign);
 	}
 
 	/**
