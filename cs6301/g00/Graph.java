@@ -1,6 +1,5 @@
 /**
  * Class to represent a graph
- *
  *  @author rbk
  *  Ver 1.1: 2017/08/28.  Updated some methods to public.  Added getName() to Vertex
  *  Ver 1.2: 2017/09/08.  Added getVertex() method for GraphAlgorithm.java
@@ -8,7 +7,6 @@
  */
 
 package cs6301.g00;
-
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,7 +14,7 @@ import java.util.Scanner;
 
 public class Graph implements Iterable<Graph.Vertex> {
     Vertex[] v; // vertices of graph
-    int n; // number of vertices in the graph
+    int n; // number of verices in the graph
     boolean directed;  // true if graph is directed, false otherwise
 
 
@@ -25,7 +23,7 @@ public class Graph implements Iterable<Graph.Vertex> {
      */
 
     public static class Vertex implements Iterable<Edge> {
-        public int name; // name of the vertex
+        int name; // name of the vertex
         List<Edge> adj, revAdj; // adjacency list; use LinkedList or ArrayList
 
         /**
@@ -34,7 +32,7 @@ public class Graph implements Iterable<Graph.Vertex> {
          * @param n
          *            : int - name of the vertex
          */
-        public Vertex(int n) {
+        Vertex(int n) {
             name = n;
             adj = new LinkedList<Edge>();
             revAdj = new LinkedList<Edge>();   /* only for directed graphs */
@@ -48,15 +46,18 @@ public class Graph implements Iterable<Graph.Vertex> {
             return name;
         }
 
-        public Iterator<Edge> iterator() {
-            return adj.iterator();
+        public Iterator<Edge> iterator() { return adj.iterator(); }
+
+        // Helper function for parallel arrays used to store vertex attributes
+        public static<T> T getVertex(T[] node, Vertex u) {
+            return node[u.name];
         }
 
         /**
          * Method to get vertex number.  +1 is needed because [0] is vertex 1.
          */
         public String toString() {
-            return Integer.toString(name + 1);
+            return Integer.toString(name+1);
         }
     }
 
@@ -65,8 +66,8 @@ public class Graph implements Iterable<Graph.Vertex> {
      */
 
     public static class Edge {
-        public Vertex from; // head vertex
-        public Vertex to; // tail vertex
+        Vertex from; // head vertex
+        Vertex to; // tail vertex
         int weight;// weight of edge
 
         /**
@@ -79,7 +80,7 @@ public class Graph implements Iterable<Graph.Vertex> {
          * @param w
          *            : int - Weight of edge
          */
-        public Edge(Vertex u, Vertex v, int w) {
+        Edge(Vertex u, Vertex v, int w) {
             from = u;
             to = v;
             weight = w;
@@ -92,7 +93,7 @@ public class Graph implements Iterable<Graph.Vertex> {
          * @param u
          *            : Vertex
          * @return
-         *             : Vertex - other end of edge
+        : Vertex - other end of edge
          */
         public Vertex otherEnd(Vertex u) {
             assert from == u || to == u;
@@ -138,7 +139,7 @@ public class Graph implements Iterable<Graph.Vertex> {
      *           : int
      */
     public Vertex getVertex(int n) {
-        return v[n - 1];
+        return v[n-1];
     }
 
     /**
@@ -153,7 +154,7 @@ public class Graph implements Iterable<Graph.Vertex> {
      */
     public void addEdge(Vertex from, Vertex to, int weight) {
         Edge e = new Edge(from, to, weight);
-        if (this.directed) {
+        if(this.directed) {
             from.adj.add(e);
             to.revAdj.add(e);
         } else {
@@ -199,4 +200,5 @@ public class Graph implements Iterable<Graph.Vertex> {
         }
         return g;
     }
+
 }
