@@ -182,14 +182,6 @@ public class Num implements Comparable<Num> {
 	}
 
 	static void sign(Num a, boolean sign){
-		if(size(a) == 1){
-			a.sign = (a.num.peek() == 0) ? false : sign;
-		}
-		else{
-			a.sign = sign;
-		}
-		//(j1.Weight < j2.Weight ? -1 : (j1.Weight == j2.Weight ? 0 : 1));
-	
 		a.sign = size(a) == 1 ? (a.num.peek() == 0 ? false : sign) : sign;
 	}
 
