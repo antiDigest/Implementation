@@ -45,7 +45,6 @@ public class Num implements Comparable<Num> {
 					second.num.add(next(it));
 				}
 			}
-
 		}
 	}
 
@@ -77,20 +76,19 @@ public class Num implements Comparable<Num> {
 		res.base = base;
 		Num baseW = new Num(10, base);
 		Character token;
+		char[] string = s.toCharArray();
 		int n = 0;
 		if (s != "")
 			try {
-				token = s.charAt(n);
+				token = string[n];
 				if (token == '-') {
 					this.sign = true;
 					n++;
 				}
 				for (int i = n; i < s.length(); i++) {
-					token = s.charAt(i);
+					token = string[i];
 					if (Tokenizer.tokenize(token.toString()) == Tokenizer.Token.NUM) {
-
-						res = add(product(res, baseW), new Num(Integer.parseInt(s.charAt(i) + "")));
-
+						res = add(product(res, baseW), new Num(Integer.parseInt(string[i]+"")));
 					} else {
 						break;
 					}
@@ -98,9 +96,8 @@ public class Num implements Comparable<Num> {
 				this.num = res.num;
 
 			} catch (Exception e) {
-				System.out.println("Java Unhandled Exception: " + e.getMessage());
+				System.out.println("Java Unhandled Exception: " + e.getMessage() + " at Value: " + s);
 			}
-
 	}
 
 	// constructor for initialising base with long input
@@ -194,7 +191,6 @@ public class Num implements Comparable<Num> {
 	}
 
 	void trim() {
-
 		while (this.num.peekLast() == 0) {
 			if (size(this) == 1)
 				return;
@@ -272,17 +268,20 @@ public class Num implements Comparable<Num> {
 	 * @return: Num - a*b
 	 */
 	public static Num product(Num a, Num b) {
+		Num res = new Num();
 		if (size(b) == 1) {
-			Num res = product(a, b.num.getFirst());
-			return res;
+			res = product(a, b.num.getFirst());
+		} else if (size(a) == 1) {
+			res = product(b, a.num.getFirst());
 		} else if (size(a) == 0 || size(b) == 0) {
-			Num res = new Num("",a.base);
-		
-			return res;
+			res = new Num("",a.base);
 		} else if (size(a) >= size(b)) {
-			return karatsubaSplit(a, b);
-		} else
-			return karatsubaSplit(b, a);
+			res = karatsubaSplit(a, b);
+		} else {
+			res = karatsubaSplit(b, a);
+		}
+		sign(res, (a.sign ^ b.sign));
+		return res;
 	}
 
 	static Num karatsubaSplit(Num a, Num b) {
@@ -314,7 +313,7 @@ public class Num implements Comparable<Num> {
 		Num part2 = subtract(subtract(aLHbLHProd, aHbHProd), part3);
 		leftShift(part2, k);
 		Num res = add(add(part1, part2), part3);
-		res.sign = (a.sign ^ b.sign);
+
 		return res;
 	}
 

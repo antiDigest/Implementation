@@ -9,30 +9,32 @@ import cs6301.g00.Timer;
 
 public class LP1L1 {
     public static void main(String[] args) {
-        Num x = new Num("6000");
-        Num y = new Num("5400");
-        
-        BigInteger a = new BigInteger("6000");
-        BigInteger b = new BigInteger("5400");
-        
-        
+        Num x = new Num("10");
+        Num y = new Num("5");
+
+        BigInteger a = new BigInteger("10");
+        BigInteger b = new BigInteger("5");
+
+
         Timer timer = new Timer();
         timer.start();
-        Num z = Num.divide(x, y );
+        Num z = Num.product(x, y );
         timer.end();
         System.out.println("Num class: "+ timer);
         System.out.println();
-        
+
         timer.start();
-        BigInteger c = a.divide(b);
+        BigInteger c = a.multiply(b);
         timer.end();
         System.out.println("BigInteger: " + timer);
-        
+
         System.out.println(c);
         x.printList();
         y.printList();
         z.printList();
         System.out.println(z);
+
+//        System.out.println(false ^ true);
         //System.out.println(c.toString().compareTo(z.toString()));
     }
 }

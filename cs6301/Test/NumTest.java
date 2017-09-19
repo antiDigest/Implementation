@@ -77,8 +77,8 @@ public class NumTest extends TestCase {
 
 
         int n1=1;
-        int n2 = (int) Math.pow(2, 5);
-        for(int i=0;i<10;i++){
+        int n2 = (int) Math.pow(2, 15);
+        for(int i=0;i<15;i++){
             Random rand = new Random();
             BigInteger num1 = new BigInteger(n1, rand);
             BigInteger num2 = new BigInteger(n2, rand);
@@ -93,9 +93,10 @@ public class NumTest extends TestCase {
 //            System.out.println(newFinal);
 
             assertEquals(numFinal.toString(), newFinal.toString());
+            System.out.println("[TEST CASE: "+i+"] PASSED");
 
-            n1=n1*10;
-            n2 = n2/10;
+            n1=n1*2;
+            n2 = n2/2;
         }
     }
 
@@ -103,9 +104,7 @@ public class NumTest extends TestCase {
      * Test method for
      * {@link cs6301.g1025.Num#add(cs6301.g1025.Num, cs6301.g1025.Num)}.
      */
-    public static void testAdd() {
-
-
+    public void testAdd() {
         // same sign
         Num out0 = Num.add(smallNeg, smallPos);
 
@@ -125,28 +124,28 @@ public class NumTest extends TestCase {
         assertEquals("50", out5.toString());
         assertEquals("-50", out6.toString());
 
-//        int n1=1;
-//        int n2 = (int) Math.pow(2, 3);
-//        for(int i=0;i<3;i++){
-//            Random rand = new Random();
-//            BigInteger num1 = new BigInteger(n1, rand);
-//            BigInteger num2 = new BigInteger(n2, rand);
-//
-//            Num newNum1 = new Num(num1.toString());
-//            Num newNum2 = new Num(num2.toString());
-//
-//            BigInteger numFinal = num1.add(num2);
-//
-//            Num newFinal = Num.add(newNum1, newNum2);
-////            System.out.println(numFinal);
-////            System.out.println(newFinal);
-//
-//            assertEquals(numFinal.toString(), newFinal.toString());
-//
-//            n1=n1*2;
-//            n2 = n2/2;
-//        }
+        int n1=1;
+        int n2 = (int) Math.pow(2, 15);
+        for(int i=0;i<15;i++){
+            Random rand = new Random();
+            BigInteger num1 = new BigInteger(n1, rand);
+            BigInteger num2 = new BigInteger(n2, rand);
 
+            Num newNum1 = new Num(num1.toString());
+            Num newNum2 = new Num(num2.toString());
+
+            BigInteger numFinal = num1.add(num2);
+
+            Num newFinal = Num.add(newNum1, newNum2);
+//            System.out.println(numFinal);
+//            System.out.println(newFinal);
+
+            assertEquals(numFinal.toString(), newFinal.toString());
+            System.out.println("[TEST CASE: "+i+"] PASSED");
+
+            n1=n1*2;
+            n2 = n2/2;
+        }
     }
 
     /**
@@ -166,27 +165,28 @@ public class NumTest extends TestCase {
         assertEquals("10000", out3.toString());
         assertEquals("5000", out4.toString());
 
-//        int n1=1;
-//        int n2 = (int) Math.pow(2, 5);
-//        for(int i=0;i<10;i++){
-//            Random rand = new Random();
-//            BigInteger num1 = new BigInteger(n1, rand);
-//            BigInteger num2 = new BigInteger(n2, rand);
-//
-//            Num newNum1 = new Num(num1.toString());
-//            Num newNum2 = new Num(num2.toString());
-//
-//            BigInteger numFinal = num1.multiply(num2);
-//
-//            Num newFinal = Num.product(newNum1, newNum2);
-////            System.out.println(numFinal);
-////            System.out.println(newFinal);
-//
-//            assertEquals(numFinal.toString(), newFinal.toString());
-//
-//            n1=n1*10;
-//            n2 = n2/10;
-//        }
+        int n1=1;
+        int n2 = (int) Math.pow(2, 15);
+        for(int i=0;i<15;i++){
+            Random rand = new Random();
+            BigInteger num1 = new BigInteger(n1, rand);
+            BigInteger num2 = new BigInteger(n2, rand);
+
+            Num newNum1 = new Num(num1.toString());
+            Num newNum2 = new Num(num2.toString());
+
+            BigInteger numFinal = num1.multiply(num2);
+
+            Num newFinal = Num.product(newNum1, newNum2);
+//            System.out.println(numFinal);
+//            System.out.println(newFinal);
+
+            assertEquals(numFinal.toString(), newFinal.toString());
+            System.out.println("[TEST CASE: "+i+"] PASSED");
+
+            n1=n1*2;
+            n2 = n2/2;
+        }
     }
 
     /**
