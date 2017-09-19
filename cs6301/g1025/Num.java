@@ -49,7 +49,7 @@ public class Num implements Comparable<Num> {
 		}
 	}
 
-	static long defaultBase = 78; // This can be changed to what you want it to
+	static long defaultBase = (long) Math.pow(2, 32); // This can be changed to what you want it to
 	// be.
 	long base = defaultBase; // Change as needed
 

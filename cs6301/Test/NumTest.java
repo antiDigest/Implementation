@@ -74,6 +74,29 @@ public class NumTest extends TestCase {
         assertEquals("-150", out4.toString());
         assertEquals("150", out5.toString());
         assertEquals("-150", out6.toString());
+
+
+        int n1=1;
+        int n2 = (int) Math.pow(2, 5);
+        for(int i=0;i<10;i++){
+            Random rand = new Random();
+            BigInteger num1 = new BigInteger(n1, rand);
+            BigInteger num2 = new BigInteger(n2, rand);
+
+            Num newNum1 = new Num(num1.toString());
+            Num newNum2 = new Num(num2.toString());
+
+            BigInteger numFinal = num1.subtract(num2);
+
+            Num newFinal = Num.subtract(newNum1, newNum2);
+//            System.out.println(numFinal);
+//            System.out.println(newFinal);
+
+            assertEquals(numFinal.toString(), newFinal.toString());
+
+            n1=n1*10;
+            n2 = n2/10;
+        }
     }
 
     /**
@@ -102,27 +125,27 @@ public class NumTest extends TestCase {
         assertEquals("50", out5.toString());
         assertEquals("-50", out6.toString());
 
-        int n1=1;
-        int n2 = (int) Math.pow(2, 5);
-        for(int i=0;i<10;i++){
-            Random rand = new Random();
-            BigInteger num1 = new BigInteger(n1, rand);
-            BigInteger num2 = new BigInteger(n2, rand);
-
-            Num newNum1 = new Num(num1.toString());
-            Num newNum2 = new Num(num2.toString());
-
-            BigInteger numFinal = num1.add(num2);
-
-            Num newFinal = Num.add(newNum1, newNum2);
-//            System.out.println(numFinal);
-//            System.out.println(newFinal);
-
-            assertEquals(numFinal.toString(), newFinal.toString());
-
-            n1=n1*10;
-            n2 = n2/10;
-        }
+//        int n1=1;
+//        int n2 = (int) Math.pow(2, 3);
+//        for(int i=0;i<3;i++){
+//            Random rand = new Random();
+//            BigInteger num1 = new BigInteger(n1, rand);
+//            BigInteger num2 = new BigInteger(n2, rand);
+//
+//            Num newNum1 = new Num(num1.toString());
+//            Num newNum2 = new Num(num2.toString());
+//
+//            BigInteger numFinal = num1.add(num2);
+//
+//            Num newFinal = Num.add(newNum1, newNum2);
+////            System.out.println(numFinal);
+////            System.out.println(newFinal);
+//
+//            assertEquals(numFinal.toString(), newFinal.toString());
+//
+//            n1=n1*2;
+//            n2 = n2/2;
+//        }
 
     }
 
@@ -143,27 +166,27 @@ public class NumTest extends TestCase {
         assertEquals("10000", out3.toString());
         assertEquals("5000", out4.toString());
 
-        int n1=1;
-        int n2 = (int) Math.pow(2, 5);
-        for(int i=0;i<10;i++){
-            Random rand = new Random();
-            BigInteger num1 = new BigInteger(n1, rand);
-            BigInteger num2 = new BigInteger(n2, rand);
-
-            Num newNum1 = new Num(num1.toString());
-            Num newNum2 = new Num(num2.toString());
-
-            BigInteger numFinal = num1.multiply(num2);
-
-            Num newFinal = Num.product(newNum1, newNum2);
-//            System.out.println(numFinal);
-//            System.out.println(newFinal);
-
-            assertEquals(numFinal.toString(), newFinal.toString());
-
-            n1=n1*10;
-            n2 = n2/10;
-        }
+//        int n1=1;
+//        int n2 = (int) Math.pow(2, 5);
+//        for(int i=0;i<10;i++){
+//            Random rand = new Random();
+//            BigInteger num1 = new BigInteger(n1, rand);
+//            BigInteger num2 = new BigInteger(n2, rand);
+//
+//            Num newNum1 = new Num(num1.toString());
+//            Num newNum2 = new Num(num2.toString());
+//
+//            BigInteger numFinal = num1.multiply(num2);
+//
+//            Num newFinal = Num.product(newNum1, newNum2);
+////            System.out.println(numFinal);
+////            System.out.println(newFinal);
+//
+//            assertEquals(numFinal.toString(), newFinal.toString());
+//
+//            n1=n1*10;
+//            n2 = n2/10;
+//        }
     }
 
     /**
