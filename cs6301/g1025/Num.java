@@ -64,7 +64,7 @@ public class Num implements Comparable<Num> {
 	 */
 
 	// constructor for initializing input string to default base
-	Num(String s) {
+	public Num(String s) {
 		this(s, defaultBase);
 
 	}
@@ -150,7 +150,7 @@ public class Num implements Comparable<Num> {
 	 *            Num
 	 * @return: Num (a - b)
 	 */
-	static Num subtract(Num a, Num b) {
+	public static Num subtract(Num a, Num b) {
 		if (a.sign ^ b.sign) // opp sign
 			return unsignedAdd(a, b);
 		else
@@ -180,8 +180,17 @@ public class Num implements Comparable<Num> {
 				res.num.add(diff);
 		}
 		res.trim();
-		res.sign = sign;
+		sign(res, sign);
 		return res;
+	}
+
+	static void sign(Num a, boolean sign){
+		if(size(a) == 1){
+			a.sign = (a.num.peek() == 0) ? false : sign;
+		}
+		else{
+			a.sign = sign;
+		}
 	}
 
 	void trim() {
@@ -222,7 +231,7 @@ public class Num implements Comparable<Num> {
 	 *            Num
 	 * @return: Num - a + b
 	 */
-	static Num add(Num a, Num b) {
+	public static Num add(Num a, Num b) {
 		if (!(a.sign ^ b.sign)) {// if both signs are same, xor will be false
 			return unsignedAdd(a, b);
 		} else
@@ -254,22 +263,6 @@ public class Num implements Comparable<Num> {
 	}
 
 	/**
-	 * Product Num * Num
-	 *
-	 * @param a:
-	 *            Num
-	 * @param b:
-	 *            Num
-	 * @return: Num - a*b
-	 */
-	// static Num product(Num a, Num b) {
-	// if (size(a) >= size(b)) {
-	// return karatsubaProduct(a, b);
-	// } else
-	// return karatsubaProduct(b, a);
-	// }
-
-	/**
 	 * Karatsuba Product Num * Num RT = O(n^log3)
 	 *
 	 * @param a:
@@ -278,7 +271,7 @@ public class Num implements Comparable<Num> {
 	 *            Num
 	 * @return: Num - a*b
 	 */
-	static Num product(Num a, Num b) {
+	public static Num product(Num a, Num b) {
 		if (size(b) == 1) {
 			Num res = product(a, b.num.getFirst());
 			return res;
