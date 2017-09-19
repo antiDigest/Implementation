@@ -188,6 +188,9 @@ public class Num implements Comparable<Num> {
 		else{
 			a.sign = sign;
 		}
+		//(j1.Weight < j2.Weight ? -1 : (j1.Weight == j2.Weight ? 0 : 1));
+	
+		a.sign = size(a) == 1 ? (a.num.peek() == 0 ? false : sign) : sign;
 	}
 
 	void trim() {
@@ -246,6 +249,7 @@ public class Num implements Comparable<Num> {
 	 *            return Num a*b
 	 */
 	private static Num product(Num n, long b) {
+		if(b == 0) return new Num(0l, n.base);
 		Iterator<Long> it = n.num.iterator();
 		long carry = 0l;
 		Num res = new Num("",n.base);
