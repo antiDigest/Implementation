@@ -167,7 +167,7 @@ public class NumTest extends TestCase {
 
         int n1=1;
         int n2 = (int) Math.pow(2, 15);
-        for(int i=0;i<15;i++){
+        for(int i=0;i<6;i++){
             Random rand = new Random();
             BigInteger num1 = new BigInteger(n1, rand);
             BigInteger num2 = new BigInteger(n2, rand);
@@ -178,9 +178,9 @@ public class NumTest extends TestCase {
             BigInteger numFinal = num1.multiply(num2);
 
             Num newFinal = Num.product(newNum1, newNum2);
-//            System.out.println(numFinal);
-//            System.out.println(newFinal);
-
+            //System.out.println(newNum1 + ", "+newNum2);
+            //System.out.println(newFinal);
+            
             assertEquals(numFinal.toString(), newFinal.toString());
             System.out.println("[TEST CASE: "+i+"] PASSED");
 
