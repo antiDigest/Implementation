@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-public class Fibonacii {
+public class Fibonacci {
     /**
      *
      * @param n : int
@@ -21,19 +21,19 @@ public class Fibonacii {
      * @return BigInteger
      *
      */
-    static BigInteger exponentialFibonacii(int n){
+    static BigInteger exponentialFibonacci(int n){
 
         if(n == 0 || n == 1){
             return BigInteger.ONE;
         }
         else
-            return exponentialFibonacii(n-2).add(exponentialFibonacii(n-1));
+            return exponentialFibonacci(n-2).add(exponentialFibonacci(n-1));
     }
 
     private static Map<Integer, BigInteger> map = new HashMap<>();
 
 
-    static BigInteger linearFibonacii(int n){
+    static BigInteger linearFibonacci(int n){
 
         if(n == 0 || n == 1){
             return BigInteger.ONE;
@@ -43,12 +43,12 @@ public class Fibonacii {
             return map.get(n);
         }
 
-        BigInteger b = linearFibonacii(n-2).add(linearFibonacii(n-1));
+        BigInteger b = linearFibonacci(n-2).add(linearFibonacci(n-1));
         map.put(n, b);
         return b;
     }
 
-    static BigInteger logFibonacii(int n){
+    static BigInteger logFibonacci(int n){
 
         BigInteger A[][] = new BigInteger[][]{{BigInteger.ONE,BigInteger.ONE},{BigInteger.ONE,BigInteger.ZERO}};
         //    int B[][] = new int[][]{{0,0},{0,0}};
@@ -98,7 +98,7 @@ public class Fibonacii {
         System.out.println("Enter the value for n: ");
         int n = sc.nextInt();
         for(int i = 0; i < n; i++){
-            System.out.println(logFibonacii(i));
+            System.out.println(logFibonacci(i));
         }
     }
 }
