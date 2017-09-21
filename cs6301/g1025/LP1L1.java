@@ -3,25 +3,25 @@
 // Change following line to your group number
 package cs6301.g1025;
 
-import java.math.BigInteger;
-
 import cs6301.g00.Timer;
+
+import java.math.BigInteger;
 
 public class LP1L1 {
     public static void main(String[] args) {
 
         Num x = new Num("-50");
         Num y = new Num("-100");
-        
+
         BigInteger a = new BigInteger("3");
         BigInteger b = new BigInteger("4");
-        
-    
+
+
         Timer timer = new Timer();
         timer.start();
-        Num z = Num.subtract(x, y );
+        Num z = Num.subtract(x, y);
         timer.end();
-        System.out.println("Num1 class: "+ timer);
+        System.out.println("Num1 class: " + timer);
         System.out.println();
 
         timer.start();

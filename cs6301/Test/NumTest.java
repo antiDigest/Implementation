@@ -11,7 +11,6 @@ import java.util.Random;
 
 /**
  * @author swaroop
- *
  */
 public class NumTest extends TestCase {
 
@@ -76,9 +75,9 @@ public class NumTest extends TestCase {
         assertEquals("-150", out6.toString());
 
 
-        int n1=1;
+        int n1 = 1;
         int n2 = (int) Math.pow(2, 15);
-        for(int i=0;i<15;i++){
+        for (int i = 0; i < 15; i++) {
             Random rand = new Random();
             BigInteger num1 = new BigInteger(n1, rand);
             BigInteger num2 = new BigInteger(n2, rand);
@@ -90,10 +89,10 @@ public class NumTest extends TestCase {
 
             Num newFinal = Num.subtract(newNum1, newNum2);
             assertEquals(numFinal.toString(), newFinal.toString());
-            System.out.println("[TEST CASE: "+i+"] PASSED");
+            System.out.println("[TEST CASE: " + i + "] PASSED");
 
-            n1=n1*2;
-            n2 = n2/2;
+            n1 = n1 * 2;
+            n2 = n2 / 2;
         }
     }
 
@@ -121,9 +120,9 @@ public class NumTest extends TestCase {
         assertEquals("50", out5.toString());
         assertEquals("-50", out6.toString());
 
-        int n1=1;
+        int n1 = 1;
         int n2 = (int) Math.pow(2, 15);
-        for(int i=0;i<15;i++){
+        for (int i = 0; i < 15; i++) {
             Random rand = new Random();
             BigInteger num1 = new BigInteger(n1, rand);
             BigInteger num2 = new BigInteger(n2, rand);
@@ -136,10 +135,10 @@ public class NumTest extends TestCase {
             Num newFinal = Num.add(newNum1, newNum2);
 
             assertEquals(numFinal.toString(), newFinal.toString());
-            System.out.println("[TEST CASE: "+i+"] PASSED");
+            System.out.println("[TEST CASE: " + i + "] PASSED");
 
-            n1=n1*2;
-            n2 = n2/2;
+            n1 = n1 * 2;
+            n2 = n2 / 2;
         }
     }
 
@@ -160,9 +159,9 @@ public class NumTest extends TestCase {
         assertEquals("10000", out3.toString());
         assertEquals("5000", out4.toString());
 
-        int n1=1;
+        int n1 = 1;
         int n2 = (int) Math.pow(2, 15);
-        for(int i=0;i<6;i++){
+        for (int i = 0; i < 6; i++) {
             Random rand = new Random();
             BigInteger num1 = new BigInteger(n1, rand);
             BigInteger num2 = new BigInteger(n2, rand);
@@ -175,10 +174,10 @@ public class NumTest extends TestCase {
             Num newFinal = Num.product(newNum1, newNum2);
 
             assertEquals(numFinal.toString(), newFinal.toString());
-            System.out.println("[TEST CASE: "+i+"] PASSED");
+            System.out.println("[TEST CASE: " + i + "] PASSED");
 
-            n1=n1*2;
-            n2 = n2/2;
+            n1 = n1 * 2;
+            n2 = n2 / 2;
         }
     }
 
@@ -186,23 +185,130 @@ public class NumTest extends TestCase {
      * Test method for {@link cs6301.g1025.Num#power(cs6301.g1025.Num, long)}.
      */
     public void testPowerNumLong() {
-        fail("Not yet implemented");
+        Num out1 = Num.power(Num.ZERO, (long) 1);//50 / -50
+        Num out2 = Num.power(largePos, (long) 0); //100 / -100
+        Num out3 = Num.power(largePos, (long) 1);//100 / 100
+        Num out4 = Num.power(largePos, (long) 0);//100 / 50
+
+        assertEquals("0", out1.toString());
+        assertEquals("1", out2.toString());
+        assertEquals("100", out3.toString());
+        assertEquals("1", out4.toString());
+
+        int n1 = 2;
+        int n2 = (int) Math.pow(2, 6);
+        for (int i = 0; i < 6; i++) {
+            Random rand = new Random();
+            BigInteger num1 = new BigInteger(n1, rand);
+//            BigInteger num2 = new BigInteger((int)n2, rand);
+
+            Num newNum1 = new Num(num1.toString());
+//            Num newNum2 = new Num(num2.toString());
+
+            Num newFinal = Num.power(newNum1, n2);
+            BigInteger numFinal = num1.pow(n2);
+
+            System.out.println(numFinal);
+
+            assertEquals(numFinal.toString(), newFinal.toString());
+            System.out.println("[TEST CASE: " + i + "] PASSED");
+
+            n1 = n1 * 2;
+            n2 = n2 / 2;
+        }
     }
 
     /**
      * Test method for
      * {@link cs6301.g1025.Num#divide(cs6301.g1025.Num, cs6301.g1025.Num)}.
      */
-    public void testDivide() {
-        fail("Not yet implemented");
+    public void testDivide() throws Exception {
+        try {
+            Num out0 = Num.divide(smallPos, zero); // 50 * 0
+        } catch (Exception e) {
+            if (e.getMessage().equals("Divide by zero encountered."))
+                System.out.println("PASS");
+            else
+                System.out.println("FAIL");
+        }
+
+        Num out1 = Num.divide(smallPos, smallNeg);//50 / -50
+        Num out2 = Num.divide(largePos, largeNeg); //100 / -100
+        Num out3 = Num.divide(largePos, largePos);//100 / 100
+        Num out4 = Num.divide(largePos, smallPos);//100 / 50
+
+        assertEquals("-1", out1.toString());
+        assertEquals("-1", out2.toString());
+        assertEquals("1", out3.toString());
+        assertEquals("2", out4.toString());
+
+        int n1 = 2;
+        int n2 = (int) Math.pow(2, 15);
+        for (int i = 0; i < 6; i++) {
+            Random rand = new Random();
+            BigInteger num1 = new BigInteger(n2, rand);
+            BigInteger num2 = new BigInteger(n1, rand);
+
+            Num newNum1 = new Num(num1.toString());
+            Num newNum2 = new Num(num2.toString());
+
+            Num newFinal = Num.divide(newNum1, newNum2);
+            BigInteger numFinal = num1.divide(num2);
+
+            System.out.println(numFinal);
+
+            assertEquals(numFinal.toString(), newFinal.toString());
+            System.out.println("[TEST CASE: " + i + "] PASSED");
+
+            n1 = n1 * 2;
+            n2 = n2 / 2;
+        }
     }
 
     /**
      * Test method for
      * {@link cs6301.g1025.Num#mod(cs6301.g1025.Num, cs6301.g1025.Num)}.
      */
-    public void testMod() {
-        fail("Not yet implemented");
+    public void testMod() throws Exception {
+        try {
+            Num out0 = Num.mod(smallPos, zero); // 50 * 0
+        } catch (Exception e) {
+            if (e.getMessage().equals("Divide by zero encountered."))
+                System.out.println("PASS");
+            else
+                System.out.println("FAIL");
+        }
+
+        Num out1 = Num.mod(smallPos, smallNeg);//50 / -50
+        Num out2 = Num.mod(largePos, largeNeg); //100 / -100
+        Num out3 = Num.mod(largePos, largePos);//100 / 100
+        Num out4 = Num.mod(largePos, smallPos);//100 / 50
+
+        assertEquals("0", out1.toString());
+        assertEquals("0", out2.toString());
+        assertEquals("0", out3.toString());
+        assertEquals("0", out4.toString());
+
+        int n1 = 2;
+        int n2 = (int) Math.pow(2, 15);
+        for (int i = 0; i < 6; i++) {
+            Random rand = new Random();
+            BigInteger num1 = new BigInteger(n2, rand);
+            BigInteger num2 = new BigInteger(n1, rand);
+
+            Num newNum1 = new Num(num1.toString());
+            Num newNum2 = new Num(num2.toString());
+
+            BigInteger numFinal = num1.mod(num2);
+
+            Num newFinal = Num.mod(newNum1, newNum2);
+
+            assertEquals(numFinal.toString(), newFinal.toString());
+            System.out.println("[TEST CASE: " + i + "] PASSED");
+
+            n1 = n1 * 2;
+            n2 = n2 / 2;
+        }
     }
 
     /**
@@ -210,7 +316,16 @@ public class NumTest extends TestCase {
      * {@link cs6301.g1025.Num#power(cs6301.g1025.Num, cs6301.g1025.Num)}.
      */
     public void testPowerNumNum() {
-        fail("Not yet implemented");
+        Num out1 = Num.power(Num.ZERO, Num.ONE);//50 / -50
+        Num out2 = Num.power(largePos, new Num(2)); //100 / -100
+        Num out3 = Num.power(largePos, new Num(3));//100 / 100
+        Num out4 = Num.power(largePos, new Num(4));//100 / 50
+
+        assertEquals("1", out1.toString());
+        assertEquals("10000", out2.toString());
+        assertEquals("1000000", out3.toString());
+        assertEquals("100000000", out4.toString());
+
     }
 
 }
