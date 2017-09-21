@@ -5,3 +5,23 @@ Place the extracted folder (cs6301\g1025\..) in a src folder of an IDE (eg. ecli
 
 ##Using cmd:
 
+Level 1:
+
+Methods implemented:
+Constructors:
+Num : String, base
+Num : long, base 
+convertToBase
+add
+subtract
+divide
+product
+toString
+powerLong
+printList
+
+Level 2
+
+divide
+mod 
+squareroot
