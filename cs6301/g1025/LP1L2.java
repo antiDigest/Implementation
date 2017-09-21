@@ -6,6 +6,7 @@ package cs6301.g1025;
 import java.math.BigInteger;
 
 public class LP1L2 {
+
     public static void main(String[] args) throws Exception {
         String a = "6666";
         String b = "2";
@@ -26,4 +27,5 @@ public class LP1L2 {
         // z.printList();
 
     }
+
 }
