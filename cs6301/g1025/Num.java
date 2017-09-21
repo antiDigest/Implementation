@@ -1,13 +1,8 @@
 // Starter code for lp1.
 
-
-
-
 // Change following line to your group number
 // Changed type of base to long: 1:15 PM, 2017-09-08.
 package cs6301.g1025;
-
-
 
 // Starter code for lp1.
 
@@ -15,9 +10,6 @@ package cs6301.g1025;
 
 import java.util.Iterator;
 import java.util.LinkedList;
-
-
-
 
 public class Num implements Comparable<Num> {
 
@@ -47,13 +39,15 @@ public class Num implements Comparable<Num> {
 			}
 		}
 	}
-
-	static long defaultBase = (long)Math.pow(2, 31); // This can be changed to what you want it to
-	// be.
+	
+	/**
+	 *Default Base : can be set to any base from 2 to 2^31
+	 *This can be changed to what you want it to be. 
+	 */
+	static long defaultBase = (long)Math.pow(2, 31); 
+	static final Num ONE = new Num(1l, defaultBase);
+	static final Num ZERO = new Num(0l, defaultBase);
 	long base = defaultBase; // Change as needed
-
-	// To check base
-	// long base = 20; // Change as needed
 
 	public LinkedList<Long> num;
 	boolean sign = false;
@@ -88,7 +82,7 @@ public class Num implements Comparable<Num> {
 				for (int i = n; i < s.length(); i++) {
 					token = string[i];
 					if (Tokenizer.tokenize(token.toString()) == Tokenizer.Token.NUM) {
-						res = add(product(res, baseW), new Num(Integer.parseInt(string[i]+"")));
+						res = add(product(res, baseW), new Num(Integer.parseInt(string[i] + "")));
 					} else {
 						break;
 					}
@@ -160,8 +154,8 @@ public class Num implements Comparable<Num> {
 	 * set based on the previous method's input
 	 */
 	static Num unsignedSubtract(Num a, Num b, boolean sign) {
-		Num res = new Num("",a.base);
-		
+		Num res = new Num("", a.base);
+
 		Iterator<Long> ita = a.num.iterator();
 		Iterator<Long> itb = b.num.iterator();
 		long borrow = 0l;
@@ -181,7 +175,7 @@ public class Num implements Comparable<Num> {
 		return res;
 	}
 
-	static void sign(Num a, boolean sign){
+	static void sign(Num a, boolean sign) {
 		a.sign = size(a) == 1 ? (a.num.peek() == 0 ? false : sign) : sign;
 	}
 
@@ -198,7 +192,7 @@ public class Num implements Comparable<Num> {
 	 * Sum of two unsigned big integers
 	 */
 	static Num unsignedAdd(Num a, Num b) {
-		Num res = new Num("",a.base);
+		Num res = new Num("", a.base);
 		long carry = 0l;
 		Iterator<Long> ita = a.num.iterator();
 		Iterator<Long> itb = b.num.iterator();
@@ -241,11 +235,12 @@ public class Num implements Comparable<Num> {
 	 *            return Num a*b
 	 */
 	private static Num product(Num n, long b) {
-		if(b == 0) return new Num(0l, n.base);
+		if (b == 0) return new Num(0l, n.base);
+			
 		Iterator<Long> it = n.num.iterator();
 		long carry = 0l;
-		Num res = new Num("",n.base);
-		
+		Num res = new Num("", n.base);
+
 		while (it.hasNext() || carry > 0) {
 			long sum = (next(it) * b + carry);
 			res.num.add(sum % res.base);
@@ -265,12 +260,10 @@ public class Num implements Comparable<Num> {
 	 */
 	public static Num product(Num a, Num b) {
 		Num res = new Num();
-		if (size(b) == 1) {
-			res = product(a, b.num.getFirst());
-		} else if (size(a) == 1) {
-			res = product(b, a.num.getFirst());
+		if (size(b) == 1 || size(a) == 1) {
+			res = size(b) == 1? product(a, b.num.getFirst()) : product(b, a.num.getFirst());
 		} else if (size(a) == 0 || size(b) == 0) {
-			res = new Num("",a.base);
+			res = new Num("", a.base);
 		} else if (size(a) >= size(b)) {
 			res = karatsubaSplit(a, b);
 		} else {
@@ -283,7 +276,7 @@ public class Num implements Comparable<Num> {
 	static Num karatsubaSplit(Num a, Num b) {
 
 		int k = (int) size(b) / 2;
-		Num part1 = new Num("",a.base);
+		Num part1 = new Num("", a.base);
 
 		// Splitting a to aL and aH
 		Split split = a.new Split();
@@ -354,93 +347,68 @@ public class Num implements Comparable<Num> {
 	 * @return Num - quotient of a/b
 	 */
 
-	static long search(long a, Num b) {
-		long start = 0;
-		long end = a;
-		long mid = 0;
-		while (start < end) {
-			mid = (start + end) >>> 1;
-			Num midNum = new Num(mid);
-			Num aNum = new Num(a);
-			if (product(midNum, b).compareTo(aNum) <= 0 && product(new Num(mid + 1), b).compareTo(aNum) > 0) {
-				return mid;
-			} else if (product(midNum, b).compareTo(aNum) > 0) {
-				end = mid;
-			} else if (product(midNum, b).compareTo(aNum) < 0) {
-				start = mid;
-			}
-		}
-		return mid;
-	}
-
-	
-	static Num binarySearch(Num low, Num high, Num num, Num param1, int flag){
-		Num mid = new Num("0");
-		Num product = null;
-		int compareResult = 0;
-		while(add(low, new Num("1")).compareTo(high) < 0){
-			mid = half(add(low, high));
-			if(flag == 1)
-				product = product(mid, mid);
-			else if(flag == 2)
-				product = product(mid, param1);
-			compareResult = num.compareTo(product);
-			if(compareResult > 0)
-				low = mid;
-			else if(compareResult < 0)
-				high = mid;
-			else
-				return mid;
-		}
-		return low;
-	}
-	
-	static Num half(Num a){
-		int carry = 0;
-		Iterator<Long> it = a.num.descendingIterator();
-		long num = 0;
-		StringBuilder sb = new StringBuilder();
-		while(it.hasNext()){
-			num = (long) next(it);
-			num += carry*10;
-			sb.append(num/2);
-			carry = (int) (num % 2);
-		}
-		return new Num(sb.toString());
-	}
-	
-	static Num divide2(Num x, Num y){	
-		Num low = new Num("0");
-		return binarySearch(low, x, x, y, 2);
-	}
-	
-	static Num divide(Num a, Num b) {
-		int ret = a.compareTo(b);
-		Num quotient = new Num("", a.base);
+	// initial call: low: 1. high: x, x: numerator(dividend), y:
+	// denominator(divisor)
+	static Num binarySearch(Num low, Num high, Num x, Num y) {
+		int ret = low.compareTo(high);
+		if (ret >= 0)
+			return ret == 0 ? subtract(low, new Num(1, x.base)) : low;
+		Num mid = divideBy2(add(low, high));//calculate the mid point
+		ret = x.compareTo(product(mid, y)); //x*b <= a < (x+1)*b
 		if (ret < 0)
-			return new Num(0l, a.base);
-		else if (ret == 0) {
-			quotient.num.add(1l);
-			sign(quotient, a.sign ^ b.sign);
-			return quotient;
+			return binarySearch(low, mid, x, y);
+		else if (ret > 0)
+			return binarySearch(add(mid, new Num(1, x.base)), high, x, y);
+		else
+			return mid;
+
+	}
+
+	static Num divideBy2(Num a) {
+		long carry = 0;
+		long value = 0;
+		StringBuilder sb = new StringBuilder();
+		Num res = Num.convertBase(a, 10);
+
+		Iterator<Long> it = res.num.descendingIterator();
+		while (it.hasNext()) {
+			value = next(it);
+			value += carry * 10;
+			sb.append(value / 2);
+			carry = (value % 2);
 		}
 
-		long borrow = 0;
-		long rem = 0;
-		long q;
-		while (a.num.peekLast() != null) {
-			long ai = last(a);
-			rem = borrow * a.base + ai;
-			q = search(rem, b);
-			borrow = rem - Long.parseLong(product(b, q).toString());
-			quotient.num.addFirst(q);
-		}
+		res = new Num(sb.toString(), a.base);
+		return res;
+	}
+
+
+	/**
+	 * Divide function
+	 *
+	 * @param a:
+	 *            Num
+	 * @param b:
+	 *            Num
+	 * @return: Num - a/b
+	 */
+	static Num divide(Num x, Num y) {
 		
-		return quotient;
+		int ret = x.compareTo(y);
+		Num res = new Num("", x.base);
+		if(ret < 0) 
+			res = ZERO;
+		else if(ret == 0)
+			res = ONE;
+		else{
+			res = binarySearch(ONE, x, x, y);
+		}
+		sign(res, x.sign ^ y.sign);
+		return res;
 	}
 
 	/**
-	 * mod function
+	 * Mod function
 	 *
 	 * @param a:
 	 *            Num
@@ -453,7 +421,15 @@ public class Num implements Comparable<Num> {
 		return res;
 	}
 
-	// Use divide and conquer
+	/**
+	 * power function
+	 *
+	 * @param a:
+	 *            Num
+	 * @param b:
+	 *            Num
+	 * @return: Num - remainder of a^b
+	 */
 	static Num power(Num a, Num n) {
 		Iterator<Long> itn = n.num.iterator();
 		long n0 = nextInt(itn);
@@ -471,21 +447,21 @@ public class Num implements Comparable<Num> {
 	 * @return Num - a^(1/2)
 	 */
 	static Num squareRoot(Num a) {
-        Num start = new Num(0);
-        Num end = a;
-        Num mid = new Num();
-        while (start.compareTo(end)<=0) {
-            mid = divide(add(start, end), new Num(2));
-            if (product(mid, mid).compareTo(a) <= 0 &&
-                    product(add(mid, new Num(1)), add(mid, new Num(1))).compareTo(a) > 0) {
-                return mid;
-            } else if (product(mid, mid).compareTo(a) > 0) {
-                end = mid;
-            } else if (product(mid, mid).compareTo(a) < 0) {
-                start = mid;
-            }
-        }
-        return mid;
+		Num start = new Num(0);
+		Num end = a;
+		Num mid = new Num();
+		while (start.compareTo(end) <= 0) {
+			mid = divide(add(start, end), new Num(2));
+			if (product(mid, mid).compareTo(a) <= 0
+					&& product(add(mid, new Num(1)), add(mid, new Num(1))).compareTo(a) > 0) {
+				return mid;
+			} else if (product(mid, mid).compareTo(a) > 0) {
+				end = mid;
+			} else if (product(mid, mid).compareTo(a) < 0) {
+				start = mid;
+			}
+		}
+		return mid;
 	}
 
 	/* End of Level 2 */
@@ -612,8 +588,8 @@ public class Num implements Comparable<Num> {
 		Iterator<Long> it = a.num.iterator();
 		long baseA = a.base;
 
-		Num res= convertbaseHelper(new Num(baseA, baseB), it, nextInt(it), baseB);
-		res.sign=a.sign;
+		Num res = convertbaseHelper(new Num(baseA, baseB), it, nextInt(it), baseB);
+		res.sign = a.sign;
 		return res;
 
 	}

@@ -10,8 +10,8 @@ import cs6301.g00.Timer;
 public class LP1L1 {
     public static void main(String[] args) {
 
-        Num x = new Num("-1000000000000");
-        Num y = new Num("-0");
+        Num x = new Num("-50");
+        Num y = new Num("-100");
         
         BigInteger a = new BigInteger("3");
         BigInteger b = new BigInteger("4");
@@ -19,7 +19,7 @@ public class LP1L1 {
     
         Timer timer = new Timer();
         timer.start();
-        Num z = Num.product(x, y );
+        Num z = Num.subtract(x, y );
         timer.end();
         System.out.println("Num1 class: "+ timer);
         System.out.println();
