@@ -6,7 +6,7 @@ package cs6301.g1025;
 //linear scan of the array can find the answer, but it will not meet
 //the requirement on the running time.
 
-public class findkmissingnumbersinsortedarray {
+public class kMissing {
 
 	public static void main(String[] args) {
 		int[] arr = new int[] { 1, 2,4,6,8,12};

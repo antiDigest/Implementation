@@ -9,7 +9,7 @@ package cs6301.g1025;
 //// Returns index i such that arr[i] <= x < arr[i+1].
 //public static<T extends Comparable<? super T>> int binarySearch(T[] arr, T x)
 
-public class BinarySearchModify {
+public class BinarySearch {
 
 	public static void main(String[] args) {
 		Integer[] arr = new Integer[] { -1,2,3,4,9,10,13,56};
