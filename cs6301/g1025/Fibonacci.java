@@ -8,10 +8,11 @@
  */
 package cs6301.g1025;
 
+import cs6301.g00.Timer;
+
 import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Scanner;
+
 
 public class Fibonacci {
     /**
@@ -30,35 +31,29 @@ public class Fibonacci {
             return exponentialFibonacci(n-2).add(exponentialFibonacci(n-1));
     }
 
-    private static Map<Integer, BigInteger> map = new HashMap<>();
-
 
     static BigInteger linearFibonacci(int n){
 
-        if(n == 0 || n == 1){
-            return BigInteger.ONE;
+        BigInteger[] fib = new BigInteger[n + 1];
+        fib[0] = BigInteger.ZERO;
+        fib[1] = BigInteger.ONE;
+
+        for (int i = 2; i <= n; i++) {
+            fib[i] = fib[i - 1].add(fib[i - 2]);
         }
 
-        if(map.containsKey(n)){
-            return map.get(n);
-        }
-
-        BigInteger b = linearFibonacci(n-2).add(linearFibonacci(n-1));
-        map.put(n, b);
-        return b;
+        return fib[n];
     }
 
     static BigInteger logFibonacci(int n){
 
         BigInteger A[][] = new BigInteger[][]{{BigInteger.ONE,BigInteger.ONE},{BigInteger.ONE,BigInteger.ZERO}};
-        //    int B[][] = new int[][]{{0,0},{0,0}};
         int c[] = new int[]{1,0};
 
         if(n == 0){
             return BigInteger.ZERO;
         }
         power(A, n-1);
-        // multiply(B, c);
 
         return A[0][0];
     }
@@ -75,7 +70,6 @@ public class Fibonacci {
         if(n % 2 != 0){
             multiply(A, B);
         }
-
     }
 
     public static void multiply(BigInteger[][] P, BigInteger[][] Q){
@@ -97,9 +91,24 @@ public class Fibonacci {
         Scanner sc = new Scanner(System.in);
         System.out.println("Enter the value for n: ");
         int n = sc.nextInt();
-        for(int i = 0; i < n; i++){
-            System.out.println(logFibonacci(i));
-        }
+        Timer t = new Timer();
+
+        t.start();
+        BigInteger logn = logFibonacci(n);
+        t.end();
+        System.out.println("Running O(logn) Fibonacci");
+        System.out.println(t);
+
+        t.start();
+        BigInteger linearn = linearFibonacci(n);
+        t.end();
+        System.out.println("Running O(n) Fibonacci");
+        System.out.println(t);
+
+        System.out.println((logn.compareTo(linearn) == 0) ? "PASS" : "FAIL");
+
+        System.out.println(logn);
+        System.out.println(linearn);
     }
 }
 
