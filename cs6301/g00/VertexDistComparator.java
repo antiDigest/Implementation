@@ -1,5 +1,10 @@
 package cs6301.g00;
 
+<<<<<<< HEAD
+=======
+import java.util.Comparator;
+
+>>>>>>> 00b8023c27308018abd7772bd8e4893683704900
 //class VertexDistComparator implements Comparator<Object> {
 //	  public int compare(Object o1, Object o2) {
 //		  Graph.Vertex v1 = ( (Graph.Vertex) o1);
