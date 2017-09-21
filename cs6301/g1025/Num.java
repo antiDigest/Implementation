@@ -25,29 +25,29 @@ public class Num implements Comparable<Num> {
             second = new Num();
         }
 
-        public void split(Num n, int k) {
-            first.base = n.base;
-            second.base = n.base;
-            Iterator<Long> it = n.num.iterator();
-            while (it.hasNext()) {
-                if (k > 0) {
-                    first.num.add(next(it));
-                    k--;
-                } else {
-                    second.num.add(next(it));
-                }
-            }
-        }
-    }
-
-    /**
-     * Default Base : can be set to any base from 2 to 2^31
-     * This can be changed to what you want it to be.
-     */
-    static long defaultBase = (long) Math.pow(2, 32);
-    public static final Num ONE = new Num(1l, defaultBase);
-    public static final Num ZERO = new Num(0l, defaultBase);
-    long base = defaultBase; // Change as needed
+		public void split(Num n, int k) {
+			first.base = n.base;
+			second.base = n.base;
+			Iterator<Long> it = n.num.iterator();
+			while (it.hasNext()) {
+				if (k > 0) {
+					first.num.add(next(it));
+					k--;
+				} else {
+					second.num.add(next(it));
+				}
+			}
+		}
+	}
+	
+	/**
+	 *Default Base : can be set to any base from 2 to 2^31
+	 *This can be changed to what you want it to be. 
+	 */
+	static long defaultBase = (long)Math.pow(2, 31); 
+	public static final Num ONE = new Num(1l, defaultBase);
+	public static final Num ZERO = new Num(0l, defaultBase);
+	long base = defaultBase; // Change as needed
 
     public LinkedList<Long> num;
     boolean sign = false;
@@ -63,7 +63,7 @@ public class Num implements Comparable<Num> {
     }
 
     // constructor for initializing input string with given base
-    Num(String s, long base) {
+    public Num(String s, long base) {
         this();
         this.base = base;
         Num res = new Num();
@@ -89,30 +89,30 @@ public class Num implements Comparable<Num> {
                 }
                 this.num = res.num;
 
-            } catch (Exception e) {
-                System.out.println("Java Unhandled Exception: " + e.getMessage() + " at Value: " + s);
-            }
-    }
+			} catch (Exception e) {
+				System.out.println("Java Unhandled Exception: " + e.getMessage() + " at Value: " + s);
+			}
+	}
 
-    // constructor for initialising base with long input
-    Num(long x, long base) {
-        this();
-        this.base = base;
-        if (x < 0) {
-            sign = true;
-        }
-        x = Math.abs(x);
-        if (x == 0) {
-            this.num.add(x);
-        } else {
-            while (x > 0) {
-                long digit = x % this.base;
-                this.num.add(digit);
-                x /= this.base;
-            }
-        }
+	// constructor for initialising base with long input
+	public Num(long x, long base) {
+		this();
+		this.base = base;
+		if (x < 0) {
+			sign = true;
+		}
+		x = Math.abs(x);
+		if (x == 0) {
+			this.num.add(x);
+		} else {
+			while (x > 0) {
+				long digit = x % this.base;
+				this.num.add(digit);
+				x /= this.base;
+			}
+		}
 
-    }
+	}
 
     // Constructor for Num of type long
     public Num(long x) {
@@ -322,22 +322,31 @@ public class Num implements Comparable<Num> {
 
 	/* Start of Level 2 */
 
-    // initial call: low: 1. high: x, x: numerator(dividend), y:
-    // denominator(divisor)
-    static Num binarySearch(Num low, Num high, Num x, Num y) {
-        int ret = low.unsignedCompareTo(high);
-        if (ret >= 0)
-            return ret == 0 ? subtract(low, new Num(1, x.base)) : low;
+	/**
+	 * Divide operation - uses binary search
+	 *
+	 * @param a:
+	 *            Num
+	 * @param b:
+	 *            Num
+	 * @return Num - quotient of a/b
+	 */
 
-        Num mid = divideBy2(add(low, high));//calculate the mid point
-        ret = x.compareTo(product(mid, y)); //mid * y <= x < (mid+1) * y
-        if (ret < 0)
-            return binarySearch(low, mid, x, y);
-        else if (ret > 0)
-            return binarySearch(add(mid, new Num(1, x.base)), high, x, y);
-        else
-            return mid;
-    }
+	// initial call: low: 1. high: x, x: numerator(dividend), y:
+	// denominator(divisor)
+	static Num binarySearch(Num low, Num high, Num x, Num y) {
+		int ret = low.compareTo(high);
+		if (ret >= 0)
+			return ret == 0 ? subtract(low, new Num(1, x.base)) : low;
+		Num mid = divideBy2(add(low, high));//calculate the mid point
+		ret = x.compareTo(product(mid, y)); //x*b <= a < (x+1)*b
+		if (ret < 0)
+			return binarySearch(low, mid, x, y);
+		else if (ret > 0)
+			return binarySearch(add(mid, new Num(1, x.base)), high, x, y);
+		else
+			return mid;
+	}
 
     static Num divideBy2(Num a) {
         long carry = 0;
@@ -558,29 +567,36 @@ public class Num implements Comparable<Num> {
         }
     }
 
-    static Num convertBase(Num a, long baseB) {
-        Iterator<Long> it = a.num.iterator();
-        long baseA = a.base;
+	public static Num convertBase(Num a, long baseB) {
+		long baseA = a.base;
+		Num A = new Num(baseA, baseB);
+		long value = 0;
+		Iterator<Long> ita = a.num.descendingIterator();
+		Num res = new Num("", baseB);
+       while (ita.hasNext()) {
+			value = next(ita);
+            res = add(product(res, A), new Num(value, baseB));
 
-        Num res = convertbaseHelper(new Num(baseA, baseB), it, nextInt(it), baseB);
-        res.sign = a.sign;
-        return res;
 
-    }
-
-    static Num convertbaseHelper(Num A, Iterator<Long> it, long digit, long baseB) {
-
-        if (digit == -1) {
-            return new Num("", baseB);
-
-        }
-
-        return add(product(convertbaseHelper(A, it, nextInt(it), baseB), A), new Num(digit, baseB));
+		}
+		res.sign = a.sign;
+		return res;
 
     }
 
-    @Override
-    public int compareTo(Num other) {
+	static Num convertbaseHelper(Num A, Iterator<Long> it, long digit, long baseB) {
+
+		if (digit == -1) {
+			return new Num("", baseB);
+
+		}
+
+		return add(product(convertbaseHelper(A, it, nextInt(it), baseB), A), new Num(digit, baseB));
+
+	}
+
+	@Override
+	public int compareTo(Num other) {
 
         if (this.sign && !other.sign) {
             return -1;
