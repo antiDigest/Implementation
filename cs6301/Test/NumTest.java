@@ -233,17 +233,16 @@ public class NumTest extends TestCase {
         }
 
         Num out1 = Num.divide(smallPos, smallNeg);//50 / -50
-        Num out2 = Num.divide(largePos, largeNeg); //100 / -100
-        Num out3 = Num.divide(largePos, largePos);//100 / 100
-        Num out4 = Num.divide(largePos, smallPos);//100 / 50
-
         assertEquals("-1", out1.toString());
+        Num out2 = Num.divide(largePos, largeNeg); //100 / -100
         assertEquals("-1", out2.toString());
+        Num out3 = Num.divide(largePos, largePos);//100 / 100
         assertEquals("1", out3.toString());
+        Num out4 = Num.divide(largePos, smallPos);//100 / 50
         assertEquals("2", out4.toString());
 
         int n1 = 2;
-        int n2 = (int) Math.pow(2, 15);
+        int n2 = (int) Math.pow(2, 6);
         for (int i = 0; i < 6; i++) {
             Random rand = new Random();
             BigInteger num1 = new BigInteger(n2, rand);
@@ -251,11 +250,11 @@ public class NumTest extends TestCase {
 
             Num newNum1 = new Num(num1.toString());
             Num newNum2 = new Num(num2.toString());
+            System.out.println(num1);
+            System.out.println(num2);
 
             Num newFinal = Num.divide(newNum1, newNum2);
             BigInteger numFinal = num1.divide(num2);
-
-            System.out.println(numFinal);
 
             assertEquals(numFinal.toString(), newFinal.toString());
             System.out.println("[TEST CASE: " + i + "] PASSED");
@@ -317,14 +316,14 @@ public class NumTest extends TestCase {
      */
     public void testPowerNumNum() {
         Num out1 = Num.power(Num.ZERO, Num.ONE);//50 / -50
-        Num out2 = Num.power(largePos, new Num(2)); //100 / -100
-        Num out3 = Num.power(largePos, new Num(3));//100 / 100
-        Num out4 = Num.power(largePos, new Num(4));//100 / 50
+        Num out2 = Num.power(new Num(3), new Num(2)); //100 / -100
+        Num out3 = Num.power(new Num(2), new Num(3));//100 / 100
+        Num out4 = Num.power(new Num(2), new Num(4));//100 / 50
 
         assertEquals("1", out1.toString());
-        assertEquals("10000", out2.toString());
-        assertEquals("1000000", out3.toString());
-        assertEquals("100000000", out4.toString());
+        assertEquals("9", out2.toString());
+        assertEquals("8", out3.toString());
+        assertEquals("16", out4.toString());
 
     }
 

@@ -7,8 +7,8 @@ import java.math.BigInteger;
 
 public class LP1L2 {
     public static void main(String[] args) throws Exception {
-        String a = "18";
-        String b = "4";
+        String a = "6666";
+        String b = "2";
         //System.out.println("A: "+a.length()+", B: "+b.length());
 
         BigInteger b1 = new BigInteger(a);

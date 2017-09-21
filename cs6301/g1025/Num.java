@@ -47,7 +47,8 @@ public class Num implements Comparable<Num> {
 	static long defaultBase = (long)Math.pow(2, 31); 
 	public static final Num ONE = new Num(1l, defaultBase);
 	public static final Num ZERO = new Num(0l, defaultBase);
-	long base = defaultBase; // Change as needed
+    public static final Num TWO = new Num(2l, defaultBase);
+    long base = defaultBase; // Change as needed
 
     public LinkedList<Long> num;
     boolean sign = false;
@@ -303,9 +304,8 @@ public class Num implements Comparable<Num> {
      * @return Num - a^n
      */
     public static Num power(Num a, long n) {
-
         if (n == 0)
-            return new Num(1);
+            return ONE;
         else if (n == 1)
             return a;
         else {
@@ -335,12 +335,14 @@ public class Num implements Comparable<Num> {
 	// initial call: low: 1. high: x, x: numerator(dividend), y:
 	// denominator(divisor)
 	static Num binarySearch(Num low, Num high, Num x, Num y) {
-		int ret = low.compareTo(high);
+        int ret = low.unsignedCompareTo(high);
+
 		if (ret >= 0)
 			return ret == 0 ? subtract(low, new Num(1, x.base)) : low;
+
 		Num mid = divideBy2(add(low, high));//calculate the mid point
-		ret = x.compareTo(product(mid, y)); //x*b <= a < (x+1)*b
-		if (ret < 0)
+        ret = x.unsignedCompareTo(product(mid, y)); //x*b <= a < (x+1)*b
+        if (ret < 0)
 			return binarySearch(low, mid, x, y);
 		else if (ret > 0)
 			return binarySearch(add(mid, new Num(1, x.base)), high, x, y);
@@ -376,8 +378,12 @@ public class Num implements Comparable<Num> {
      */
     public static Num divide(Num x, Num y) throws Exception {
 
-        if (y.compareTo(ZERO) == 0)
+        if (y.unsignedCompareTo(ZERO) == 0)
             throw new Exception("Divide by zero encountered.");
+        else if (y.unsignedCompareTo(ONE) == 0)
+            return x;
+        else if (y.unsignedCompareTo(TWO) == 0)
+            return divideBy2(x);
 
         int ret = x.unsignedCompareTo(y);
         Num res = new Num("", x.base);
@@ -414,8 +420,10 @@ public class Num implements Comparable<Num> {
     public static Num power(Num a, Num n) {
         Iterator<Long> itn = n.num.iterator();
         long n0 = nextInt(itn);
+
         if (size(n) == 1)
             return power(a, n0);
+
         rightShift(n);
         return product(power(power(a, n), a.base), power(a, n0));
     }
