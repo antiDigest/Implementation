@@ -39,6 +39,7 @@ public class Num implements Comparable<Num> {
 			}
 		}
 	}
+
 	
 	/**
 	 *Default Base : can be set to any base from 2 to 2^31
@@ -47,6 +48,9 @@ public class Num implements Comparable<Num> {
 	static long defaultBase = (long)Math.pow(2, 31); 
 	static final Num ONE = new Num(1l, defaultBase);
 	static final Num ZERO = new Num(0l, defaultBase);
+
+	
+
 	long base = defaultBase; // Change as needed
 
 	public LinkedList<Long> num;
@@ -63,7 +67,7 @@ public class Num implements Comparable<Num> {
 	}
 
 	// constructor for initializing input string with given base
-	Num(String s, long base) {
+	public Num(String s, long base) {
 		this();
 		this.base = base;
 		Num res = new Num();
@@ -235,8 +239,11 @@ public class Num implements Comparable<Num> {
 	 *            return Num a*b
 	 */
 	private static Num product(Num n, long b) {
+
 		if (b == 0) return new Num(0l, n.base);
 			
+
+		
 		Iterator<Long> it = n.num.iterator();
 		long carry = 0l;
 		Num res = new Num("", n.base);
@@ -361,7 +368,6 @@ public class Num implements Comparable<Num> {
 			return binarySearch(add(mid, new Num(1, x.base)), high, x, y);
 		else
 			return mid;
-
 	}
 
 	static Num divideBy2(Num a) {
@@ -584,24 +590,20 @@ public class Num implements Comparable<Num> {
 		}
 	}
 
-	static Num convertBase(Num a, long baseB) {
-		Iterator<Long> it = a.num.iterator();
+	public static Num convertBase(Num a, long baseB) {
 		long baseA = a.base;
+		Num A = new Num(baseA, baseB);
+		long value = 0;
+		Iterator<Long> ita = a.num.descendingIterator();
+		Num res = new Num("", baseB);
+       while (ita.hasNext()) {
+			value = next(ita);
+            res = add(product(res, A), new Num(value, baseB));
 
-		Num res = convertbaseHelper(new Num(baseA, baseB), it, nextInt(it), baseB);
-		res.sign = a.sign;
-		return res;
-
-	}
-
-	static Num convertbaseHelper(Num A, Iterator<Long> it, long digit, long baseB) {
-
-		if (digit == -1) {
-			return new Num("", baseB);
 
 		}
-
-		return add(product(convertbaseHelper(A, it, nextInt(it), baseB), A), new Num(digit, baseB));
+		res.sign = a.sign;
+		return res;
 
 	}
 

@@ -213,4 +213,17 @@ public class NumTest extends TestCase {
         fail("Not yet implemented");
     }
 
+
+	public void testConvertBase() {
+
+		String s = "";
+		for (int i = 10; i < 20; i++) {
+			Num x1=new Num(s+i,10);
+	        
+        assertEquals(Num.convertBase(x1,i).toString(), s+i);
+	    s=s+i;
+			System.out.println("[TEST CASE: " +i+"] PASSED");
+
+		}
+	}
 }
