@@ -249,8 +249,8 @@ public class Num implements Comparable<Num> {
 		Iterator<Long> it = n.num.iterator();
 		long carry = 0l;
 		Num res = new Num("",n.base);
-		
-		while (it.hasNext() || carry > 0) {
+
+		while ((it.hasNext() || b > 0) || carry > 0) {
 			long sum = (next(it) * b + carry);
 			res.num.add(sum % res.base);
 			carry = sum / res.base;
