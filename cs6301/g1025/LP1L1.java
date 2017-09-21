@@ -6,7 +6,6 @@ package cs6301.g1025;
 import java.math.BigInteger;
 
 import cs6301.g00.Timer;
-import cs6301.g1025.Num;
 
 public class LP1L1 {
     public static void main(String[] args) {
