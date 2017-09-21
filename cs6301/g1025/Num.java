@@ -48,7 +48,7 @@ public class Num implements Comparable<Num> {
 		}
 	}
 
-	static long defaultBase = (long) Math.pow(2, 32); // This can be changed to what you want it to
+	static long defaultBase = (long)Math.pow(2, 31); // This can be changed to what you want it to
 	// be.
 	long base = defaultBase; // Change as needed
 
@@ -182,12 +182,7 @@ public class Num implements Comparable<Num> {
 	}
 
 	static void sign(Num a, boolean sign){
-		if(size(a) == 1){
-			a.sign = (a.num.peek() == 0) ? false : sign;
-		}
-		else{
-			a.sign = sign;
-		}
+		a.sign = size(a) == 1 ? (a.num.peek() == 0 ? false : sign) : sign;
 	}
 
 	void trim() {
@@ -246,6 +241,7 @@ public class Num implements Comparable<Num> {
 	 *            return Num a*b
 	 */
 	private static Num product(Num n, long b) {
+		if(b == 0) return new Num(0l, n.base);
 		Iterator<Long> it = n.num.iterator();
 		long carry = 0l;
 		Num res = new Num("",n.base);
@@ -377,27 +373,69 @@ public class Num implements Comparable<Num> {
 		return mid;
 	}
 
+	
+	static Num binarySearch(Num low, Num high, Num num, Num param1, int flag){
+		Num mid = new Num("0");
+		Num product = null;
+		int compareResult = 0;
+		while(add(low, new Num("1")).compareTo(high) < 0){
+			mid = half(add(low, high));
+			if(flag == 1)
+				product = product(mid, mid);
+			else if(flag == 2)
+				product = product(mid, param1);
+			compareResult = num.compareTo(product);
+			if(compareResult > 0)
+				low = mid;
+			else if(compareResult < 0)
+				high = mid;
+			else
+				return mid;
+		}
+		return low;
+	}
+	
+	static Num half(Num a){
+		int carry = 0;
+		Iterator<Long> it = a.num.descendingIterator();
+		long num = 0;
+		StringBuilder sb = new StringBuilder();
+		while(it.hasNext()){
+			num = (long) next(it);
+			num += carry*10;
+			sb.append(num/2);
+			carry = (int) (num % 2);
+		}
+		return new Num(sb.toString());
+	}
+	
+	static Num divide2(Num x, Num y){	
+		Num low = new Num("0");
+		return binarySearch(low, x, x, y, 2);
+	}
+	
 	static Num divide(Num a, Num b) {
 		int ret = a.compareTo(b);
-		Num quotient = new Num();
+		Num quotient = new Num("", a.base);
 		if (ret < 0)
 			return new Num(0l, a.base);
 		else if (ret == 0) {
 			quotient.num.add(1l);
-			quotient.sign = a.sign ^ b.sign;
+			sign(quotient, a.sign ^ b.sign);
 			return quotient;
 		}
 
 		long borrow = 0;
 		long rem = 0;
 		long q;
-		while (a.num.peekLast() != null || borrow > 0) {
+		while (a.num.peekLast() != null) {
 			long ai = last(a);
 			rem = borrow * a.base + ai;
 			q = search(rem, b);
 			borrow = rem - Long.parseLong(product(b, q).toString());
 			quotient.num.addFirst(q);
 		}
+		
 		return quotient;
 	}
 
