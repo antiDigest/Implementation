@@ -16,7 +16,7 @@ import java.util.Scanner;
 public class Graph implements Iterable<Graph.Vertex> {
 	Vertex[] v; // vertices of graph
 	int n; // number of verices in the graph
-	boolean directed; // true if graph is directed, false otherwise
+	public boolean directed; // true if graph is directed, false otherwise
 
 	/**
 	 * Nested class to represent a vertex of a graph
@@ -60,13 +60,6 @@ public class Graph implements Iterable<Graph.Vertex> {
 		 */
 		public String toString() {
 			return Integer.toString(name + 1);
-		}
-
-		public List<Edge> getAdj() {
-			return adj;
-		}
-		public List<Edge> getRevAdj() {
-			return revAdj;
 		}
 	}
 
@@ -171,7 +164,7 @@ public class Graph implements Iterable<Graph.Vertex> {
 			to.adj.add(e);
 		}
 	}
-	
+
 	public int size() {
 		return n;
 	}
