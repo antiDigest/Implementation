@@ -4,7 +4,7 @@ public class GraphAlgorithm<T> {
 
 	Graph g;
 	// Algorithm uses a parallel array for storing information about vertices
-	public T[] node;
+	T[] node;
 
 	public GraphAlgorithm(Graph g) {
 		this.g = g;
