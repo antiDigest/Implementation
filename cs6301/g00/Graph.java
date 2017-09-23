@@ -1,11 +1,13 @@
 /**
  * Class to represent a graph
+ *  @author rbk
+ *  Ver 1.1: 2017/08/28.  Updated some methods to public.  Added getName() to Vertex
+ *  Ver 1.2: 2017/09/08.  Added getVertex() method for GraphAlgorithm.java
  *
- * @author rbk
- * Ver 1.1: 2017/08/28.  Updated some methods to public.  Added getName() to Vertex
  */
 
 package cs6301.g00;
+import cs6301.g00.ArrayIterator;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -15,7 +17,8 @@ import java.util.Scanner;
 public class Graph implements Iterable<Graph.Vertex> {
     Vertex[] v; // vertices of graph
     int n; // number of verices in the graph
-    boolean directed; // true if graph is directed, false otherwise
+    boolean directed;  // true if graph is directed, false otherwise
+
 
     /**
      * Nested class to represent a vertex of a graph
@@ -28,41 +31,40 @@ public class Graph implements Iterable<Graph.Vertex> {
         /**
          * Constructor for the vertex
          *
-         * @param n : int - name of the vertex
+         * @param n
+         *            : int - name of the vertex
          */
         Vertex(int n) {
             name = n;
             adj = new LinkedList<Edge>();
-            revAdj = new LinkedList<Edge>(); /* only for directed graphs */
+            revAdj = new LinkedList<Edge>();   /* only for directed graphs */
         }
 
         /**
          * Method to get name of a vertex.
+         *
          */
         public int getName() {
             return name;
         }
 
-        public Iterator<Edge> iterator() {
-            return adj.iterator();
-        }
+        public Iterator<Edge> iterator() { return adj.iterator(); }
 
         // Helper function for parallel arrays used to store vertex attributes
-        public static <T> T getVertex(T[] node, Vertex u) {
+        public static<T> T getVertex(T[] node, Vertex u) {
             return node[u.name];
         }
 
         /**
-         * Method to get vertex number. +1 is needed because [0] is vertex 1.
+         * Method to get vertex number.  +1 is needed because [0] is vertex 1.
          */
         public String toString() {
-            return Integer.toString(name + 1);
+            return Integer.toString(name+1);
         }
 
         public List<Edge> getAdj() {
             return adj;
         }
-
         public List<Edge> getRevAdj() {
             return revAdj;
         }
@@ -80,9 +82,12 @@ public class Graph implements Iterable<Graph.Vertex> {
         /**
          * Constructor for Edge
          *
-         * @param u : Vertex - Vertex from which edge starts
-         * @param v : Vertex - Vertex on which edge lands
-         * @param w : int - Weight of edge
+         * @param u
+         *            : Vertex - Vertex from which edge starts
+         * @param v
+         *            : Vertex - Vertex on which edge lands
+         * @param w
+         *            : int - Weight of edge
          */
         Edge(Vertex u, Vertex v, int w) {
             from = u;
@@ -94,13 +99,14 @@ public class Graph implements Iterable<Graph.Vertex> {
          * Method to find the other end end of an edge, given a vertex reference
          * This method is used for undirected graphs
          *
-         * @param u : Vertex
-         * @return : Vertex - other end of edge
+         * @param u
+         *            : Vertex
+         * @return
+        : Vertex - other end of edge
          */
         public Vertex otherEnd(Vertex u) {
             assert from == u || to == u;
-            // if the vertex u is the head of the arc, then return the tail else
-            // return the head
+            // if the vertex u is the head of the arc, then return the tail else return the head
             if (from == u) {
                 return to;
             } else {
@@ -120,15 +126,17 @@ public class Graph implements Iterable<Graph.Vertex> {
         }
     }
 
+
     /**
      * Constructor for Graph
      *
-     * @param n : int - number of vertices
+     * @param n
+     *            : int - number of vertices
      */
     public Graph(int n) {
         this.n = n;
         this.v = new Vertex[n];
-        this.directed = false; // default is undirected graph
+        this.directed = false;  // default is undirected graph
         // create an array of Vertex objects
         for (int i = 0; i < n; i++)
             v[i] = new Vertex(i);
@@ -136,23 +144,26 @@ public class Graph implements Iterable<Graph.Vertex> {
 
     /**
      * Find vertex no. n
-     *
-     * @param n : int
+     * @param n
+     *           : int
      */
     public Vertex getVertex(int n) {
-        return v[n - 1];
+        return v[n-1];
     }
 
     /**
      * Method to add an edge to the graph
      *
-     * @param from   : int - one end of edge
-     * @param to     : int - other end of edge
-     * @param weight : int - the weight of the edge
+     * @param from
+     *            : int - one end of edge
+     * @param to
+     *            : int - other end of edge
+     * @param weight
+     *            : int - the weight of the edge
      */
     public void addEdge(Vertex from, Vertex to, int weight) {
         Edge e = new Edge(from, to, weight);
-        if (this.directed) {
+        if(this.directed) {
             from.adj.add(e);
             to.revAdj.add(e);
         } else {

@@ -1,9 +1,16 @@
+
 /**
  * Sample driver program using the graph class
  * Reads input graph, prints it out, and assigns each node a component number (cno).
  *
  * @author rbk
  * Version 1.0: 2017/08/18
+=======
+/** Sample driver program using the graph class
+ *  Reads input graph, prints it out, and assigns each node a component number (cno).
+ *  @author rbk
+ *  Version 1.0: 2017/08/18
+
  */
 
 package cs6301.g00;
@@ -13,6 +20,7 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 public class CC {
+
     // Class to store information about a vertex in this algorithm
     class CCVertex {
         Graph.Vertex element;
@@ -106,13 +114,22 @@ public class CC {
             System.out.println();
         }
     }
+
 }
 
 /******************************
  * $ java cs6301.g00.CC 7 6 1 3 1 4 3 1 4 1 1 2 6 1 6 7 1 7 2 1
+<<<<<<< HEAD
  *
  * Output: Input Graph has 3 components: 1 [ 1 ] :(1,3) (4,1) 2 [ 2 ] :(2,6)
  * (7,2) 3 [ 1 ] :(1,3) (4,3) 4 [ 1 ] :(4,3) (4,1) 5 [ 3 ] : 6 [ 2 ] :(2,6)
  * (6,7) 7 [ 2 ] :(6,7) (7,2)
  *
+=======
+ * 
+ * Output: Input Graph has 3 components: 1 [ 1 ] :(1,3) (4,1) 2 [ 2 ] :(2,6)
+ * (7,2) 3 [ 1 ] :(1,3) (4,3) 4 [ 1 ] :(4,3) (4,1) 5 [ 3 ] : 6 [ 2 ] :(2,6)
+ * (6,7) 7 [ 2 ] :(6,7) (7,2)
+ * 
+
  */

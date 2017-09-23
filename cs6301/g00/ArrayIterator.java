@@ -4,11 +4,15 @@
  * @author rbk
  * Ver 1.0: 2017/08/08
  * Ver 1.1: 2017/08/28.  Updated some methods to public
+
  */
 
+
 package cs6301.g00;
+import java.lang.UnsupportedOperationException;
 
 import java.util.Iterator;
+
 
 public class ArrayIterator<T> implements Iterator<T> {
     T[] arr;
@@ -39,4 +43,5 @@ public class ArrayIterator<T> implements Iterator<T> {
     public void remove() {
         throw new UnsupportedOperationException();
     }
+
 }

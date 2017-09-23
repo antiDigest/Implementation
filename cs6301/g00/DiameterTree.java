@@ -1,14 +1,21 @@
+
 /**
  * Diameter of a tree
  *
  * @author rbk
  * Version 1.0: 2017/08/18
+=======
+/** Diameter of a tree
+ *  @author rbk
+ *  Version 1.0: 2017/08/18
+
  */
 
 package cs6301.g00;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
@@ -63,4 +70,5 @@ public class DiameterTree {
         }
         return farthest;
     }
+
 }

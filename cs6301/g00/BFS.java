@@ -1,11 +1,18 @@
+
 /**
  * Breadth-first search
  *
  * @author rbk
  * Version 1.0: 2017/09/08
+
+/** Breadth-first search
+ *  @author rbk
+ *  Version 1.0: 2017/09/08
+
  */
 
 package cs6301.g00;
+
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -86,4 +93,5 @@ public class BFS extends GraphAlgorithm<BFS.BFSVertex> {
         bv.parent = u;
         bv.distance = distance(u) + 1;
     }
+
 }
