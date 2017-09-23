@@ -99,7 +99,7 @@ public class CC {
 		System.out.println("Input Graph has " + nc + " components:");
 		for (Graph.Vertex u : g) {
 			System.out.print(u + " [ " + cc.getCCVertex(u).cno + " ] :");
-			for (Graph.Edge e : u.adj) {
+			for (Graph.Edge e : u.getAdj()) {
 				Graph.Vertex v = e.otherEnd(u);
 				System.out.print(e + " ");
 			}
