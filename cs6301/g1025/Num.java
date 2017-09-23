@@ -357,21 +357,9 @@ public class Num implements Comparable<Num> {
 			return mid;
 	}
 
-	static Num divideBy2(Num a) {
-		long carry = 0;
-		long value = 0;
-		StringBuilder sb = new StringBuilder();
-		Num res = Num.convertBase(a, 10);
-
-		Iterator<Long> it = res.num.descendingIterator();
-		while (it.hasNext()) {
-			value = next(it);
-			value += carry * 10;
-			sb.append(value / 2);
-			carry = (value % 2);
-		}
-
-		res = new Num(sb.toString(), a.base);
+	public static Num divideBy2(Num a) {
+		Num res = product(a, new Num(a.base / 2));
+		rightShift(res);
 		return res;
 	}
 
@@ -415,8 +403,12 @@ public class Num implements Comparable<Num> {
 	 * @return: Num - remainder of a/b
 	 */
 	public static Num mod(Num a, Num b) throws Exception{
-		Num res = subtract(a, product(divide(a, b), b));
-		return res;
+		if (a.compareTo(b) == 0)
+			return ZERO;
+		else if (a.compareTo(b) < 0)
+			return a;
+		else
+			return subtract(a, product(divide(a, b), b));
 	}
 
 	/**
@@ -431,8 +423,10 @@ public class Num implements Comparable<Num> {
 	public static Num power(Num a, Num n) {
 		Iterator<Long> itn = n.num.iterator();
 		long n0 = nextInt(itn);
+
 		if (size(n) == 1)
 			return power(a, n0);
+
 		rightShift(n);
 		return product(power(power(a, n), a.base), power(a, n0));
 	}
