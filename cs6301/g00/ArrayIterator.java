@@ -4,39 +4,44 @@
  * @author rbk
  * Ver 1.0: 2017/08/08
  * Ver 1.1: 2017/08/28.  Updated some methods to public
+=======
+/**  Iterator for arrays
+ *   @author rbk
+ *  Ver 1.0: 2017/08/08
+ *  Ver 1.1: 2017/08/28.  Updated some methods to public
+>>>>>>> 899e736115119d4d0d024a44fd65206933e09c9d
  */
 
 package cs6301.g00;
-
 import java.util.Iterator;
 
 public class ArrayIterator<T> implements Iterator<T> {
     T[] arr;
     int startIndex, endIndex, cursor;
 
-    ArrayIterator(T[] a) {
-        arr = a;
-        startIndex = 0;
-        endIndex = a.length - 1;
-        cursor = -1;
+    public ArrayIterator(T[] a) {
+	arr = a;
+	startIndex = 0;
+	endIndex = a.length-1;
+	cursor = -1;
     }
 
-    ArrayIterator(T[] a, int start, int end) {
-        arr = a;
-        startIndex = start;
-        endIndex = end;
-        cursor = start - 1;
+    public ArrayIterator(T[] a, int start, int end) {
+	arr = a;
+	startIndex = start;
+	endIndex = end;
+	cursor = start - 1;
     }
 
     public boolean hasNext() {
-        return cursor < endIndex;
+	return cursor < endIndex;
     }
 
     public T next() {
-        return arr[++cursor];
+	return arr[++cursor];
     }
 
     public void remove() {
-        throw new UnsupportedOperationException();
+	throw new UnsupportedOperationException();
     }
 }

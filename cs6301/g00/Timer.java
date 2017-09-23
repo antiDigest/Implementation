@@ -13,7 +13,7 @@
 package cs6301.g00;
 
 public class Timer {
-    long startTime, endTime, elapsedTime, memAvailable, memUsed;
+	long startTime, endTime, elapsedTime, memAvailable, memUsed;
 
     public Timer() {
         startTime = System.currentTimeMillis();
@@ -34,5 +34,4 @@ public class Timer {
     public String toString() {
         return "Time: " + elapsedTime + " msec.\n" + "Memory: " + (memUsed / 1048576) + " MB / " + (memAvailable / 1048576) + " MB.";
     }
-
 }
