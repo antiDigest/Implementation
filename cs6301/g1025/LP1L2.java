@@ -4,27 +4,58 @@
 package cs6301.g1025;
 
 import java.math.BigInteger;
+import java.util.Random;
+
+import cs6301.g00.Timer;
 
 public class LP1L2 {
 
     public static void main(String[] args) throws Exception {
-        String a = "";
-        String b = "10";
-        //System.out.println("A: "+a.length()+", B: "+b.length());
+        StringBuilder a = new StringBuilder();
+        StringBuilder b = new StringBuilder();
+        int aCount = 10;
+        int bCount = 5;
+        Random r = new Random();
+        for(int i=0; i< aCount; i++){
+        	a.append(r.nextInt(10));
+        }
 
-        BigInteger b1 = new BigInteger(a);
-        BigInteger b2 = new BigInteger(b);
-        Num x = new Num(a);
-        Num y = new Num(b);
+        for(int i=0; i< bCount; i++){
+        	b.append(r.nextInt(10));
+        }
+
+//        BigInteger b1 = new BigInteger(a.toString());
+//        BigInteger b2 = new BigInteger(b.toString());
+        Num x = new Num(a.toString());
+        Num y = new Num(b.toString());
+
+
+
+        Timer t = new Timer();
+        t.start();
+        //Num z = Num.divideBy2NEW(x);
+        //Num q = new Num("556", 20);
         Num z = Num.power(x, y);
+        //Num k = Num.power(x, Long.parseLong(y.toString()));
+        //boolean w = Num.odd(q);
+        //System.out.println(z);
 
-        System.err.println(z);
-        System.out.println(b1.mod(b2).toString());
+        t.end();
+        System.out.println(t);
 
-//        int val = z.toString().compareTo(b1.pow(b2).toString());
-//        String out = val == 0 ? "PASS" : "FAIL";
-//        System.out.println(out);
-        // z.printList();
+        //t.start();
+        //BigInteger b3 = b1.divide(b2);
+        //t.end();
+        //System.out.println(t);
+
+        //int val = z.compareTo(k);
+        //System.out.println(val);
+        //int val = z.toString().compareTo(b3.toString());
+        //String out = val == 0 ? "PASS" : val == 2 ? "NOT ASSERTED" : "FAIL";
+        //System.out.println(out);
+
+//        System.err.println(z);
+//        System.out.println(b3);
 
     }
 
