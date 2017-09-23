@@ -1,4 +1,15 @@
 
+<<<<<<< HEAD
+=======
+*/*.class
+*/.DS_Store
+.idea/
+cs6301.iml
+out/
+in/
+.DS_Store
+
+>>>>>>> ad8da776bf36bd316957b6745422c595b7d88917
 # Compiled class file
 *.class
 
@@ -21,6 +32,7 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+<<<<<<< HEAD
 
 */*.class
 */.DS_Store
@@ -30,3 +42,5 @@ hs_err_pid*
 cs6301.iml
 out/
 in/
+=======
+>>>>>>> ad8da776bf36bd316957b6745422c595b7d88917
