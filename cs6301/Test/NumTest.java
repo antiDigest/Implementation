@@ -312,8 +312,9 @@ public class NumTest extends TestCase {
     /**
      * Test method for
      * {@link cs6301.g1025.Num#power(cs6301.g1025.Num, cs6301.g1025.Num)}.
+     * @throws Exception 
      */
-    public void testPowerNumNum() {
+    public void testPowerNumNum() throws Exception {
         Num out1 = Num.power(Num.ZERO, Num.ONE);//50 / -50
         Num out2 = Num.power(new Num(3), new Num(2)); //100 / -100
         Num out3 = Num.power(new Num(2), new Num(3));//100 / 100
