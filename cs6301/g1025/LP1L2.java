@@ -19,18 +19,18 @@ public class LP1L2 {
         for(int i=0; i< aCount; i++){
         	a.append(r.nextInt(10));
         }
-        
+
         for(int i=0; i< bCount; i++){
         	b.append(r.nextInt(10));
         }
-        
+
 //        BigInteger b1 = new BigInteger(a.toString());
 //        BigInteger b2 = new BigInteger(b.toString());
         Num x = new Num(a.toString());
         Num y = new Num(b.toString());
-        
 
-        
+
+
         Timer t = new Timer();
         t.start();
         //Num z = Num.divideBy2NEW(x);
@@ -39,21 +39,21 @@ public class LP1L2 {
         //Num k = Num.power(x, Long.parseLong(y.toString()));
         //boolean w = Num.odd(q);
         //System.out.println(z);
-        
+
         t.end();
         System.out.println(t);
-        
+
         //t.start();
         //BigInteger b3 = b1.divide(b2);
         //t.end();
         //System.out.println(t);
-        
+
         //int val = z.compareTo(k);
         //System.out.println(val);
         //int val = z.toString().compareTo(b3.toString());
         //String out = val == 0 ? "PASS" : val == 2 ? "NOT ASSERTED" : "FAIL";
         //System.out.println(out);
-        
+
 //        System.err.println(z);
 //        System.out.println(b3);
 

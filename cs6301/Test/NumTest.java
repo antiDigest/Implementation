@@ -97,6 +97,14 @@ public class NumTest extends TestCase {
 
 	/**
 	 * Test method for
+	 * {@link cs6301.g1025.Num#divideBy2(cs6301.g1025.Num)}.
+	 */
+	public void testBy2() {
+		assertEquals("10", Num.divideBy2(new Num(20)).toString());
+	}
+
+	/**
+	 * Test method for
 	 * {@link cs6301.g1025.Num#add(cs6301.g1025.Num, cs6301.g1025.Num)}.
 	 */
 	public void testAdd() {
