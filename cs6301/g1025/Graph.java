@@ -5,14 +5,14 @@
  * Ver 1.1: 2017/08/28.  Updated some methods to public.  Added getName() to Vertex
  */
 
-package cs6301.g00;
+package cs6301.g1025;
 
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 
-import cs6301.g00.ArrayIterator;
+
 
 public class Graph implements Iterable<Graph.Vertex> {
     Vertex[] v; // vertices of graph
@@ -172,7 +172,7 @@ public class Graph implements Iterable<Graph.Vertex> {
      * Method to create iterator for vertices of graph
      */
     public Iterator<Vertex> iterator() {
-        return new ArrayIterator<Vertex>(v);
+        return new cs6301.g00.ArrayIterator<Vertex>(v);
     }
 
     // read a directed graph using the Scanner interface

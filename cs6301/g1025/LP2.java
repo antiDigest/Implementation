@@ -6,7 +6,9 @@ import java.util.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.List;
-import cs6301.g00.*;
+import cs6301.g00.Graph;
+import cs6301.g00.Timer;
+
 
 public class LP2 {
 	static int VERBOSE = 1;

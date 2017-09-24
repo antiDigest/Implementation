@@ -12,6 +12,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
+import cs6301.g00.Graph;
+
 public class CC {
     // Class to store information about a vertex in this algorithm
     class CCVertex {
@@ -34,7 +36,7 @@ public class CC {
         this.g = g;
         ccVertex = new CCVertex[g.size()];
         for (Graph.Vertex u : g) {
-            ccVertex[u.name] = new CCVertex(u);
+            ccVertex[u.getName()] = new CCVertex(u);
         }
     }
 
@@ -75,7 +77,7 @@ public class CC {
 
     // From Vertex to CCVertex (ugly)
     CCVertex getCCVertex(Graph.Vertex u) {
-        return ccVertex[u.name];
+        return ccVertex[u.getName()];
     }
 
     // From CCVertex to Vertex
@@ -99,7 +101,7 @@ public class CC {
         System.out.println("Input Graph has " + nc + " components:");
         for (Graph.Vertex u : g) {
             System.out.print(u + " [ " + cc.getCCVertex(u).cno + " ] :");
-            for (Graph.Edge e : u.adj) {
+            for (Graph.Edge e : u.getAdj()) {
                 Graph.Vertex v = e.otherEnd(u);
                 System.out.print(e + " ");
             }
