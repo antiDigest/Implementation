@@ -13,8 +13,8 @@ public class LP1L2 {
     public static void main(String[] args) throws Exception {
         StringBuilder a = new StringBuilder();
         StringBuilder b = new StringBuilder();
-        int aCount = 10;
-        int bCount = 5;
+        int aCount = 3;
+        int bCount = 1;
         Random r = new Random();
         for(int i=0; i< aCount; i++){
         	a.append(r.nextInt(10));
@@ -30,7 +30,7 @@ public class LP1L2 {
         Num y = new Num(b.toString());
 
 
-
+        System.out.println("Timer Started");
         Timer t = new Timer();
         t.start();
         //Num z = Num.divideBy2NEW(x);
