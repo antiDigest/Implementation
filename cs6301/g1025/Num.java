@@ -57,13 +57,17 @@ public class Num implements Comparable<Num> {
 	 * Start of Constructors
 	 */
 
-	// constructor for initializing input string to default base
+	/**
+	 * constructor for initializing input string to default base
+	 */
 	public Num(String s) {
 		this(s, defaultBase);
 
 	}
 
-	// constructor for initializing input string with given base
+	/**
+	 * constructor for initializing input string with given base
+	 */
 	public Num(String s, long base) {
 		this();
 		this.base = base;
@@ -95,7 +99,9 @@ public class Num implements Comparable<Num> {
 			}
 	}
 
-	// constructor for initialising base with long input
+	/**
+	 * constructor for initialising base with long input
+	 */
 	public Num(long x, long base) {
 		this();
 		this.base = base;
@@ -115,12 +121,16 @@ public class Num implements Comparable<Num> {
 
 	}
 
-	// Constructor for Num of type long
+	/**
+	 * Constructor for Num of type long
+	 */
 	public Num(long x) {
 		this(x, defaultBase);
 	}
 
-	// constructor added to create an empty num class
+	/**
+	 * constructor added to create an empty num class
+	 */
 	Num() {
 		num = new LinkedList<Long>();
 	}
@@ -136,10 +146,8 @@ public class Num implements Comparable<Num> {
 	/**
 	 * Difference of two signed big integers
 	 *
-	 * @param a:
-	 *            Num
-	 * @param b:
-	 *            Num
+	 * @param a Num
+	 * @param b Num
 	 * @return: Num (a - b)
 	 */
 	public static Num subtract(Num a, Num b) {
@@ -176,15 +184,6 @@ public class Num implements Comparable<Num> {
 		return res;
 	}
 
-	void trim() {
-		while (this.num.peekLast() == 0) {
-			if (size(this) == 1)
-				return;
-			else
-				this.num.removeLast();
-		}
-	}
-
 	/**
 	 * Sum of two unsigned big integers
 	 */
@@ -206,12 +205,6 @@ public class Num implements Comparable<Num> {
 
 	/**
 	 * Sum of two signed big integers
-	 *
-	 * @param a:
-	 *            Num
-	 * @param b:
-	 *            Num
-	 * @return: Num - a + b
 	 */
 	public static Num add(Num a, Num b) {
 		if (!(a.sign ^ b.sign)) {// if both signs are same, xor will be false
@@ -222,13 +215,6 @@ public class Num implements Comparable<Num> {
 
 	/**
 	 * Product of a Num and long
-	 *
-	 * @param n
-	 *            Num
-	 * @param b
-	 *            long
-	 *            <p>
-	 *            return Num a*b
 	 */
 	private static Num product(Num n, long b) {
 		if (b == 0)
@@ -247,13 +233,8 @@ public class Num implements Comparable<Num> {
 	}
 
 	/**
-	 * Karatsuba Product Num * Num RT = O(n^log3)
-	 *
-	 * @param a:
-	 *            Num
-	 * @param b:
-	 *            Num
-	 * @return: Num - a*b
+	 * Karatsuba Product Num * Num
+	 * RT = O(n^log3)
 	 */
 	public static Num product(Num a, Num b) {
 		Num res = new Num();
@@ -270,6 +251,17 @@ public class Num implements Comparable<Num> {
 		return res;
 	}
 
+	/**
+	 * Method splitting the two Nums into two halves
+	 * for Karatsuba product
+	 *
+	 * Splits a to aL and aH
+	 * Splits b to bL and bH
+	 * part1 = aH * bH * rightShift2k
+	 * part3 = aL * bL
+	 * part2 = ((aL+aH)*(bL+bH) - part1 - part3) * rightShiftk
+	 * return part1 + part2 + part3
+	 */
 	static Num karatsubaSplit(Num a, Num b) {
 
 		int k = (int) size(b) / 2;
@@ -303,15 +295,10 @@ public class Num implements Comparable<Num> {
 		return res;
 	}
 
-	// Use divide and conquer
-
     /**
      * a^n, power function
-     *
-     * @param a: Num
-     * @param n: Long
-     * @return Num - a^n
-     */
+	 * Num ^ long
+	 */
     public static Num power(Num a, long n) {
         if (n == 0)
             return ONE;
@@ -332,17 +319,9 @@ public class Num implements Comparable<Num> {
 	/* Start of Level 2 */
 
 	/**
-	 * Divide operation - uses binary search
-	 *
-	 * @param a:
-	 *            Num
-	 * @param b:
-	 *            Num
-	 * @return Num - quotient of a/b
+	 * Binary Search for divide operation
+	 * Initial Call: low=1, high=x, x=Numerator, y=Denominator
 	 */
-
-	// initial call: low: 1. high: x, x: numerator(dividend), y:
-	// denominator(divisor)
 	static Num binarySearch(Num low, Num high, Num x, Num y) {
 		int ret = low.unsignedCompareTo(high);
 		if (ret >= 0)
@@ -357,6 +336,10 @@ public class Num implements Comparable<Num> {
 			return mid;
 	}
 
+	/**
+	 * Finds the Half of a
+	 * Divide by 2 operation
+	 */
 	public static Num divideBy2(Num a) {
 		Num res = product(a, new Num(a.base / 2));
 		rightShift(res);
@@ -395,11 +378,8 @@ public class Num implements Comparable<Num> {
 
 	/**
 	 * Mod function
-	 *
-	 * @param a:
-	 *            Num
-	 * @param b:
-	 *            Num
+	 * @param a: Num
+	 * @param b: Num
 	 * @return: Num - remainder of a/b
 	 */
 	public static Num mod(Num a, Num b) throws Exception{
@@ -413,11 +393,9 @@ public class Num implements Comparable<Num> {
 
 	/**
 	 * power function
-	 *
-	 * @param a:
-	 *            Num
-	 * @param b:
-	 *            Num
+	 * Num ^ Num
+	 * @param a Num
+	 * @param n Num
 	 * @return: Num - remainder of a^b
 	 */
 	public static Num power(Num a, Num n) {
@@ -433,9 +411,8 @@ public class Num implements Comparable<Num> {
 
 	/**
 	 * Square Root function
-	 *
-	 * @param a
-	 *            Num
+	 * Num ^ (1/2)
+	 * @param a Num
 	 * @return Num - a^(1/2)
 	 */
 	static Num squareRoot(Num a) {
@@ -454,11 +431,10 @@ public class Num implements Comparable<Num> {
 	// otherwise
 
 	/**
-	 * CompareTo implemented from Comparable, (unsigned compare)
-	 *
-	 * @param other:
-	 *            Num
-	 * @return Num
+	 * Unsigned Compare function
+	 * Compares the mod value of this Num and the other Num
+	 * @param other Num
+	 * @return integer compareTo value
 	 */
 	public int unsignedCompareTo(Num other) {
 		if (size(this) < size(other)) {
@@ -471,6 +447,7 @@ public class Num implements Comparable<Num> {
 	}
 
 	/**
+	 * Print List storing the Num
 	 * Output using the format "base: elements of list ..." For example, if
 	 * base=100, and the number stored corresponds to 10965, then the output is
 	 * "100: 65 9 1"
@@ -483,7 +460,10 @@ public class Num implements Comparable<Num> {
 		System.out.print("\n");
 	}
 
-	// Return number to a string in base 10
+	/**
+	 * to String method
+	 * @return Return number to a string in base 10
+	 */
 	public String toString() {
 		Num targetBase = convertBase(this, 10);
 
@@ -499,6 +479,7 @@ public class Num implements Comparable<Num> {
 
 	}
 
+	// Returns this base
 	public long base() {
 		return this.base;
 	}
@@ -552,8 +533,7 @@ public class Num implements Comparable<Num> {
 	static void leftShift(Num n, int k) {
 		while (k > 0) {
 			n.num.addFirst(0l);
-			k--;
-		}
+			k--; }
 	}
 
 	static void leftShift(Num n) {
@@ -568,6 +548,15 @@ public class Num implements Comparable<Num> {
 		while (k > 0) {
 			n.num.removeFirst();
 			k--;
+		}
+	}
+
+	void trim() {
+		while (this.num.peekLast() == 0) {
+			if (size(this) == 1)
+				return;
+			else
+				this.num.removeLast();
 		}
 	}
 
@@ -586,6 +575,13 @@ public class Num implements Comparable<Num> {
 
 	}
 
+	/**
+	 * Signed Compare to function
+	 * implements Comparable class
+	 * compares this Num with other Num
+	 * @param other Num
+	 * @return integer compare to value
+	 */
 	@Override
 	public int compareTo(Num other) {
 
