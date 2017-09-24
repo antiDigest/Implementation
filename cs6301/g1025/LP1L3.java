@@ -19,7 +19,7 @@ public class LP1L3 {
         while (in.hasNext()) {
             String line = in.nextLine();
 
-            char result = x.evaluateLine(line, vars, 10);
+            char result = x.evaluateLine(line, vars);
 
             if (result == ' ') {
                 if (lastVariable != 0) {
@@ -43,7 +43,7 @@ public class LP1L3 {
      * @return
      * @throws Exception
      */
-    char evaluateLine(String line, Num vars[], long base) throws Exception {
+    char evaluateLine(String line, Num vars[]) throws Exception {
 
         if (line.equals(";")) {
             return ' ';
@@ -62,7 +62,7 @@ public class LP1L3 {
                 vars[variable - 97] = ShuntingYard.evaluatePostfix(right, vars);
             } else {
                 if (right.matches("[0-9]+")) {
-                    vars[variable - 97] = new Num(right, base);
+                    vars[variable - 97] = new Num(right);
                 }
             }
             System.out.println(vars[variable - 97]);
