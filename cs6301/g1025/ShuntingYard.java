@@ -80,7 +80,7 @@ public class ShuntingYard {
                 if (itemsRequired(token) == 2) {
                     Num item1 = stack.pop();
                     Num item2 = stack.pop();
-                    stack.push(evalOperator(token, item1, item2));
+                    stack.push(evalOperator(token, item2, item1));
                 } else {
                     Num item = stack.pop();
                     stack.push(evalOperator(token, item));
@@ -223,20 +223,19 @@ public class ShuntingYard {
 
     static Num evalOperator(Character op, Num first, Num second) throws Exception {
 
-        Num r = new Num();
         switch (op) {
             case '+':
-                return r.add(first, second);
+                return Num.add(first, second);
             case '-':
-                return r.subtract(first, second);
+                return Num.subtract(first, second);
             case '*':
-                return r.product(first, second);
+                return Num.product(first, second);
             case '/':
-                return r.divide(first, second);
+                return Num.divide(first, second);
             case '^':
-                return r.power(first, second);
+                return Num.power(first, second);
             case '%':
-                return r.mod(first, second);
+                return Num.mod(first, second);
 
             default:
                 throw new IllegalArgumentException("Operator not found.");
@@ -244,11 +243,11 @@ public class ShuntingYard {
     }
 
     static Num evalOperator(Character op, Num first) {
-        Num r = new Num();
+        
 
         switch (op) {
             case '|':
-                return r.squareRoot(first);
+                return Num.squareRoot(first);
             default:
                 throw new IllegalArgumentException("Operator not found.");
         }
