@@ -1,3 +1,10 @@
+/**
+ * Class to represent a graph
+ *  @author swaroop, Saikumar,Antriksh and Gunjan Tomer -g1025 group
+ *
+ */
+
+
 package cs6301.g1025;
 //Binary search: in class we saw a version of binary search that returned
 
