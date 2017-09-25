@@ -10,7 +10,7 @@ In cmd, execute java cs6301.g1025.<ClassName>
 test: java cs6301.g1025.Fibonacci 
 3.MergeSort
 
-
+test: java cs6301.g1025.MergeSort 
 4.BinarySearch
 Modified the Binary search to get the index.
 test: java cs6301.g1025.BinarySearch
