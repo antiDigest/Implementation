@@ -5,29 +5,42 @@ import java.util.Queue;
 import java.util.Stack;
 
 public class Frame {
-    int lineno;
+    Integer lineno;
     char variable;
     boolean condition;
     int gotoTrue = -1;
     int gotoFalse = -1;
+    boolean print = false;
     String right;
+    Frame next = null;
 
-    Frame(int no, String left, String right, boolean condition, Num[] vars) {
+    Frame(Integer no, String left, String right, boolean condition, Num[] vars) {
+//        System.out.println(no + " " + left + " " + right + " " + condition);
         this.lineno = no;
-        if (error(left.charAt(0), vars)) {
-            throw new Error("Cannot find symbol: " + left.charAt(0));
-        }
         this.variable = left.charAt(0);
+        if (right == null) {
+            this.print = true;
+            return;
+        }
         this.condition = condition;
         right = right.replace(';', ' ').trim();
-        if (!condition)
-            this.right = ShuntingYard.shuntingYard(right, vars);
-        else {
+        if (right.matches("[0-9]+")) {
+            vars[this.variable - 97] = new Num(right);
+            this.right = right;
+            this.print = true;
+            return;
+        }
+        if (!condition) {
+            if (!ShuntingYard.checkPostfix(right))
+                this.right = ShuntingYard.shuntingYard(right, vars);
+            else {
+                this.right = right.replaceAll(" ", "");
+            }
+        } else {
             this.right = right;
             if (right.contains(":")) {
                 right = right.replaceAll("\\s+", "");
                 String[] rightparts = right.split(":");
-
                 gotoTrue = Integer.parseInt(rightparts[0]);
                 gotoFalse = Integer.parseInt(rightparts[1]);
             } else {
@@ -44,18 +57,15 @@ public class Frame {
         return (vars[this.variable - 97].compareTo(Num.ZERO) != 0) ? gotoTrue : gotoFalse;
     }
 
-    /**
-     * Checks the character for letter or not
-     */
-    public static boolean isLetter(char c) {
-        return (c >= 'a' && c <= 'z');
-    }
-
-    /**
-     * Checks the character for digit or not
-     */
-    public static boolean isDigit(char c) {
-        return (c >= 0 && c <= 9);
+    public int execute(Num[] vars) throws Exception {
+        if (!print)
+            if (!this.condition)
+                vars[this.variable - 97] = ShuntingYard.evaluatePostfix(this.right, vars);
+            else
+                return this.goTo(vars);
+        else
+            System.out.println(vars[this.variable - 97]);
+        return -1;
     }
 
     boolean error(char c, Num[] vars) {

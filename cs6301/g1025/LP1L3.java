@@ -4,9 +4,6 @@
 package cs6301.g1025;
 
 import java.util.Scanner;
-import java.util.Stack;
-
-import static javafx.application.Platform.exit;
 
 public class LP1L3 {
 
@@ -47,16 +44,12 @@ public class LP1L3 {
      * @throws Exception
      */
     char evaluateLine(String line, Num vars[]) throws Exception {
-
-        
-        
-
         String[] lines = line.split("=");
         String left = lines[0];
         String right = lines[1];
 
         left = left.trim();
-        if (Frame.isLetter(left.charAt(0))) {
+        if (Character.isLetter(left.charAt(0))) {
             char variable = left.charAt(0);
 
             right = right.replace(';', ' ').trim();

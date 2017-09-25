@@ -11,8 +11,14 @@ public class LP1L4 {
     static Num[] vars = new Num[26];
     static int base;
     HashMap<Integer, Frame> hashmap = new HashMap<>();
+    Frame head = null;
 
-    public String evaluateLine(String line) throws Exception {
+    public Frame evaluateLine(String line) throws Exception {
+        Frame frame = null;
+
+        if (line.equals(";")) {// for case ;
+            return frame;
+        }
 
         if (line.contains("?")) {
             String[] parts = line.split("\\?");
@@ -25,40 +31,65 @@ public class LP1L4 {
             String right = parts[1];
             right = right.trim();
 
-            Frame frame = new Frame(lineno, left, right, true, vars);
+            frame = new Frame(lineno, left, right, true, vars);
             hashmap.put(frame.lineno, frame);
-            return String.valueOf(frame.goTo(vars));
         } else if (line.contains("=")) {
             String[] parts = line.split("=");
             String left = parts[0];
             String right = parts[1];
 
-            if (Frame.isDigit(left.charAt(0))) {
+            if (Character.isDigit(left.charAt(0))) {
+                left = left.trim();
                 String[] leftparts = left.split("\\s+");
-                int lineno = Integer.parseInt(leftparts[0]);
+                int lineno = Integer.parseInt(leftparts[0].trim());
                 left = leftparts[1].trim();
 
                 right = right.trim();
 
-                Frame frame = new Frame(lineno, left, right, false, vars);
+                frame = new Frame(lineno, left, right, false, vars);
                 hashmap.put(frame.lineno, frame);
-                return "next";
             } else {
-                char variable = left.charAt(0);
-
                 right = right.replace(';', ' ').trim();
-                if (!right.matches("[0-9]+")) {
-                    vars[variable - 97] = ShuntingYard.evaluatePostfix(right, vars);
-                } else {
-                    if (right.matches("[0-9]+")) {
-                        vars[variable - 97] = new Num(right, base);
-                    }
-                }
-                return String.valueOf(variable);
+                frame = new Frame(null, left, right, false, vars);
+            }
+        } else {
+            line = line.replace(';', ' ').trim();
+            frame = new Frame(null, line, null, false, vars);
+        }
+
+        return frame;
+    }
+
+    void evaluate(Scanner in) throws Exception {
+        Frame prev = head;
+        String line = null;
+        while (!(line = in.nextLine()).equals(";")) {
+            if (prev == null) {
+                head = this.evaluateLine(line);
+                prev = head;
+            } else {
+                prev.next = this.evaluateLine(line);
+                prev = prev.next;
+            }
+        }
+    }
+
+    void executeAll(Frame head) throws Exception {
+        Frame frame = head;
+        Frame prev = frame;
+
+        int point;
+        while (frame != null) {
+            point = frame.execute(vars);
+            if (point == -1) {
+                prev = frame;
+                frame = frame.next;
+            } else {
+                frame = hashmap.get(point);
             }
         }
 
-        return " ";
+        vars[prev.variable - 97].printList();
     }
 
     public static void main(String[] args) throws Exception {
@@ -70,22 +101,9 @@ public class LP1L4 {
 
         in = new Scanner(System.in);
         LP1L4 x = new LP1L4();
+        x.evaluate(in);
+        x.executeAll(x.head);
 
-        char lastVariable = 0;
-        while (in.hasNext()) {
-            String line = in.nextLine();
-            // TODO: parse words for level 4
-            String result = x.evaluateLine(line);
-            if (result.equals(" ")) {
-                if (lastVariable != 0) {
-                    vars[lastVariable - 97].printList();
-                }
-                break;
-            } else if (Frame.isLetter(result.charAt(0)) && result.length() == 1) {
-                lastVariable = result.charAt(0);
-            } else if (result.matches("[0-9]+")) {
-                System.out.println(result);
-            }
-        }
+        return;
     }
 }
