@@ -23,6 +23,7 @@ public class ArrangeNegativeAndPositive {
 
 	}
 
+	//like merge sort
 	static void rearrange(int[] arr, int start, int end) {
 
 		if (start >= end)
@@ -66,7 +67,7 @@ public class ArrangeNegativeAndPositive {
 		rotate(a, left, right - mid, right - left + 1);
 
 	}
-
+//shifting the elements by k values
 	public static void rotate(int[] a, int start, int k, int size) {
 
 		reverse(a, start, start + size - 1);
