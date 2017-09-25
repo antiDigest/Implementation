@@ -1,4 +1,14 @@
+
+/**
+ * Class to represent a graph
+ *  @author swaroop, Saikumar,Antriksh and Gunjan Tomer -g1025 group
+ *
+ */
+
+
 package cs6301.g1025;
+
+
 //Reorder an int array A[] by moving negative elements to the front,
 
 //followed by its positive elements.  The relative order of positive numbers
