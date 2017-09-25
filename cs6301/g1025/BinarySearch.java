@@ -23,7 +23,7 @@ public class BinarySearch {
 
 	public static <T extends Comparable<? super T>> int rebinarySearch(T[] arr, T x, int start, int end) {
 		if (start > end) {
-			return -1;
+			return -1;//meaning violating the preconditions
 		}
 		int mid = (start + end) / 2;
 		int r = arr[mid].compareTo(x);
