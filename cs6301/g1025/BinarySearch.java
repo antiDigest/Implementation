@@ -1,5 +1,5 @@
 /**
- * Class to represent a graph
+ * 
  *  @author swaroop, Saikumar,Antriksh and Gunjan Tomer -g1025 group
  *
  */
