@@ -1,6 +1,6 @@
 
 /**
- * Class to represent a graph
+ * Class to arrange positive and negative
  *  @author swaroop, Saikumar,Antriksh and Gunjan Tomer -g1025 group
  *
  */
