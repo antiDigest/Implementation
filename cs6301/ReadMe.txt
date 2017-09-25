@@ -9,7 +9,7 @@ In cmd, execute java cs6301.g1025.<ClassName>
 2.Find the fibonacci numbers
 test: java cs6301.g1025.Fibonacci 
 3.MergeSort
-
+Implemented all the different version of merge sort for comparison
 test: java cs6301.g1025.MergeSort 
 4.BinarySearch
 Modified the Binary search to get the index.
