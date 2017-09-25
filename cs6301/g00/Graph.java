@@ -4,7 +4,6 @@
  *  @author rbk
  *  Ver 1.1: 2017/08/28.  Updated some methods to public.  Added getName() to Vertex
  *  Ver 1.2: 2017/09/08.  Added getVertex() method for GraphAlgorithm.java
- *
  */
 
 package cs6301.g00;
@@ -14,11 +13,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 
+import cs6301.g00.ArrayIterator;
+
 public class Graph implements Iterable<Graph.Vertex> {
     Vertex[] v; // vertices of graph
     int n; // number of vertices in the graph
     boolean directed;  // true if graph is directed, false otherwise
-
 
     /**
      * Nested class to represent a vertex of a graph
@@ -52,11 +52,24 @@ public class Graph implements Iterable<Graph.Vertex> {
             return adj.iterator();
         }
 
+        // Helper function for parallel arrays used to store vertex attributes
+        public static <T> T getVertex(T[] node, Vertex u) {
+            return node[u.name];
+        }
+
         /**
-         * Method to get vertex number.  +1 is needed because [0] is vertex 1.
+         * Method to get vertex number. +1 is needed because [0] is vertex 1.
          */
         public String toString() {
             return Integer.toString(name + 1);
+        }
+
+        public List<Edge> getAdj() {
+            return adj;
+        }
+
+        public List<Edge> getRevAdj() {
+            return revAdj;
         }
     }
 
