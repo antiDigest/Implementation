@@ -24,9 +24,9 @@ public class ShuntingYard {
             Character token = infixExp[i];
             if (token == ' ')
                 continue;
-            if (Frame.isDigit(token)) {
+            if (Character.isDigit(token)) {
                 q.add(token);
-            } else if (Frame.isLetter(token)) {
+            } else if (Character.isLetter(token)) {
                 if (error(token, vars)) {
                     throw new Error("Cannot find symbol: " + token);
                 }
@@ -60,6 +60,29 @@ public class ShuntingYard {
         return prefix;
     }
 
+    public static boolean checkPostfix(String anyfix) {
+        char[] fix = anyfix.toCharArray();
+
+        if (anyfix.matches("[0-9]+")) {
+            return false;
+        }
+
+        int count = 0;
+        for (char token : fix) {
+            if (token == ' ')
+                continue;
+            if (isOperator(token)) {
+                count -= itemsRequired(token);
+            } else if (!isOperator(token)) {
+                count++;
+            }
+            if (count < 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 
     public static Num evaluatePostfix(String postfix, Num[] vars) throws Exception {
         Stack<Num> stack = new Stack<Num>();
@@ -70,7 +93,7 @@ public class ShuntingYard {
             Character token = post[i];
             if (token == ' ')
                 continue;
-            if (Frame.isLetter(token)) {
+            if (Character.isLetter(token)) {
                 if (error(token, vars)) {
                     throw new Error("Cannot find symbol: " + token);
                 }

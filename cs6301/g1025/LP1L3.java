@@ -4,9 +4,6 @@
 package cs6301.g1025;
 
 import java.util.Scanner;
-import java.util.Stack;
-
-import static javafx.application.Platform.exit;
 
 public class LP1L3 {
 
@@ -17,21 +14,24 @@ public class LP1L3 {
         char lastVariable = 0;
         Num[] vars = new Num[26];
         while (in.hasNext()) {
-            String line = in.nextLine();
-
-            char result = x.evaluateLine(line, vars);
-
-            if (result == ' ') {
-                if (lastVariable != 0) {
-                    vars[lastVariable - 97].printList();
-                }
-                break;
-            } else {
-                lastVariable = result;
-            }
+			String line = in.nextLine();
+			if (line.indexOf("=") == -1 && !line.equals(";")) {// for case var;
+				System.out.println(vars[line.charAt(0) - 97]);
+			} else if(line.equals(";")){// for case ;
+				     
+					if (lastVariable != 0) {
+						vars[lastVariable - 97].printList();
+					}
+					break;
+				} else {
+					char result = x.evaluateLine(line, vars);// for case var=expression;
+					if(result!=' ')
+					lastVariable = result;
+				}
+			}
 
         }
-    }
+    
 
     /**
      * Evaluate each line:
@@ -44,17 +44,12 @@ public class LP1L3 {
      * @throws Exception
      */
     char evaluateLine(String line, Num vars[]) throws Exception {
-
-        if (line.equals(";")) {
-            return ' ';
-        }
-
         String[] lines = line.split("=");
         String left = lines[0];
         String right = lines[1];
 
         left = left.trim();
-        if (Frame.isLetter(left.charAt(0))) {
+        if (Character.isLetter(left.charAt(0))) {
             char variable = left.charAt(0);
 
             right = right.replace(';', ' ').trim();
@@ -68,8 +63,9 @@ public class LP1L3 {
             System.out.println(vars[variable - 97]);
             return variable;
         }
+        else return ' ';
 
-        return ' ';
+        
     }
 
 }
