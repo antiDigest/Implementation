@@ -1,4 +1,9 @@
 package cs6301.g1025;
+//Class to find the k missing numbers
+//@author swaroop, Saikumar,Antriksh and Gunjan Tomer -g1025 group
+
+
+
 //Given an array of n distinct integers, in sorted order, starting
 
 //at 1 and ending with n+k, find the k missing numbers in the sequence. 
