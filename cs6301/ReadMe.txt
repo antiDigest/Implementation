@@ -1,4 +1,5 @@
 Team g1025
+
 Authors:
 antriksh agarwal
 gunjan tomar
@@ -8,11 +9,16 @@ swaroop pydisetty
 Testing the code:
 
 #Extract the files into cs6301 folder
+
 #Using an IDE:
 Place the extracted folder (cs6301\g1025\..) in a src folder of an IDE (eg. eclipse) and stock files in cs6301\g00\
+
 ##Using cmd:
+
 1. run javac *.java to compile the code
+
 2. navigate to root folder
+
 3. Execute each level separatey
   a. Level-1: java cs6301.g1025.LP1L1 
   	* Tests add, subtract, toString, product, power (long) and constructors 
@@ -41,7 +47,6 @@ printList
 related files: LP1L1.java, Num.java
 
 Level 2
-
 divide
 mod 
 squareroot

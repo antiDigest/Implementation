@@ -24,6 +24,8 @@ public class ShuntingYard {
      */
     public static String shuntingYard(String infix, Num[] vars) {
         String prefix = "";
+        q.clear();
+        stack.clear();
         char[] infixExp = infix.toCharArray();
         for (int i = 0; i < infix.length(); i++) {
             Character token = infixExp[i];

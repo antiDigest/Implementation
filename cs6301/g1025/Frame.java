@@ -38,6 +38,7 @@ public class Frame {
             }
             else {
                 this.right = right.replaceAll(" ", "");
+                this.evaluate = true;
             }
         } else {
             this.right = right;
@@ -50,6 +51,7 @@ public class Frame {
             } else {
                 gotoTrue = Integer.parseInt(right);
             }
+
         }
     }
 
@@ -58,7 +60,7 @@ public class Frame {
     }
 
     public int goTo(Num[] vars) {
-        return (vars[this.variable - 97].compareTo(Num.ZERO) != 0) ? gotoTrue : gotoFalse;
+        return (Num.ZERO.compareTo(vars[this.variable - 97]) != 0) ? gotoTrue : gotoFalse;
     }
 
     public int execute(Num[] vars) throws Exception {
@@ -69,6 +71,9 @@ public class Frame {
                 return this.goTo(vars);
         else if (this.print)
             System.out.println(vars[this.variable - 97]);
+        else {
+            vars[this.variable - 97] = new Num(this.right);
+        }
         return -1;
     }
 }
