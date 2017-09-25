@@ -1,8 +1,9 @@
+/**
+ * Class to represent an expression, ( a line in input for level4)
+ *  @author swaroop, saikumar, antriksh, gunjan
+ *
+ */
 package cs6301.g1025;
-
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Stack;
 
 public class Frame {
     Integer lineno;

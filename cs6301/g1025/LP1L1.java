@@ -1,6 +1,8 @@
-// Sample code for Level 1 driver for lp1
-
-// Change following line to your group number
+/**
+ * Class to execute level 1 methods
+ *  @author swaroop, saikumar, antriksh, gunjan
+ *
+ */
 package cs6301.g1025;
 
 import cs6301.g00.Timer;

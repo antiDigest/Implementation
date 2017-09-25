@@ -1,13 +1,10 @@
-// Starter code for lp1.
-
-// Change following line to your group number
-// Changed type of base to long: 1:15 PM, 2017-09-08.
+/**
+ * Big Integer class which has big int arithmetic such as addition,
+ * subtraction, division, product etc
+ *  @author swaroop, saikumar, antriksh, gunjan
+ *
+ */
 package cs6301.g1025;
-
-// Starter code for lp1.
-
-// Change following line to your group number
-
 import java.util.Iterator;
 import java.util.LinkedList;
 

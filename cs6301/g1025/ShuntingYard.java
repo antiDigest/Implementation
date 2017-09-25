@@ -1,6 +1,10 @@
+/**
+ * Class to process infix to postfix using shunting yard
+ *  @author swaroop, saikumar, antriksh, gunjan
+ *
+ */
 package cs6301.g1025;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Stack;
