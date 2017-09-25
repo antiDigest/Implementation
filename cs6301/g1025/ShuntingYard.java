@@ -1,5 +1,6 @@
 package cs6301.g1025;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Stack;
@@ -27,9 +28,6 @@ public class ShuntingYard {
             if (Character.isDigit(token)) {
                 q.add(token);
             } else if (Character.isLetter(token)) {
-                if (error(token, vars)) {
-                    throw new Error("Cannot find symbol: " + token);
-                }
                 q.add(token);
             } else if (token == '(') {
                 stack.push(token);
@@ -98,6 +96,9 @@ public class ShuntingYard {
                     throw new Error("Cannot find symbol: " + token);
                 }
                 Num num = vars[token - 97];
+                stack.push(num);
+            } else if (Character.isDigit(token)) {
+                Num num = new Num(token.toString());
                 stack.push(num);
             } else if (isOperator(token)) {
                 if (itemsRequired(token) == 2) {

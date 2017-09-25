@@ -11,10 +11,11 @@ public class Frame {
     int gotoTrue = -1;
     int gotoFalse = -1;
     boolean print = false;
+    boolean evaluate = false;
     String right;
     Frame next = null;
 
-    Frame(Integer no, String left, String right, boolean condition, Num[] vars) {
+    Frame(Integer no, String left, String right, boolean condition, Num[] vars) throws Exception {
 //        System.out.println(no + " " + left + " " + right + " " + condition);
         this.lineno = no;
         this.variable = left.charAt(0);
@@ -24,20 +25,22 @@ public class Frame {
         }
         this.condition = condition;
         right = right.replace(';', ' ').trim();
-        if (right.matches("[0-9]+")) {
+        if (right.matches("[0-9]+") && !condition) {
             vars[this.variable - 97] = new Num(right);
             this.right = right;
-            this.print = true;
             return;
         }
         if (!condition) {
-            if (!ShuntingYard.checkPostfix(right))
+            if (!ShuntingYard.checkPostfix(right)) {
                 this.right = ShuntingYard.shuntingYard(right, vars);
+                this.evaluate = true;
+            }
             else {
                 this.right = right.replaceAll(" ", "");
             }
         } else {
             this.right = right;
+            this.evaluate = true;
             if (right.contains(":")) {
                 right = right.replaceAll("\\s+", "");
                 String[] rightparts = right.split(":");
@@ -58,17 +61,13 @@ public class Frame {
     }
 
     public int execute(Num[] vars) throws Exception {
-        if (!print)
+        if (this.evaluate)
             if (!this.condition)
                 vars[this.variable - 97] = ShuntingYard.evaluatePostfix(this.right, vars);
             else
                 return this.goTo(vars);
-        else
+        else if (this.print)
             System.out.println(vars[this.variable - 97]);
         return -1;
-    }
-
-    boolean error(char c, Num[] vars) {
-        return (vars[c - 97] == null) ? true : false;
     }
 }
