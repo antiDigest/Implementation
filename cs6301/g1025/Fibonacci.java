@@ -1,9 +1,9 @@
 /**
  * Fibonacii numbers in linear and logarithmic running time
  *
- * @author: gunjan
- *
- * Short project 4: 18 September, 2017
+ /**
+ * 
+ *  @author swaroop, Saikumar,Antriksh and Gunjan Tomer -g1025 group
  *
  */
 package cs6301.g1025;
