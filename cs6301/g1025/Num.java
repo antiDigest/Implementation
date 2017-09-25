@@ -48,6 +48,7 @@ public class Num implements Comparable<Num> {
 	public static final Num ONE = new Num(1l, defaultBase);
 	public static final Num ZERO = new Num(0l, defaultBase);
     public static final Num TWO = new Num(2l, defaultBase);
+    public static final Num TEN = new Num(10l, defaultBase);
     long base = defaultBase; // Change as needed
 
 	public LinkedList<Long> num;
@@ -71,32 +72,21 @@ public class Num implements Comparable<Num> {
 	public Num(String s, long base) {
 		this();
 		this.base = base;
-		Num res = new Num();
-		res.base = base;
-		Num baseW = new Num(10, base);
-		Character token;
-		char[] string = s.toCharArray();
-		int n = 0;
-		if (s != "")
-			try {
-				token = string[n];
-				if (token == '-') {
-					this.sign = true;
-					n++;
-				}
-				for (int i = n; i < s.length(); i++) {
-					token = string[i];
-					if (Tokenizer.tokenize(token.toString()) == Tokenizer.Token.NUM) {
-						res = add(product(res, baseW), new Num(Integer.parseInt(string[i] + "")));
-					} else {
-						break;
-					}
-				}
-				this.num = res.num;
-
-			} catch (Exception e) {
-				System.out.println("Java Unhandled Exception: " + e.getMessage() + " at Value: " + s);
+		if (s == "") return;
+		try {
+			char[] string = s.toCharArray();
+			Num res = new Num("", base);
+			int i = 0;
+			if(string[i] == '-'){
+				this.sign = true;
+				i++;
 			}
+			for (; i < s.length(); i++) 
+				res = add(product(res, TEN), new Num(Long.parseLong(string[i] + ""), base));
+			this.num = res.num;
+		} catch (Exception e) {
+			System.out.println("Unrecognized character Exception: " + " at Value: " + s);
+		}
 	}
 
 	/**
@@ -231,10 +221,16 @@ public class Num implements Comparable<Num> {
 		}
 		return res;
 	}
+	
 
 	/**
-	 * Karatsuba Product Num * Num
-	 * RT = O(n^log3)
+	 * Karatsuba Product Num * Num RT = O(n^log3)
+	 *
+	 * @param a:
+	 *            Num
+	 * @param b:
+	 *            Num
+	 * @return: Num - a*b
 	 */
 	public static Num product(Num a, Num b) {
 		Num res = new Num();
@@ -251,6 +247,23 @@ public class Num implements Comparable<Num> {
 		return res;
 	}
 
+	public static Num productLong(Num a, Num b) {
+		Num res = new Num();
+		Iterator<Long> ib = b.num.iterator();
+		int offset = 0;
+		while (ib.hasNext()) {
+			Num local = product(a, next(ib));
+			int shift = offset++;
+			while (shift > 0) {
+				leftShift(local);
+				shift--;
+			}
+			res = add(res, local);
+		}
+		return res;
+	}
+
+
 	/**
 	 * Method splitting the two Nums into two halves
 	 * for Karatsuba product
@@ -263,7 +276,7 @@ public class Num implements Comparable<Num> {
 	 * return part1 + part2 + part3
 	 */
 	static Num karatsubaSplit(Num a, Num b) {
-
+		
 		int k = (int) size(b) / 2;
 		Num part1 = new Num("", a.base);
 
@@ -319,29 +332,38 @@ public class Num implements Comparable<Num> {
 	/* Start of Level 2 */
 
 	/**
-	 * Binary Search for divide operation
-	 * Initial Call: low=1, high=x, x=Numerator, y=Denominator
+	 * Binary Search for divide operation Initial Call: low=1, high=x,
+	 * x=Numerator, y=Denominator
 	 */
-	static Num binarySearch(Num low, Num high, Num x, Num y) {
+	static Num binarySearch(Num low, Num high, Num x, Num y, int type) {
 		int ret = low.unsignedCompareTo(high);
 		if (ret >= 0)
-			return ret == 0 ? subtract(low, new Num(1, x.base)) : low;
-		Num mid = divideBy2(add(low, high));// calculate the mid point
-		ret = x.unsignedCompareTo(product(mid, y)); // x*b <= a < (x+1)*b
-		if (ret < 0)
-			return binarySearch(low, mid, x, y);
-		else if (ret > 0)
-			return binarySearch(add(mid, new Num(1, x.base)), high, x, y);
-		else
+			return ret == 0 ? subtract(low, ONE) : low;
+		Num mid = divideBy2(add(low, high));
+		ret = type == 0 ? bsCompareTo(x, mid, y) : bsCompareTo(x, mid, mid); 	
+		if (ret == 0)
 			return mid;
+		else if (ret > 0)
+			return binarySearch(add(mid, ONE), high, x, y, type);
+		else
+			return binarySearch(low, mid, x, y, type);
+	}
+
+	static int bsCompareTo(Num x, Num mid, Num y) {
+
+		if (size(x) < size(mid) + size(y) - 1)
+			return -1;
+		else if (size(x) > size(mid) + size(y) - 1)
+			return 1;
+		else
+			return x.unsignedCompareTo(product(mid, y));
 	}
 
 	/**
-	 * Finds the Half of a
-	 * Divide by 2 operation
+	 * Finds the Half of a Divide by 2 operation
 	 */
-	public static Num divideBy2(Num a) {
-		Num res = product(a, new Num(a.base / 2));
+	private static Num divideBy2(Num a) {
+		Num res = product(a, a.base / 2);
 		rightShift(res);
 		return res;
 	}
@@ -356,21 +378,23 @@ public class Num implements Comparable<Num> {
      */
     public static Num divide(Num x, Num y) throws Exception {
 
-        if (y.unsignedCompareTo(ZERO) == 0)
-            throw new Exception("Divide by zero encountered.");
-        else if (y.unsignedCompareTo(ONE) == 0)
-            return x;
-        else if (y.unsignedCompareTo(TWO) == 0)
-            return divideBy2(x);
+    	Num res = new Num("", x.base);
+
+		if (y.unsignedCompareTo(ZERO) == 0)
+			throw new Exception("Divide by zero encountered.");
+		else if (y.unsignedCompareTo(ONE) == 0)
+			res = x;
+		else if (y.unsignedCompareTo(TWO) == 0)
+			res = divideBy2(x);
 
 		int ret = x.unsignedCompareTo(y);
-		Num res = new Num("", x.base);
+
 		if (ret < 0)
 			res = ZERO;
 		else if (ret == 0)
 			res = ONE;
 		else {
-			res = binarySearch(ONE, x, x, y);
+			res = binarySearch(ONE, x, x, y, 0);
 		}
 		sign(res, x.sign ^ y.sign);
 		return res;
@@ -382,10 +406,15 @@ public class Num implements Comparable<Num> {
 	 * @param b: Num
 	 * @return: Num - remainder of a/b
 	 */
-	public static Num mod(Num a, Num b) throws Exception{
-		if (a.compareTo(b) == 0)
+	public static Num mod(Num a, Num b) throws Exception {
+		if (a.compareTo(ZERO) == 0)
 			return ZERO;
-		else if (a.compareTo(b) < 0)
+		else if (a.compareTo(ONE) == 0)
+			return ONE;
+		int ret = a.compareTo(b);
+		if (ret == 0)
+			return ZERO;
+		else if (ret < 1)
 			return a;
 		else
 			return subtract(a, product(divide(a, b), b));
@@ -415,12 +444,14 @@ public class Num implements Comparable<Num> {
 	 * @param a Num
 	 * @return Num - a^(1/2)
 	 */
-	static Num squareRoot(Num a) {
+	public static Num squareRoot(Num a) {
 		if (a.sign)
 			throw new ArithmeticException("Square root of a negativ number");
-		if (size(a) == 1 && a.num.getFirst() <= 1)
+		else if (a.unsignedCompareTo(ZERO) == 0)
+			return ZERO;
+		else if (size(a) == 1 && a.num.getFirst() <= 1)
 			return a;
-		return binarySearch(ONE, Num.divideBy2(a), a, a);
+		return binarySearch(ONE, Num.divideBy2(a), a, a, 1);
 
 	}
 
@@ -452,7 +483,7 @@ public class Num implements Comparable<Num> {
 	 * base=100, and the number stored corresponds to 10965, then the output is
 	 * "100: 65 9 1"
 	 */
-	void printList() {
+	public void printList() {
 		Iterator<Long> iterator = num.iterator();
 		System.out.print(base + ": ");
 		while (iterator.hasNext())
