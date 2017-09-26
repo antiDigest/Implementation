@@ -1,3 +1,7 @@
+/**  Find Euler Tours in Graph if it is Eulerian
+ *   @author antriksh, swaroop, saikumar, gunjan
+ *  Ver 1.0: 2017/09/24
+ */
 
 // change following line to your group number
 package cs6301.g1025;
@@ -124,9 +128,7 @@ public class Euler {
 
 	// Stitch tours into a single tour using the algorithm discussed in class
 	void stitchTours() {
-
 		explore(this.start);
-
 	}
 
 	void explore(Graph.Vertex u) {
