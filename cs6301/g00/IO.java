@@ -1,22 +1,28 @@
-
-/** @author rbk
- *  Sample IO class
- *  Ver 1.0: 2017/08/08
+/**
+ * @author rbk
+ * Sample IO class
+ * Ver 1.0: 2017/08/08
  **/
 
 
 package cs6301.g00;
+<<<<<<< HEAD:cs6301/g00/IO.java
 import java.util.Scanner;
 import java.io.FileNotFoundException;
+=======
+
+>>>>>>> eab2ebe1104e0cd46861c3e2ed897c4ab03ea7c0:cs6301/g00/IO.java
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
 
 public class IO {
     // Use file name from command line arg (if given). Otherwise read from stdin (console)
     // If reading from Console up to end of input, type
     // Ctrl-D (Unix, apple) or Ctril-Z (Windows) to signal EOF.
 
-    public static void main(String[] args) throws FileNotFoundException
-    { Scanner in;
+    public static void main(String[] args) throws FileNotFoundException {
+        Scanner in;
         if (args.length > 0) {
             File inputFile = new File(args[0]);
             in = new Scanner(inputFile);
