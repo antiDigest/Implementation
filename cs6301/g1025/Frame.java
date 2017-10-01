@@ -5,6 +5,8 @@
  */
 package cs6301.g1025;
 
+import static junit.framework.Assert.assertEquals;
+
 public class Frame {
     Integer lineno;
     char variable;
@@ -69,8 +71,9 @@ public class Frame {
                 vars[this.variable - 97] = ShuntingYard.evaluatePostfix(this.right, vars);
             else
                 return this.goTo(vars);
-        else if (this.print)
+        else if (this.print) {
             System.out.println(vars[this.variable - 97]);
+        }
         else {
             vars[this.variable - 97] = new Num(this.right);
         }

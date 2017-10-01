@@ -5,6 +5,7 @@
  */
 package cs6301.g1025;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Stack;
@@ -91,29 +92,26 @@ public class ShuntingYard {
     public static Num evaluatePostfix(String postfix, Num[] vars) throws Exception {
         Stack<Num> stack = new Stack<Num>();
 
-        char[] post = postfix.toCharArray();
+        String[] post = postfix.split("\\s+");
 
-        for (int i = 0; i < postfix.length(); i++) {
-            Character token = post[i];
-            if (token == ' ')
-                continue;
-            if (Character.isLetter(token)) {
-                if (error(token, vars)) {
+        for (String token : post) {
+            if (Character.isLetter(token.charAt(0))) {
+                if (error(token.charAt(0), vars)) {
                     throw new Error("Cannot find symbol: " + token);
                 }
-                Num num = vars[token - 97];
+                Num num = vars[token.charAt(0) - 97];
                 stack.push(num);
-            } else if (Character.isDigit(token)) {
-                Num num = new Num(token.toString());
+            } else if (Character.isDigit(token.charAt(0))) {
+                Num num = new Num(token);
                 stack.push(num);
-            } else if (isOperator(token)) {
-                if (itemsRequired(token) == 2) {
+            } else if (isOperator(token.charAt(0))) {
+                if (itemsRequired(token.charAt(0)) == 2) {
                     Num item1 = stack.pop();
                     Num item2 = stack.pop();
-                    stack.push(evalOperator(token, item2, item1));
+                    stack.push(evalOperator(token.charAt(0), item2, item1));
                 } else {
                     Num item = stack.pop();
-                    stack.push(evalOperator(token, item));
+                    stack.push(evalOperator(token.charAt(0), item));
                 }
             }
         }
