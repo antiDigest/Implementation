@@ -1,52 +1,56 @@
 
 /* Ver 1.0: Starter code for Prim's MST algorithm */
 
-package cs6301.g00;
+package cs6301.g1025;
 
 import java.util.Scanner;
+
+import cs6301.g00.Graph;
+import cs6301.g00.Timer;
+
 import java.lang.Comparable;
 import java.io.FileNotFoundException;
 import java.io.File;
 
 public class PrimMST {
-    static final int Infinity = Integer.MAX_VALUE;
+	static final int Infinity = Integer.MAX_VALUE;
 
-    public PrimMST(Graph g) {
-    }
+	public PrimMST(Graph g) {
+	}
 
-    public int prim1(Graph.Vertex s) {
-        int wmst = 0;
+	public int prim1(Graph.Vertex s) {
+		int wmst = 0;
 
-        // SP6.Q4: Prim's algorithm using PriorityQueue<Edge>:
+		// SP6.Q4: Prim's algorithm using PriorityQueue<Edge>:
 
-        return wmst;
-    }
+		return wmst;
+	}
 
-    public int prim2(Graph.Vertex s) {
-        int wmst = 0;
+	public int prim2(Graph.Vertex s) {
+		int wmst = 0;
 
-        // SP6.Q6: Prim's algorithm using IndexedHeap<PrimVertex>:
+		// SP6.Q6: Prim's algorithm using IndexedHeap<PrimVertex>:
 
-        return wmst;
-    }
+		return wmst;
+	}
 
-    public static void main(String[] args) throws FileNotFoundException {
-	Scanner in;
+	public static void main(String[] args) throws FileNotFoundException {
+		Scanner in;
 
-        if (args.length > 0) {
-            File inputFile = new File(args[0]);
-            in = new Scanner(inputFile);
-        } else {
-            in = new Scanner(System.in);
-        }
+		if (args.length > 0) {
+			File inputFile = new File(args[0]);
+			in = new Scanner(inputFile);
+		} else {
+			in = new Scanner(System.in);
+		}
 
-	Graph g = Graph.readGraph(in);
-        Graph.Vertex s = g.getVertex(1);
+		Graph g = Graph.readGraph(in);
+		Graph.Vertex s = g.getVertex(1);
 
-	Timer timer = new Timer();
-	PrimMST mst = new PrimMST(g);
-	int wmst = mst.prim2(s);
-	timer.end();
-        System.out.println(wmst);
-    }
+		Timer timer = new Timer();
+		PrimMST mst = new PrimMST(g);
+		int wmst = mst.prim2(s);
+		timer.end();
+		System.out.println(wmst);
+	}
 }
