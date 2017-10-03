@@ -4,11 +4,8 @@
  * @author rbk
  * Ver 1.0: 2017/08/08
  * Ver 1.1: 2017/08/28.  Updated some methods to public
-<<<<<<< HEAD
-*/
-=======
  */
->>>>>>> eab2ebe1104e0cd46861c3e2ed897c4ab03ea7c0
+
 
 package cs6301.g00;
 

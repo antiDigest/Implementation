@@ -114,8 +114,8 @@ public class QuickSort {
         while (true) {
             /**
              *  LOOP INVARIANT:
-             *  A[ p .. i ] ​​<= x;
-             *  A[ j .. r ] ​>= x
+             *  A[ p .. i ] <= x;
+             *  A[ j .. r ] >= x
              */
             do {
                 i++;
