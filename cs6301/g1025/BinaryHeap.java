@@ -138,7 +138,9 @@ public class BinaryHeap<T> {
 		for (int i = h.pq.length - 1; i >= 0; i--) {
 			h.pq[i] = h.remove();
 		}
-		A = h.pq;
+		for (int i = 0; i < h.pq.length; i++) {
+			A[i] = h.pq[i];
+		}
 
 	}
 
