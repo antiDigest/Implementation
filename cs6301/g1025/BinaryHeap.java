@@ -8,6 +8,7 @@ import java.util.Arrays;
 
 import java.util.Comparator;
 
+
 public class BinaryHeap<T> {
 	T[] pq;
 	Comparator<T> c;
@@ -22,9 +23,12 @@ public class BinaryHeap<T> {
 	public BinaryHeap(T[] q, Comparator<T> comp, int n) {
 		capacity = n;
 		pq = (T[]) new Object[capacity];
-		for (int i = 0; i < q.length; i++) {
-			pq[i] = q[i];
+		
+		int i = 0;
+		for (T Obj : q) {
+			pq[i++] = Obj;
 		}
+	
 		c = comp;
 		heapSize = q.length;
 
@@ -34,19 +38,19 @@ public class BinaryHeap<T> {
 		add(x);
 	}
 
-	public T deleteMin() throws MyException {
+	public T deleteMin() throws PQException {
 		return remove();
 	}
 
-	public T min() throws MyException {
+	public T min() throws PQException {
 		return peek();
 	}
 
 	public void add(T x) { /* TO DO. Throw exception if q is full. */
 		if (heapSize >= capacity) {
 			try {
-				throw new MyException("PriorityQueue is full");
-			} catch (MyException exp) {
+				throw new PQException("PriorityQueue is full");
+			} catch (PQException exp) {
 				System.out.println(exp);
 			}
 		} else {
@@ -58,22 +62,24 @@ public class BinaryHeap<T> {
 	}
 
 	public T remove()
-			throws MyException { /* TO DO. Throw exception if q is empty. */
+			throws PQException { /* TO DO. Throw exception if q is empty. */
 		if (heapSize <= 0) {
-			throw new MyException("PriorityQueue is Empty");
+			throw new PQException("PriorityQueue is Empty");
 
 		}
 		T min = pq[0];
-		pq[0] = pq[--heapSize];
+		move(pq,0,pq[heapSize-1]);
+		heapSize--;
+		
 		percolateDown(0);
 		return min;
 
 	}
 
 	public T peek()
-			throws MyException { /* TO DO. Throw exception if q is empty. */
+			throws PQException { /* TO DO. Throw exception if q is empty. */
 		if (heapSize <= 0) {
-			throw new MyException("PriorityQueue is Empty");
+			throw new PQException("PriorityQueue is Empty");
 
 		}
 		return pq[0];
@@ -86,7 +92,8 @@ public class BinaryHeap<T> {
 		 * This operation is used in finding largest k elements in a stream.
 		 */
 		if (heapSize > 0) {
-			pq[0] = x;
+			move(pq,0,x);
+			
 			percolateDown(0);
 		}
 	}
@@ -95,11 +102,21 @@ public class BinaryHeap<T> {
 	void percolateUp(int i) { /* to be implemented */
 		T elem = pq[i];
 		while (i > 0 && this.c.compare(elem, (pq[parent(i)])) < 0) {
-			pq[i] = pq[parent(i)];
-			i = parent(i);
+			move(pq, i, pq[parent(i)]);
+            i = parent(i);
 		}
-		pq[i] = elem;
+		move(pq,i,elem);
+		
 	}
+
+	
+	void move(Object[] pq, int i, T t) {
+    	
+		pq[i] = t;
+		 
+
+	}
+
 
 	/** pq[i] may violate heap order with children */
 	void percolateDown(int i) { /* to be implemented */
@@ -114,11 +131,12 @@ public class BinaryHeap<T> {
 			if (this.c.compare(elem, (pq[c])) <= 0) {
 				break;
 			}
-			pq[i] = pq[c];
+			move(pq,i,pq[c]);
+			
 			i = c;
 			c = 2 * i + 1;
 		}
-		pq[i] = elem;
+		move(pq,i,elem);
 	}
 
 	/** Create a heap. Precondition: none. */
@@ -133,12 +151,14 @@ public class BinaryHeap<T> {
 	 * heap ==> descending order max heap ==> ascending order
 	 */
 	public static <T> void heapSort(T[] A, Comparator<T> comp)
-			throws MyException { /* to be implemented */
-		BinaryHeap<T> h = new BinaryHeap<T>(A, comp, A.length);
-		h.buildHeap();
+			throws PQException { /* to be implemented */
+	    BinaryHeap<T> h = new BinaryHeap<T>(A, comp, A.length);
+	    h.buildHeap();
 		for (int i = h.pq.length - 1; i >= 0; i--) {
-			h.pq[i] = h.remove();
+			 h.move(h.pq,i,h.remove());
+			
 		}
+
 		for (int i = 0; i < h.pq.length; i++) {
 			A[i] = h.pq[i];
 		}
@@ -147,7 +167,16 @@ public class BinaryHeap<T> {
 
 	// utility methods
 	int parent(int pos) {
-		return pos / 2;
+		return (pos - 1) / 2;
+
+	}
+
+	boolean isEmpty() {
+		if (heapSize <= 0) {
+			return true;
+		} else {
+			return false;
+		}
 
 	}
 
@@ -156,7 +185,7 @@ public class BinaryHeap<T> {
 		String str = "";
 		int i = 0;
 		while (i < heapSize && pq[i] != null) {
-			str += pq[i] + "\n";
+			str += pq[i] + ",";
 			i++;
 		}
 		return str;
@@ -164,10 +193,10 @@ public class BinaryHeap<T> {
 
 }
 
-class MyException extends Exception {
+class PQException extends Exception {
 	String str;
 
-	MyException(String str) {
+	PQException(String str) {
 		this.str = str;
 	}
 
