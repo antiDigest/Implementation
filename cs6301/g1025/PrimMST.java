@@ -18,7 +18,6 @@ import java.util.PriorityQueue;
 
 public class PrimMST extends GraphAlgorithm<PrimMST.PrimVertex> {
 
-
 	static final int Infinity = Integer.MAX_VALUE;
 
 	public PrimMST(Graph g) {
@@ -30,19 +29,17 @@ public class PrimMST extends GraphAlgorithm<PrimMST.PrimVertex> {
 		}
 
 		initialize(g);
+
 	}
-	
-	public void initialize(Graph g){
+
+	public void initialize(Graph g) {
 		for (Vertex u : g) {
 			prim(u).seen = false;
 			prim(u).parent = null;
 		}
 	}
 
-	/**
-	 * Wrapper to store component numbers
-	 */
-	static class PrimVertex {
+	class PrimVertex {
 		boolean seen;
 		Graph.Vertex parent;
 
@@ -68,7 +65,8 @@ public class PrimMST extends GraphAlgorithm<PrimMST.PrimVertex> {
 		for (Edge e : src) {
 			pq.add(e);
 		}
-		// Graph.Vertex u = src;
+		
+	
 		prim(src).seen = true;
 		prim(src).parent = null;
 		while (!pq.isEmpty()) {
@@ -88,15 +86,114 @@ public class PrimMST extends GraphAlgorithm<PrimMST.PrimVertex> {
 		return wmst;
 	}
 
-	public int prim2(Graph.Vertex s) {
+	// Algorithm uses a parallel array for storing information about
+	// Primvertices2
+
+	// Comparator for minheap
+	static class minPQ implements Comparator<PrimVertex2> {
+
+		@Override
+		public int compare(PrimVertex2 u, PrimVertex2 v) {
+			if (u.d < v.d) {
+				return -1;
+			} else if (u.d == v.d) {
+				return 0;
+			} else {
+				return 1;
+			}
+
+		}
+
+	}
+
+	
+	
+	//create a Indexheap instance
+	static IndexedHeap<PrimVertex2> pqi=null;
+	
+	//create primVertex2 vertices
+	static PrimVertex2[] primVertex2= null;
+
+	//create a heap by adding vertices to primVertex2
+	public void CreateQueue(Graph g) throws PQException {
+        PrimVertex2 v2 = null;
+		primVertex2 = new PrimVertex2[g.size()];
+
+		for (Vertex v : g) {
+			v2 = new PrimVertex2(node[v.getName()], Infinity, v);
+			v2.putIndex(v.getName());
+			primVertex2[v.getName()] = v2;
+
+		}
+		pqi = new IndexedHeap<PrimVertex2>(primVertex2, new minPQ(), g.size());
+		
+
+	}
+
+	public int prim2(Graph.Vertex s) throws PQException {
+		
+	
 		int wmst = 0;
-
 		// SP6.Q6: Prim's algorithm using IndexedHeap<PrimVertex>:
+		PrimVertex2 u = primVertex2[s.getName()];
+		
+		u.d = 0;
+		pqi.decreaseKey(u);
+		
+		while (!pqi.isEmpty()) {
+			u = pqi.remove();
+			
+			u.primv.seen = true;
+			wmst = wmst + u.d;
+			
+			for (Edge e : u.mapVertex) {
 
+				PrimVertex2 v = primVertex2[e.otherEnd(u.mapVertex).getName()];
+				if (!v.primv.seen && e.weight < v.d) {
+					v.d = e.weight;
+					v.primv.parent = u.mapVertex;
+					pqi.decreaseKey(v);
+					
+				}
+			}
+		}
 		return wmst;
 	}
 
-	public static void main(String[] args) throws FileNotFoundException {
+	class PrimVertex2 implements Index {
+		PrimVertex primv;
+		int d;
+		int index;
+		Vertex mapVertex;
+
+		PrimVertex2(PrimVertex primv, int d, Vertex Source) {
+
+			this.d = d;
+			this.primv = primv;
+			this.mapVertex = Source;
+		}
+
+		@Override
+		public void putIndex(int i) {
+			// TODO Auto-generated method stub
+			index = i;
+		}
+
+		@Override
+		public int getIndex() {
+			// TODO Auto-generated method stub
+			return index;
+		}
+
+		@Override
+		public String toString() {
+			// TODO Auto-generated method stub
+			return (this.index + 1) + "";
+		}
+
+	}
+
+	public static void main(String[] args) throws FileNotFoundException, PQException {
 		Scanner in;
 
 		if (args.length > 0) {
@@ -107,7 +204,7 @@ public class PrimMST extends GraphAlgorithm<PrimMST.PrimVertex> {
 		}
 
 		Graph g = Graph.readGraph(in);
-		Graph.Vertex s = g.getVertex(1);
+		Graph.Vertex s = g.getVertex(7);
 
 		Timer timer = new Timer();
 		PrimMST mst = new PrimMST(g);
@@ -117,11 +214,15 @@ public class PrimMST extends GraphAlgorithm<PrimMST.PrimVertex> {
 		System.out.println("Weight of MST with prim1 algorithm:" + wmst);
 		System.out.println(timer);
 		mst.initialize(g);
-		
+
 		timer.start();
+		
+		mst.CreateQueue(g);
+
 		wmst = mst.prim2(s);
 		timer.end();
 		System.out.println("Weight of MST with prim2 algorithm:" + wmst);
 		System.out.println(timer);
 	}
+
 }
