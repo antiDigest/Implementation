@@ -4,12 +4,16 @@ package cs6301.g1025;
 
 import java.util.Arrays;
 
+
+
+
 // Ver 1.0:  Starter code for bounded size Binary Heap implementation
 
 import java.util.Comparator;
 
 
-public class BinaryHeap<T> {
+
+public class BinaryHeap<T>{
 	T[] pq;
 	Comparator<T> c;
 	int heapSize = 0;
@@ -23,12 +27,12 @@ public class BinaryHeap<T> {
 	public BinaryHeap(T[] q, Comparator<T> comp, int n) {
 		capacity = n;
 		pq = (T[]) new Object[capacity];
-		
+
 		int i = 0;
 		for (T Obj : q) {
 			pq[i++] = Obj;
 		}
-	
+
 		c = comp;
 		heapSize = q.length;
 
@@ -68,9 +72,9 @@ public class BinaryHeap<T> {
 
 		}
 		T min = pq[0];
-		move(pq,0,pq[heapSize-1]);
+		move(pq, 0, pq[heapSize - 1]);
 		heapSize--;
-		
+
 		percolateDown(0);
 		return min;
 
@@ -85,16 +89,18 @@ public class BinaryHeap<T> {
 		return pq[0];
 	}
 
-	public void replace(T x) {
+	public void replace(T x) throws PQException {
 		/*
 		 * TO DO. Replaces root of binary heap by x if x has higher priority
 		 * (smaller) than root, and restore heap order. Otherwise do nothing.
 		 * This operation is used in finding largest k elements in a stream.
 		 */
 		if (heapSize > 0) {
-			move(pq,0,x);
-			
-			percolateDown(0);
+			if (this.c.compare(x, this.peek()) > 0) {
+				move(pq, 0, x);
+
+				percolateDown(0);
+			}
 		}
 	}
 
@@ -103,20 +109,17 @@ public class BinaryHeap<T> {
 		T elem = pq[i];
 		while (i > 0 && this.c.compare(elem, (pq[parent(i)])) < 0) {
 			move(pq, i, pq[parent(i)]);
-            i = parent(i);
+			i = parent(i);
 		}
-		move(pq,i,elem);
-		
+		move(pq, i, elem);
+
 	}
 
-	
 	void move(Object[] pq, int i, T t) {
-    	
+
 		pq[i] = t;
-		 
 
 	}
-
 
 	/** pq[i] may violate heap order with children */
 	void percolateDown(int i) { /* to be implemented */
@@ -131,12 +134,12 @@ public class BinaryHeap<T> {
 			if (this.c.compare(elem, (pq[c])) <= 0) {
 				break;
 			}
-			move(pq,i,pq[c]);
-			
+			move(pq, i, pq[c]);
+
 			i = c;
 			c = 2 * i + 1;
 		}
-		move(pq,i,elem);
+		move(pq, i, elem);
 	}
 
 	/** Create a heap. Precondition: none. */
@@ -145,6 +148,20 @@ public class BinaryHeap<T> {
 			percolateDown(i);
 		}
 	}
+	
+	
+	//removes the root
+	T poll() throws PQException {
+		if (heapSize > 0) {
+			return this.remove();
+		} else {
+			return null;
+		}
+
+	}
+	
+	
+	
 
 	/*
 	 * sort pqay A[]. Sorted order depends on comparator used to buid heap. min
@@ -152,11 +169,11 @@ public class BinaryHeap<T> {
 	 */
 	public static <T> void heapSort(T[] A, Comparator<T> comp)
 			throws PQException { /* to be implemented */
-	    BinaryHeap<T> h = new BinaryHeap<T>(A, comp, A.length);
-	    h.buildHeap();
+		BinaryHeap<T> h = new BinaryHeap<T>(A, comp, A.length);
+		h.buildHeap();
 		for (int i = h.pq.length - 1; i >= 0; i--) {
-			 h.move(h.pq,i,h.remove());
-			
+			h.move(h.pq, i, h.remove());
+
 		}
 
 		for (int i = 0; i < h.pq.length; i++) {
@@ -180,6 +197,10 @@ public class BinaryHeap<T> {
 
 	}
 
+	public int size() {
+		return this.heapSize;
+	}
+
 	@Override
 	public String toString() {
 		String str = "";
@@ -190,6 +211,7 @@ public class BinaryHeap<T> {
 		}
 		return str;
 	}
+	
 
 }
 
