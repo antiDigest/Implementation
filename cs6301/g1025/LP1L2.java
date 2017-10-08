@@ -41,23 +41,23 @@ public class LP1L2 {
         System.out.println("Timer Started");
         Timer t = new Timer();
         t.start();
-        Num z = Num.mod(y, x);
+        Num z = Num.squareRoot(y);
         t.end();
         System.out.println(t);
         //t.start();
 //        System.out.println(z);
-//        BigInteger b4 = new BigInteger(z.toString());
-//        BigInteger b3 = b4.mod(b4);
+        BigInteger b4 = new BigInteger(z.toString());
+        BigInteger b3 = new BigInteger(y.toString());
 //        //t.end();
 //        //System.out.println(t);
 //
-//        int val2 = (int)Math.mod(923493423);
-//        int val = z.toString().compareTo(Integer.toString(val2));
-//        String out = val == 0 ? "PASS" : val == 2 ? "NOT ASSERTED" : "FAIL";
+        BigInteger val2 = b3.divide(b4);
+        int val = z.toString().compareTo(val2.toString());
+        String out = val == 0 ? "PASS" : val == 2 ? "NOT ASSERTED" : "FAIL";
 //        System.out.println(out);
         
         System.out.println(z);
-        //System.err.println(val2);
+        System.err.println(val2);
 
     }
 

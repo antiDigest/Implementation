@@ -348,7 +348,7 @@ public class Num implements Comparable<Num> {
 
 		}
 
-		
+
 	}
 
 	
@@ -414,13 +414,7 @@ public class Num implements Comparable<Num> {
 			return ZERO;
 		else if (ret < 1)
 			return a;
-		else {
-			Num res = divide(a, b);
-			Num p = product(res, b);
-			Num r = subtract(a, p);
-			return r;
-		}
-		// return subtract(a, product(divide(a, b), b));
+		else return subtract(a, product(divide(a, b), b));
 	}
 
 	/**
