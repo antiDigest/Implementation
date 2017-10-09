@@ -75,6 +75,10 @@ public class PrimMST extends GraphAlgorithm<PrimMST.PrimVertex> {
 			Vertex v = e.to;// to edge
 			if (prim(u).seen && prim(v).seen)
 				continue;// if both seen continue
+			else if(!prim(u).seen && prim(v).seen){
+				v = e.from;
+				u = e.to;
+			}
 			prim(v).seen = true;
 			prim(v).parent = u;
 			wmst += e.weight;// only now add this edge weight to wmst
@@ -175,19 +179,16 @@ public class PrimMST extends GraphAlgorithm<PrimMST.PrimVertex> {
 
 		@Override
 		public void putIndex(int i) {
-			// TODO Auto-generated method stub
 			index = i;
 		}
 
 		@Override
 		public int getIndex() {
-			// TODO Auto-generated method stub
 			return index;
 		}
 
 		@Override
 		public String toString() {
-			// TODO Auto-generated method stub
 			return (this.index + 1) + "";
 		}
 

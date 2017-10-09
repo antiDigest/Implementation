@@ -4,16 +4,13 @@ package cs6301.g1025;
 
 import java.util.Arrays;
 
-
-
-
 // Ver 1.0:  Starter code for bounded size Binary Heap implementation
 
 import java.util.Comparator;
 
+import cs6301.g00.Utils;
 
-
-public class BinaryHeap<T>{
+public class BinaryHeap<T> {
 	T[] pq;
 	Comparator<T> c;
 	int heapSize = 0;
@@ -148,9 +145,8 @@ public class BinaryHeap<T>{
 			percolateDown(i);
 		}
 	}
-	
-	
-	//removes the root
+
+	// removes the root
 	T poll() throws PQException {
 		if (heapSize > 0) {
 			return this.remove();
@@ -159,9 +155,6 @@ public class BinaryHeap<T>{
 		}
 
 	}
-	
-	
-	
 
 	/*
 	 * sort pqay A[]. Sorted order depends on comparator used to buid heap. min
@@ -211,8 +204,34 @@ public class BinaryHeap<T>{
 		}
 		return str;
 	}
-	
 
+	static class minPQ implements Comparator<Integer> {
+
+		/* Natural ordering */
+		public int compare(Integer o1, Integer o2) {
+			return o1.compareTo(o2);
+		}
+
+	}
+
+	static class maxPQ implements Comparator<Integer> {
+
+		/* Reverse ordering */
+		public int compare(Integer o1, Integer o2) {
+			return o2.compareTo(o1);
+		}
+
+	}
+	
+	public static void main(String[] args) throws PQException {
+		Utils util = new Utils();
+		Integer[] A = util.getRandomArray(1000);
+		BinaryHeap.heapSort(A, new minPQ());
+		System.out.println(Arrays.toString(A));
+		BinaryHeap.heapSort(A, new maxPQ());
+		System.out.println(Arrays.toString(A));
+
+	}
 }
 
 class PQException extends Exception {
