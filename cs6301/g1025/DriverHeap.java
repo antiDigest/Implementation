@@ -4,7 +4,7 @@ import java.util.Comparator;
 
 public class DriverHeap {
 
-	public static void main(String[] args) throws MyException {
+	public static void main(String[] args) throws Exception {
 		Integer[] a = new Integer[] { 9, 6, 5, 0, 8, 2, 2, 98, -1 };
 
 		BinaryHeap<Integer> h = new BinaryHeap<Integer>(a, new maxPQ(), 25);
