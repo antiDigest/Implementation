@@ -1,3 +1,14 @@
+/******************************************************************************
+ *  Compilation:  javac PerfectPower.java
+ *  Execution:    java cs6301.g1025.PerfectPower
+ *  
+ *  Perfect powers problem using algorithm given in the class
+ *
+ * @author antriksh, swaroop, gunjan, saikumar
+ * Ver 1.0: 2017/10/8. Implemented
+ *
+ ******************************************************************************/
+
 package cs6301.g1025;
 
 import java.util.PriorityQueue;

@@ -1,3 +1,13 @@
+/******************************************************************************
+ *  Compilation:  javac PrimeFactor.java
+ *  Execution:    java cs6301.g1025.PrimeFactor
+ *  
+ *  Prime factors permutations with the help of priority queues
+ *
+ * @author antriksh, swaroop, gunjan, saikumar
+ * Ver 1.0: 2017/10/8. Implemented
+ *
+ ******************************************************************************/
 package cs6301.g1025;
 
 import java.util.PriorityQueue;

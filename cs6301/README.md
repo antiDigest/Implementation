@@ -12,19 +12,33 @@ e. run java cs6301.g1025.<Class> to test the questions
 
 
 ##Question1: Sorting an array using k-way merge
-
+ * Not implemented
+ 
 ##Question2: Huffman Coding algorithm.
+ * Not implemented
 
 ##Question3: Perfect powers:
+ *  Compilation:  javac PrimeFactor.java
+ *  Execution:    java cs6301.g1025.PrimeFactor
+ 
+ *  Compilation:  javac PerfectPower.java
+ *  Execution:    java cs6301.g1025.PerfectPower
 
-##Question4: Prim's algorithm - 1
+##Question4, 6: Prim's algorithm - 1, 2
+ *  Compilation:  javac PrimMST.java
+ *  Execution:    java cs6301.g1025.PrimMST input.txt
 
 ##Question5: Implementation of binary heap and heap sort
+ *  Compilation:  javac BinaryHeap.java
+ *  Execution:    java cs6301.g1025.BinaryHeap
 
-##Question6: Prim's algorithm - 2
 
 ##Question7: Implementation Kruskal's algorithm for MST
+ *  Compilation:  javac KruskalMST.java
+ *  Execution:    java cs6301.g1025.KruskalMST input.txt
 
 ##Question8: RT analysis of the following two algorithms:
-    (a) Use Java's priority queue to keep track of the k largest elements seen
-    (b) Use your priority queue implementation (5) by replace() instead of delete+add
+  *  Compilation:  javac Question8.java
+  *  Execution:    java cs6301.g1025.Question8
+  * (a) Use Java's priority queue to keep track of the k largest elements seen
+  * (b) Use your priority queue implementation (5) by replace() instead of delete+add

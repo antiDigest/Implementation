@@ -1,5 +1,13 @@
-
-/* Ver 1.0: Starter code for Kruskal's MST algorithm */
+/******************************************************************************
+ *  Compilation:  javac KruskalMST.java
+ *  Execution:    java cs6301.g1025.KruskalMST input.txt
+ *  
+ *  Implementation of Kruskal using Disjoint set ADT
+ *
+ * @author antriksh, swaroop, gunjan, saikumar
+ * Ver 1.0: 2017/10/8. Implemented
+ *
+ ******************************************************************************/
 
 package cs6301.g1025;
 

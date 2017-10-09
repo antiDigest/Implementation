@@ -1,4 +1,13 @@
-// Ver 1.0:  Starter code for Indexed heaps
+/******************************************************************************
+ *  
+ * IndexedHeap is a indexed priority queue which inherits binary heap class
+ * 
+ * Builds a heap using index of the vertices
+ *
+ * @author antriksh, swaroop, gunjan, saikumar
+ * Ver 1.0: 2017/10/8. Implemented
+ *
+ ******************************************************************************/
 
 package cs6301.g1025;
 import java.util.Comparator;

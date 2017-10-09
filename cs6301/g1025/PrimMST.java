@@ -1,5 +1,13 @@
-
-/* Ver 1.0: Starter code for Prim's MST algorithm */
+/******************************************************************************
+ *  Compilation:  javac PrimMST.java
+ *  Execution:    java cs6301.g1025.PrimMST input.txt
+ *  
+ *  Two versions of Prims algorithm
+ *
+ * @author antriksh, swaroop, gunjan, saikumar
+ * Ver 1.0: 2017/10/8. Implemented
+ *
+ ******************************************************************************/
 
 package cs6301.g1025;
 
@@ -209,17 +217,17 @@ public class PrimMST extends GraphAlgorithm<PrimMST.PrimVertex> {
 
 		Timer timer = new Timer();
 		PrimMST mst = new PrimMST(g);
+		/*Prim1 algorithm*/
 		timer.start();
 		int wmst = mst.prim1(s);
 		timer.end();
 		System.out.println("Weight of MST with prim1 algorithm:" + wmst);
 		System.out.println(timer);
 		mst.initialize(g);
-
-		timer.start();
 		
+		/*Prim2 algorithm*/
+		timer.start();
 		mst.CreateQueue(g);
-
 		wmst = mst.prim2(s);
 		timer.end();
 		System.out.println("Weight of MST with prim2 algorithm:" + wmst);

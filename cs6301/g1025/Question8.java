@@ -1,8 +1,20 @@
+/******************************************************************************
+ *  Compilation:  javac Question8.java
+ *  Execution:    java cs6301.g1025.Question8
+ *  
+ *  Run time comparisons of k largest elements using java's pq and binaryheap (Q5)
+ *
+ * @author antriksh, swaroop, gunjan, saikumar
+ * Ver 1.0: 2017/10/8. Implemented
+ *
+ ******************************************************************************/
 package cs6301.g1025;
 
 import java.util.Comparator;
 import java.util.PriorityQueue;
 import java.util.Random;
+
+import cs6301.g00.Timer;
 
 
 
@@ -55,7 +67,8 @@ public class Question8 {
 		int count = 0;
 
 		int obj = 0;
-		while (++count < Integer.MAX_VALUE) {
+		int N = (int)Math.pow(2, 20);
+		while (++count < N) {
 
 			obj = r.nextInt();
 			if (PQ.size() >= k) {
@@ -83,21 +96,25 @@ public class Question8 {
 
 		@Override
 		public int compare(Integer o1, Integer o2) {
-			// TODO Auto-generated method stub
 			return o1.compareTo(o2);
 		}
 
 	}
 
 	public static void main(String[] args) {
-
+		Timer t = new Timer();
+		t.start();
 		partA();
+		t.end();
+		System.out.println(t);
 		System.out.println();
 
 		try {
+			t.start();
 			partB();
+			t.end();
+			System.out.println(t);
 		} catch (PQException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

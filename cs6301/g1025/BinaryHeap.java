@@ -1,4 +1,13 @@
-// Ver 1.0:  Starter code for bounded size Binary Heap implementation
+/******************************************************************************
+ *  Compilation:  javac BinaryHeap.java
+ *  Execution:    java cs6301.g1025.BinaryHeap
+ *  
+ *  Implementation of Priority Queue (Min and max depends on the comparators)
+ *
+ * @author antriksh, swaroop, gunjan, saikumar
+ * Ver 1.0: 2017/10/8. Implemented
+ *
+ ******************************************************************************/
 
 package cs6301.g1025;
 
