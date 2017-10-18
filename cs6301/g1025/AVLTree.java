@@ -6,6 +6,7 @@
 package cs6301.g1025;
 
 import java.util.Scanner;
+import java.util.Stack;
 
 import static java.lang.Integer.max;
 import static java.lang.Math.abs;
@@ -29,6 +30,16 @@ public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
     }
 
     /**
+     * find x (or smallest element greater than x) in the tree
+     * @param x x to find
+     * @return x, or smallest element greater than x
+     */
+    Entry<T> find(T x){
+        stack = new Stack<>();
+        return (Entry<T>) super.find(this.root, x);
+    }
+
+    /**
      * Add x to tree.
      *  If tree contains a node with same key, replace element by x.
      *  Returns true if x is a new element added to tree.
@@ -36,7 +47,21 @@ public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
      * @return true if added/replaced, false otherwise
      */
     public boolean add (T x){
-        super.add(x);
+        if(root==null){
+            root = new Entry<>(x);
+            size = 1;
+            return true;
+        }
+        Entry<T> t = find(x);
+        if (t.element.compareTo(x)==0){
+            t.element = x; //Replace
+        } else if (t.element.compareTo(x) > 0){
+            t.left = new Entry<T>(x);
+        } else {
+            t.right = new Entry<T>(x);
+        }
+        size++;
+        return true;
         update(); // TODO : check casting here
         return true;
     }
