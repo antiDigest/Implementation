@@ -19,50 +19,107 @@ public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
             super(x, left, right);
             height = 0;
         }
+
+        Entry(){
+            this.element = null;
+        }
+
+        Entry<T> getLeft(){
+            return (Entry<T>) this.left;
+        }
+
+        Entry<T> getRight(){
+            return (Entry<T>) this.right;
+        }
+
+        int getLeftHeight(){
+            if(this.left == null)
+                return -1;
+            return this.getLeft().height;
+        }
+
+        int getRightHeight(){
+            if(this.right == null)
+                return -1;
+            return this.getRight().height;
+        }
+
+        void setLeftHeight(int height){
+            if(this.left == null)
+                return;
+            else if(height > -1)
+                this.getLeft().height = height;
+        }
+
+        void setRightHeight(int height){
+            if(this.right == null)
+                return;
+            else if(height > -1)
+                this.getRight().height = height;
+        }
+
+//        int updateHeight(){
+//            int lh = this.left == null ? -1 : this.getLeft().updateHeight();
+//            int rh = this.right == null ? -1 : this.getRight().updateHeight();
+//
+//            if (abs(lh - rh) > 1) {
+//                if (lh > rh && this.getLeft().getLeftHeight() > this.getLeft().getRightHeight()) {
+//                    this = right(this.getLeft(), this);
+//                } else if (rh > lh && this.getRight().getRightHeight() > this.getRight().getLeftHeight()) {
+//                    AVLTree.left(this, this.getRight());
+//                } else if (lh > rh && this.getLeft().getRightHeight() > this.getLeft().getLeftHeight()) {
+//                    AVLTree.rightLeft(this, this.getLeft(), this.getLeft().getRight());
+//                } else if (rh > lh && this.getRight().getRightHeight() > this.getRight().getLeftHeight()) {
+//                    AVLTree.leftRight(this, this.getLeft(), this.getRight().getLeft());
+//                }
+//            }
+//
+//            System.out.println(rh + ":" + lh);
+//
+//            this.setLeftHeight(lh);
+//            this.setRightHeight(rh);
+//            return 1 + max(lh, rh);
+//        }
+
+        @Override
+        public String toString() {
+            return this.element + "";
+        }
     }
 
     AVLTree() {
 //        super();
-        root = new Entry<T>(null, null, null);
+        root = new Entry<>();
         size = 0;
     }
 
-    /**
-     * find x (or smallest element greater than x) in the tree
-     *
-     * @param x x to find
-     * @return x, or smallest element greater than x
-     */
-    Entry<T> find(T x) {
-        stack = new Stack<>();
-        return super.find(this.root, x);
-    }
 
     /**
      * Add x to tree.
-     * If tree contains a node with same key, replace element by x.
-     * Returns true if x is a new element added to tree.
-     *
+     *  If tree contains a node with same key, replace element by x.
+     *  Returns true if x is a new element added to tree.
      * @param x T type, value to add
      * @return true if added/replaced, false otherwise
      */
     public boolean add(T x) {
-        if (root == null) {
+//        super.add(x);
+        if (root.element == null) {
             root = new Entry<>(x, null, null);
             size = 1;
             return true;
         }
-        Entry<T> t = find(x);
+        Entry<T> t = (Entry<T>) find(x);
         if (t.element.compareTo(x) == 0) {
             t.element = x; //Replace
         } else if (t.element.compareTo(x) > 0) {
             t.left = new Entry<T>(x, null, null);
+            size++;
         } else {
             t.right = new Entry<T>(x, null, null);
+            size++;
         }
-        size++;
-//        return true;
-        update(); // TODO : check casting here
+//        update(); // TODO : check casting here
+        System.out.println(update((Entry<T>) this.root));
         return true;
     }
 
@@ -75,36 +132,31 @@ public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
      */
     public T remove(T x) {
         T result = super.remove(x);
-        update(); // TODO : check casting here
+//        update(); // TODO : check casting here
         return result;
-    }
-
-    /**
-     * HEIGHT, DEPTH
-     */
-
-    int height(Entry<T> u) {
-        // TODO : check casting here
-        if (u == null) return -1;
-        int lh = u.left.height;
-        int rh = u.right.height;
-        return 1 + max(lh, rh);
     }
 
     /**
      * ROTATIONS
      */
 
-    void right(Entry P, Entry Q) {
-        Entry Pright = (Entry) P.right;
+    Entry<T> right(Entry<T> P, Entry<T> Q) {
+        Entry<T> Pright = P.getRight();
         P.right = Q;
         Q.left = Pright;
+
+        System.out.println(P + ":Swapping:with:" + Q);
+        return P;
     }
 
-    void left(Entry P, Entry Q) {
+    Entry<T> left(Entry P, Entry Q) {
         Entry Qleft = (Entry) Q.left;
         Q.left = P;
         P.right = Qleft;
+
+        System.out.println(P + ":Swapping:with:" + Q);
+
+        return Q;
     }
 
     void rightRight(Entry P, Entry Q, Entry R) {
@@ -125,7 +177,7 @@ public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
         Q.right = Rleft;
     }
 
-    void leftRight(Entry P, Entry Q, Entry R) {
+    static void leftRight(Entry P, Entry Q, Entry R) {
         Entry Qright = (Entry) Q.right;
         Entry Qleft = (Entry) Q.left;
         Q.left = R;
@@ -134,7 +186,7 @@ public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
         R.right = Qright;
     }
 
-    void rightLeft(Entry P, Entry Q, Entry R) {
+    static void rightLeft(Entry P, Entry Q, Entry R) {
         Entry Qright = (Entry) Q.right;
         Entry Qleft = (Entry) Q.left;
         Q.right = R;
@@ -148,35 +200,37 @@ public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
      */
 
     void update() {
-        update(this.root);
+        update((Entry<T>) this.root);
     }
 
-    int update(Entry u) {
-        // TODO : check casting here
+    int update(Entry<T> u) {
         if (u == null) return -1;
-        int lh = u.left.height;
-        int rh = u.right.height;
+        int lh = u.left == null ? -1 : update(u.getLeft());
+        int rh = u.right == null ? -1 : update(u.getRight());
 
         if (abs(lh - rh) > 1) {
-            if (lh > rh && u.left.left.height > u.left.right.height) {
-                right(u, (Entry) u.left);
-            } else if (rh > lh && u.right.right.height > u.right.left.height) {
-                left(u, (Entry) u.right);
-            } else if (lh > rh && u.left.right.height > u.left.left.height) {
-                rightLeft(u, (Entry) u.left, (Entry) u.left.right);
-            } else if (rh > lh && u.right.left.height > u.right.left.height) {
-                leftRight(u, (Entry) u.left, (Entry) u.right.left);
+            if (lh > rh && u.getLeft().getLeftHeight() > u.getLeft().getRightHeight()) {
+                u = right(u.getLeft(), u);
+                System.out.println("New u: "+u);
+            } else if (rh > lh && u.getRight().getRightHeight() > u.getRight().getLeftHeight()) {
+                u = left(u, u.getRight());
+                System.out.println("New u: "+u);
+            } else if (lh > rh && u.getLeft().getRightHeight() > u.getLeft().getLeftHeight()) {
+                AVLTree.rightLeft(u, u.getLeft(), u.getLeft().getRight());
+            } else if (rh > lh && u.getRight().getRightHeight() > u.getRight().getLeftHeight()) {
+                AVLTree.leftRight(u, u.getLeft(), u.getRight().getLeft());
             }
         }
 
-        lh = u.left.height = height((Entry) u.left);
-        rh = u.right.height = height((Entry) u.right);
+        System.out.println(rh + ":" + lh);
 
+        u.setLeftHeight(lh);
+        u.setRightHeight(rh);
         return 1 + max(lh, rh);
     }
 
-    public static void main(String[] args) {
-        BST<Integer> t = new BST<>();
+    public static void main(String[] args){
+        AVLTree<Integer> t = new AVLTree<>();
         Scanner in = new Scanner(System.in);
         while (in.hasNext()) {
             int x = in.nextInt();
@@ -198,13 +252,6 @@ public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
                 return;
             }
         }
-    }
-
-    void printTree() {
-        System.out.print("[" + size + "] ");
-        inOrder();
-        System.out.print("{" + root.height + "}"); // TODO : check casting here
-        System.out.println();
     }
 
 }

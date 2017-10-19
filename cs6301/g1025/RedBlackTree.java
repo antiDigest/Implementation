@@ -8,11 +8,6 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BST<T> {
             super(x, left, right);
             isRed = true;
         }
-
-        Entry(T x) {
-            super(x);
-            isRed = true;
-        }
     }
 
     RedBlackTree() {
@@ -41,8 +36,8 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BST<T> {
      */
     public boolean add(T x) {
         super.add(x);
-        Entry t = new Entry(find(x)); // TODO : check casting here
-        repair(t);
+//        Entry t = new Entry(find(x)); // TODO : check casting here
+//        repair(t);
         return true;
     }
 
@@ -109,59 +104,59 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BST<T> {
         return super.remove(x);
     }
 
-    void fix(Entry t) {
-        Entry parent = (Entry) (stack.isEmpty() ? null : stack.pop());
-        Entry sibling = parent != null ? (Entry) (parent.left == t ? parent.right : parent.left) : null;
-        // TODO : check casting here
-        while (parent != null) {
-            if (t.isRed) {
-                // Case 1
-                t.isRed = false;
-                return;
-            } else if (!sibling.isRed && !sibling.left.isRed && !sibling.right.isRed) {
-                // Case 2
-                sibling.isRed = true;
-                // t <- p_t ??
-            } else if (!sibling.isRed) {
-                if (parent.right == sibling && sibling.right.isRed) {
-                    // Case 3
-                    right(parent, sibling);
-                    exchangeColor(parent, sibling);
-                    sibling.right.isRed = false;
-                    return;
-                } else if (parent.left == sibling && sibling.left.isRed) {
-                    // Case 3
-                    left(sibling, parent);
-                    exchangeColor(parent, sibling);
-                    sibling.left.isRed = false;
-                    return;
-                } else if (parent.right == sibling && sibling.left.isRed) {
-                    // Case 4
-                    right(sibling, (Entry) sibling.left);
-                    exchangeColor(sibling, (Entry) sibling.left); //TODO apply case 3
-                    left(sibling, parent);
-                    exchangeColor(parent, sibling);
-                    sibling.left.isRed = false;
-                    return;
-                } else if (parent.left == sibling && sibling.right.isRed) {
-                    // Case 4
-                    left((Entry) sibling.left, sibling);
-                    exchangeColor(sibling, (Entry) sibling.left); //TODO apply case 3
-                    right(parent, sibling);
-                    exchangeColor(parent, sibling);
-                    sibling.left.isRed = false;
-                    return;
-                }
-            } else if (sibling.isRed) {
-                // Case 5
-                if (parent.left == t)
-                    left(sibling, parent);
-                else
-                    right(parent, sibling);
-                exchangeColor(parent, sibling);
-            }
-        }
-    }
+//    void fix(Entry t) {
+//        Entry parent = (Entry) (stack.isEmpty() ? null : stack.pop());
+//        Entry sibling = parent != null ? (Entry) (parent.left == t ? parent.right : parent.left) : null;
+//        // TODO : check casting here
+//        while (parent != null) {
+//            if (t.isRed) {
+//                // Case 1
+//                t.isRed = false;
+//                return;
+//            } else if (!sibling.isRed && !sibling.left.isRed && !sibling.right.isRed) {
+//                // Case 2
+//                sibling.isRed = true;
+//                // t <- p_t ??
+//            } else if (!sibling.isRed) {
+//                if (parent.right == sibling && sibling.right.isRed) {
+//                    // Case 3
+//                    right(parent, sibling);
+//                    exchangeColor(parent, sibling);
+//                    sibling.right.isRed = false;
+//                    return;
+//                } else if (parent.left == sibling && sibling.left.isRed) {
+//                    // Case 3
+//                    left(sibling, parent);
+//                    exchangeColor(parent, sibling);
+//                    sibling.left.isRed = false;
+//                    return;
+//                } else if (parent.right == sibling && sibling.left.isRed) {
+//                    // Case 4
+//                    right(sibling, (Entry) sibling.left);
+//                    exchangeColor(sibling, (Entry) sibling.left); //TODO apply case 3
+//                    left(sibling, parent);
+//                    exchangeColor(parent, sibling);
+//                    sibling.left.isRed = false;
+//                    return;
+//                } else if (parent.left == sibling && sibling.right.isRed) {
+//                    // Case 4
+//                    left((Entry) sibling.left, sibling);
+//                    exchangeColor(sibling, (Entry) sibling.left); //TODO apply case 3
+//                    right(parent, sibling);
+//                    exchangeColor(parent, sibling);
+//                    sibling.left.isRed = false;
+//                    return;
+//                }
+//            } else if (sibling.isRed) {
+//                // Case 5
+//                if (parent.left == t)
+//                    left(sibling, parent);
+//                else
+//                    right(parent, sibling);
+//                exchangeColor(parent, sibling);
+//            }
+//        }
+//    }
 
     void exchangeColor(Entry a, Entry b) {
         boolean temp = a.isRed;

@@ -21,6 +21,18 @@ public class BST<T extends Comparable<? super T>> implements Iterable<BST.Entry>
             this.right = right;
         }
 
+        Entry<T> getLeft(){
+            return (Entry<T>) this.left;
+        }
+
+        Entry<T> getRight(){
+            return (Entry<T>) this.right;
+        }
+
+        Entry(){
+            this.element = null;
+        }
+
         @Override
         public String toString() {
             return this.element + "";
@@ -34,10 +46,6 @@ public class BST<T extends Comparable<? super T>> implements Iterable<BST.Entry>
     public BST() {
         root = null;
         size = 0;
-    }
-
-    BST(Entry<T> start) {
-        root = start;
     }
 
     /**
@@ -80,7 +88,7 @@ public class BST<T extends Comparable<? super T>> implements Iterable<BST.Entry>
      * @return x, or smallest element greater than x
      */
     Entry<T> find(Entry<T> root, T x) {
-        if (root == null || root.element.compareTo(x) == 0) {
+        if (root.element == null || root.element.compareTo(x) == 0) {
             return root;
         }
         while (true) {
@@ -107,12 +115,12 @@ public class BST<T extends Comparable<? super T>> implements Iterable<BST.Entry>
      * @return true if added/replaced, false otherwise
      */
     public boolean add(T x) {
-        if (root == null) {
+        if (root.element == null) {
             root = new Entry<>(x, null, null);
             size = 1;
             return true;
         }
-        Entry<T> t = find(x);
+        BST.Entry<T> t = find(x);
         if (t.element.compareTo(x) == 0) {
             t.element = x; //Replace
         } else if (t.element.compareTo(x) > 0) {
