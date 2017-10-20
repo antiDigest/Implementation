@@ -21,16 +21,16 @@ public class BST<T extends Comparable<? super T>> implements Iterable<BST.Entry>
             this.right = right;
         }
 
+        Entry(){
+            this.element = null;
+        }
+
         Entry<T> getLeft(){
-            return (Entry<T>) this.left;
+            return this.left;
         }
 
         Entry<T> getRight(){
-            return (Entry<T>) this.right;
-        }
-
-        Entry(){
-            this.element = null;
+            return this.right;
         }
 
         @Override
@@ -129,7 +129,7 @@ public class BST<T extends Comparable<? super T>> implements Iterable<BST.Entry>
             t.right = new Entry<T>(x, null, null);
         }
         size++;
-        return true;
+        return isValid();
     }
 
     /**
@@ -177,15 +177,11 @@ public class BST<T extends Comparable<? super T>> implements Iterable<BST.Entry>
     void bypass(Entry<T> t) {
         Entry<T> parent = stack.isEmpty() ? null : stack.peek();
         Entry<T> child = t.left == null ? t.right : t.left;
+        if (child == null)
+            child = new Entry<>();
         if (parent == null) root = child;
         else if (parent.left == t) parent.left = child;
         else parent.right = child;
-    }
-
-    void printTree() {
-        System.out.print("[" + size + "] ");
-        inOrder();
-        System.out.println();
     }
 
     public static void main(String[] args) {
@@ -217,6 +213,12 @@ public class BST<T extends Comparable<? super T>> implements Iterable<BST.Entry>
      * HELPER FUNCTIONS
      */
 
+    void printTree() {
+        System.out.print("[" + size + "] ");
+        inOrder();
+        System.out.println();
+    }
+
     Entry<T> getRoot() {
         return root;
     }
@@ -227,7 +229,6 @@ public class BST<T extends Comparable<? super T>> implements Iterable<BST.Entry>
 	    /* code to place elements in array here */
         int index = 0;
         inOrder(root, arr, index);
-
         return arr;
     }
 
@@ -237,6 +238,8 @@ public class BST<T extends Comparable<? super T>> implements Iterable<BST.Entry>
 
     void visit(Entry<T> node) {
         //This function can be made to do anything
+        if(node == null)
+            return;
         System.out.print(node.element + " ");
     }
 
@@ -246,9 +249,9 @@ public class BST<T extends Comparable<? super T>> implements Iterable<BST.Entry>
 
     void inOrder(Entry<T> root) {
         if (root != null) {
-            inOrder(root.left);
+            inOrder(root.getLeft());
             visit(root); // This function can be made to do anything
-            inOrder(root.right);
+            inOrder(root.getRight());
         }
     }
 
@@ -261,11 +264,26 @@ public class BST<T extends Comparable<? super T>> implements Iterable<BST.Entry>
      */
     int inOrder(Entry<T> root, Comparable<T>[] arr, int index) {
         if (root != null) {
-            index = inOrder(root.left, arr, index);
+            index = inOrder(root.getLeft(), arr, index);
             arr[index++] = (Comparable) root.element;
-            index = inOrder(root.right, arr, index);
+            index = inOrder(root.getRight(), arr, index);
         }
         return index;
+    }
+
+    /**
+     * CHECK VALIDITY
+     */
+
+    boolean isValid(){
+        return isValid(this.root);
+    }
+
+    boolean isValid(Entry<T> node){
+        if(node.element==null) return true;
+        if(node.getLeft().element.compareTo(node.element) < 0 && node.getRight().element.compareTo(node.element) > 0)
+            return isValid(node.getLeft()) & isValid(node.getRight());
+        return false;
     }
 
 }
