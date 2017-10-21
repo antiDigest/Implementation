@@ -94,15 +94,15 @@ public class SplayTree<T extends Comparable<? super T>> extends BST<T> {
 
         t = find(t.element);
 
+        Entry<T> parent = (stack.isEmpty() ? null : stack.pop());
+        Entry<T> grandparent = (stack.isEmpty() ? null : stack.pop());
+
         while (true) {
-            Entry<T> parent = (stack.isEmpty() ? null : stack.pop());
-            Entry<T> grandparent = (stack.isEmpty() ? null : stack.pop());
             if (parent == null)
                 break;
             if (grandparent == null)
                 break;
 
-            System.out.println(t);
             if (grandparent.getRight() == parent && parent.getRight() == t)
                 t = leftLeft(grandparent, parent, t);
             else if (grandparent.getLeft() == parent && parent.getLeft() == t) {
@@ -112,9 +112,13 @@ public class SplayTree<T extends Comparable<? super T>> extends BST<T> {
             } else if (grandparent.getRight() == parent && parent.getLeft() == t) {
                 t = rightLeft(grandparent, parent, t);
             }
+
+            parent = (stack.isEmpty() ? null : stack.pop());
+            grandparent = (stack.isEmpty() ? null : stack.pop());
+
         }
 
-        Entry<T> parent = (stack.isEmpty() ? null : stack.pop());
+        parent = (stack.isEmpty() ? null : stack.pop());
         if (parent != null) {
             if (parent.getLeft() == t) {
                 root = right(parent, t);
@@ -129,14 +133,14 @@ public class SplayTree<T extends Comparable<? super T>> extends BST<T> {
      */
 
     Entry<T> right(Entry<T> P, Entry<T> Q) {
-        Entry<T> Pright = P.right;
+        Entry<T> Pright = P.getRight();
         P.right = Q;
         Q.left = Pright;
         return P;
     }
 
     Entry<T> left(Entry<T> P, Entry<T> Q) {
-        Entry<T> Qleft = Q.right;
+        Entry<T> Qleft = Q.getLeft();
         Q.left = P;
         P.right = Qleft;
         return Q;
@@ -163,18 +167,18 @@ public class SplayTree<T extends Comparable<? super T>> extends BST<T> {
     }
 
     Entry<T> leftRight(Entry<T> P, Entry<T> R, Entry<T> Q) {
-        Entry<T> Qright = Q.right;
-        Entry<T> Qleft = Q.left;
+        Entry<T> Qright = Q.getRight();
+        Entry<T> Qleft = Q.getLeft();
         Q.left = R;
         Q.right = P;
-        P.left = Qleft;
-        R.right = Qright;
+        P.left = Qright;
+        R.right = Qleft;
         return Q;
     }
 
     Entry<T> rightLeft(Entry<T> P, Entry<T> R, Entry<T> Q) {
-        Entry<T> Qright = Q.right;
-        Entry<T> Qleft = Q.left;
+        Entry<T> Qright = Q.getRight();
+        Entry<T> Qleft = Q.getLeft();
         Q.right = R;
         Q.left = P;
         P.right = Qleft;
