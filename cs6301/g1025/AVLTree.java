@@ -171,18 +171,30 @@ public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
 
         int lh = u.getLeftHeight();
         int rh = u.getRightHeight();
+        boolean flag = false;
 
         if (abs(lh - rh) > 1) {
             if (lh > rh && u.getLeft().getLeftHeight() > u.getLeft().getRightHeight()) {
                 u = right(u.getLeft(), u);
+                flag = true;
             } else if (rh > lh && u.getRight().getRightHeight() > u.getRight().getLeftHeight()) {
                 u = left(u, u.getRight());
+                flag = true;
             } else if (lh > rh && u.getLeft().getRightHeight() > u.getLeft().getLeftHeight()) {
-                if(u.getLeft().getRight() != null)
+                if(u.getLeft().getRight() != null) {
                     u = leftRight(u, u.getLeft(), u.getLeft().getRight());
+                    flag = true;
+                }
             } else if (rh > lh && u.getRight().getLeftHeight() > u.getRight().getRightHeight()) {
-                if(u.getRight().getLeft() != null)
+                if(u.getRight().getLeft() != null) {
                     u = rightLeft(u, u.getRight(), u.getRight().getLeft());
+                    flag = true;
+                }
+            }
+            if(flag){
+                u.left = u.left == null ? null : update(u.getLeft());
+                u.right = u.right == null ? null : update(u.getRight());
+                u.setHeight();
             }
         }
 
@@ -247,4 +259,5 @@ public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
 
 /**
  * TESTING INPUT: 10 3 19 23 21 22 5 7 9 -10 -19 -23 0
+ * 1 20 10 15 13 5 9 7
  */

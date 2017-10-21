@@ -193,8 +193,6 @@ public class BST<T extends Comparable<? super T>> implements Iterable<BST.Entry>
     void bypass(Entry<T> t) {
         Entry<T> parent = stack.isEmpty() ? null : stack.peek();
         Entry<T> child = t.getLeft() == null ? t.getRight() : t.getLeft();
-        if (child == null)
-            child = new Entry<>();
         if (parent == null) root = child;
         else if (parent.getLeft() == t) parent.left = child;
         else parent.right = child;
