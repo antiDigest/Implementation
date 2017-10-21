@@ -2,6 +2,8 @@ package cs6301.g1025;
 
 import java.util.Scanner;
 
+import static java.lang.Math.abs;
+
 public class SplayTree<T extends Comparable<? super T>> extends BST<T> {
     SplayTree() {
         super();
@@ -63,7 +65,6 @@ public class SplayTree<T extends Comparable<? super T>> extends BST<T> {
 
     /**
      * Returns minimum from the BST
-     *
      * @return min value (T)
      */
     public T min() {
@@ -75,7 +76,6 @@ public class SplayTree<T extends Comparable<? super T>> extends BST<T> {
 
     /**
      * Returns maximum from the BST
-     *
      * @return maximum value (T)
      */
     public T max() {
@@ -86,64 +86,111 @@ public class SplayTree<T extends Comparable<? super T>> extends BST<T> {
     }
 
     /**
-     * Brings the node t to the root !
+     * Remove x from tree.
+     * Return x if found, otherwise return null
      *
+     * @param x value to remove
+     * @return x, if found, otherwise null
+     */
+    public T remove(T x) {
+        T result = super.remove(x);
+        Entry<T> t = find(x);
+        splay(t);
+        return result;
+    }
+
+    /**
+     * Brings the node t to the root !
      * @param t BST.Entry type, node to be brought to root
      */
-    void splay(BST.Entry<T> t) {
-        //TODO : Corrections to code, losing pointers
+    private void splay(BST.Entry<T> t) {
+//        Entry<T> parent = (stack.isEmpty() ? null : stack.pop());
+//        Entry<T> grandparent = (stack.isEmpty() ? null : stack.pop());
+//        Entry<T> greatgrandparent = (stack.isEmpty() ? null : stack.pop());
+//        boolean left;
+//
+//        if(greatgrandparent!=null && greatgrandparent.getRight() == grandparent)
+//            left = false;
+//        else left = true;
+//
+//        while (t != root) {
+//            if(grandparent != null) {
+//                if (grandparent.getRight() == parent && parent.getRight() == t) {
+//                    t = leftLeft(grandparent, parent, t);
+//                } else if (grandparent.getLeft() == parent && parent.getLeft() == t) {
+//                    t = rightRight(t, parent, grandparent);
+//                } else if (grandparent.getLeft() == parent && parent.getRight() == t) {
+//                    t = leftRight(grandparent, parent, t);
+//                } else if (grandparent.getRight() == parent && parent.getLeft() == t) {
+//                    t = rightLeft(grandparent, parent, t);
+//                }
+//            } else if (parent != null){
+//                if(parent.getLeft() == t) {
+//                    t = right(t, parent);
+//                } else if (parent.getRight() == t) {
+//                    t = left(parent, t);
+//                }
+//            }
+//
+//            parent = greatgrandparent;
+//            grandparent = (stack.isEmpty() ? null : stack.pop());
+//            greatgrandparent = (stack.isEmpty() ? null : stack.pop());
+//            if(parent == null){
+//                root = t;
+//            } else if (left) {
+//                parent.left = t;
+//            } else {
+//                parent.right = t;
+//            }
+//        }
+        this.root = splay(this.root, t);
+    }
 
-        t = find(t.element);
+    private Entry<T> splay(Entry<T> u, Entry<T> t){
+        if (u == null) return u;
+        if (u.isLeaf()) return u;
 
-        Entry<T> parent = (stack.isEmpty() ? null : stack.pop());
-        Entry<T> grandparent = (stack.isEmpty() ? null : stack.pop());
+        u.left = u.left == null ? null : splay(u.getLeft(), t);
+        u.right = u.right == null ? null : splay(u.getRight(), t);
 
-        while (parent != null) {
-            if (parent.getLeft() == t) {
-                root = right(t, parent);
-            } else if (parent.getRight() == t) {
-                root = left(parent, t);
-            } else if(grandparent != null) {
-                if (grandparent.getRight() == parent && parent.getRight() == t) {
-                    System.out.println("LEFT LEFT");
-                    t = leftLeft(grandparent, parent, t);
-                } else if (grandparent.getLeft() == parent && parent.getLeft() == t) {
-                    System.out.println("RIGHT RIGHT");
-                    t = rightRight(t, parent, grandparent);
-                } else if (grandparent.getLeft() == parent && parent.getRight() == t) {
-                    System.out.println("LEFT RIGHT");
-                    t = leftRight(grandparent, parent, t);
-                } else if (grandparent.getRight() == parent && parent.getLeft() == t) {
-                    System.out.println("RIGHT LEFT");
-                    t = rightLeft(grandparent, parent, t);
-                }
+        if (u.getLeft() == t) {
+            u = right(t, u);
+        } else if (u.getRight() == t) {
+            u = left(u, t);
+        } else {
+            if (u.getLeft() != null || u.getLeft().getLeft() == t) {
+                u = leftLeft(u, u.getLeft(), u.getLeft().getLeft());
+            } else if (u.getRight() != null || u.getRight().getRight() == t) {
+                u = rightRight(u.getRight().getRight(), u.getRight(), u);
+            } else if (u.getLeft() != null || u.getLeft().getRight() == t) {
+                u = leftRight(u, u.getLeft(), u.getLeft().getRight());
+            } else if (u.getRight() != null || u.getRight().getLeft() == t) {
+                u = rightLeft(u, u.getRight(), u.getRight().getLeft());
             }
-
-            parent = (stack.isEmpty() ? null : stack.pop());
-            grandparent = (stack.isEmpty() ? null : stack.pop());
-
         }
+
+        return u;
     }
 
     /**
      * ROTATIONS
      */
 
-    Entry<T> right(Entry<T> P, Entry<T> Q) {
+    private Entry<T> right(Entry<T> P, Entry<T> Q) {
         Entry<T> Pright = P.getRight();
         P.right = Q;
         Q.left = Pright;
         return P;
     }
 
-    Entry<T> left(Entry<T> P, Entry<T> Q) {
+    private Entry<T> left(Entry<T> P, Entry<T> Q) {
         Entry<T> Qleft = Q.getLeft();
         Q.left = P;
         P.right = Qleft;
         return Q;
     }
 
-    Entry<T> rightRight(Entry<T> P, Entry<T> Q, Entry<T> R) {
+    private Entry<T> rightRight(Entry<T> P, Entry<T> Q, Entry<T> R) {
         Entry<T> Pright = P.right;
         Entry<T> Qright = Q.right;
         Q.right = R;
@@ -153,7 +200,7 @@ public class SplayTree<T extends Comparable<? super T>> extends BST<T> {
         return P;
     }
 
-    Entry<T> leftLeft(Entry<T> P, Entry<T> Q, Entry<T> R) {
+    private Entry<T> leftLeft(Entry<T> P, Entry<T> Q, Entry<T> R) {
         Entry<T> Qleft = Q.left;
         Entry<T> Rleft = R.left;
         Q.left = P;
@@ -163,7 +210,7 @@ public class SplayTree<T extends Comparable<? super T>> extends BST<T> {
         return R;
     }
 
-    Entry<T> leftRight(Entry<T> P, Entry<T> R, Entry<T> Q) {
+    private Entry<T> leftRight(Entry<T> P, Entry<T> R, Entry<T> Q) {
         Entry<T> Qright = Q.getRight();
         Entry<T> Qleft = Q.getLeft();
         Q.left = R;
@@ -173,7 +220,7 @@ public class SplayTree<T extends Comparable<? super T>> extends BST<T> {
         return Q;
     }
 
-    Entry<T> rightLeft(Entry<T> P, Entry<T> R, Entry<T> Q) {
+    private Entry<T> rightLeft(Entry<T> P, Entry<T> R, Entry<T> Q) {
         Entry<T> Qright = Q.getRight();
         Entry<T> Qleft = Q.getLeft();
         Q.right = R;
@@ -191,6 +238,7 @@ public class SplayTree<T extends Comparable<? super T>> extends BST<T> {
             if (x > 0) {
                 System.out.print("Add " + x + " : ");
                 t.add(x);
+                System.out.println(t.isValid(x));
                 t.printTree();
             } else if (x < 0) {
                 System.out.print("Remove " + x + " : ");
@@ -212,15 +260,20 @@ public class SplayTree<T extends Comparable<? super T>> extends BST<T> {
      * CHECK VALIDITY
      */
 
-    boolean isValid(T x) {
+    private boolean isValid(T x) {
         if(super.isValid(this.root))
             return this.isValid(this.root, x);
         return false;
     }
 
-    boolean isValid(Entry<T> node, T x) {
+    private boolean isValid(Entry<T> node, T x) {
         return node.element==x;
     }
 
 
 }
+
+
+/**
+ * 10 20 30 40 50 60 70 1 2 15 16 35 45
+ */
