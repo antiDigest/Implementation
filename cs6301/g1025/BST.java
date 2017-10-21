@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.Scanner;
 import java.util.Stack;
 
-public class BST<T extends Comparable<? super T>> implements Iterable<BST.Entry> {
+public class BST<T extends Comparable<? super T>> implements Iterable<BST.Entry<T>> {
 
     static class Entry<T> {
         T element;
@@ -57,7 +57,7 @@ public class BST<T extends Comparable<? super T>> implements Iterable<BST.Entry>
      */
 
     @Override
-    public Iterator<Entry> iterator() {
+    public Iterator<Entry<T>> iterator() {
         return new BSTIterator(this);
     }
 
