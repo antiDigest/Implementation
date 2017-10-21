@@ -21,16 +21,20 @@ public class BST<T extends Comparable<? super T>> implements Iterable<BST.Entry>
             this.right = right;
         }
 
-        Entry(){
+        Entry() {
             this.element = null;
         }
 
-        Entry<T> getLeft(){
+        Entry<T> getLeft() {
             return this.left;
         }
 
-        Entry<T> getRight(){
+        Entry<T> getRight() {
             return this.right;
+        }
+
+        boolean isLeaf() {
+            return this.left == null && this.right == null;
         }
 
         @Override
@@ -63,16 +67,18 @@ public class BST<T extends Comparable<? super T>> implements Iterable<BST.Entry>
 
     /**
      * Is x contained in tree?
+     *
      * @param x value to find
      * @return true if found, else fasle
      */
     public boolean contains(T x) {
         Entry<T> t = find(x);
-        return (t.element != null) && (t.element.compareTo(x) == 0);
+        return (t == null) && (t.element.compareTo(x) == 0);
     }
 
     /**
      * find x (or smallest element greater than x) in the tree
+     *
      * @param x x to find
      * @return x, or smallest element greater than x
      */
@@ -83,23 +89,24 @@ public class BST<T extends Comparable<? super T>> implements Iterable<BST.Entry>
 
     /**
      * find x (or smallest element greater than x) in the tree
+     *
      * @param root root of tree
-     * @param x x to find
+     * @param x    x to find
      * @return x, or smallest element greater than x
      */
     Entry<T> find(Entry<T> root, T x) {
-        if (root.element == null || root.element.compareTo(x) == 0) {
+        if (root == null || root.element.compareTo(x) == 0) {
             return root;
         }
         while (true) {
             if (root.element.compareTo(x) < 0) {
-                if (root.right == null) break;
+                if (root.getRight() == null) break;
                 stack.push(root);
-                root = root.right;
+                root = root.getRight();
             } else if (root.element.compareTo(x) > 0) {
-                if (root.left == null) break;
+                if (root.getLeft() == null) break;
                 stack.push(root);
-                root = root.left;
+                root = root.getLeft();
             } else {
                 break;
             }
@@ -107,45 +114,53 @@ public class BST<T extends Comparable<? super T>> implements Iterable<BST.Entry>
         return root;
     }
 
-    /**
-     * Add x to tree.
-     *  If tree contains a node with same key, replace element by x.
-     *  Returns true if x is a new element added to tree.
-     * @param x T type, value to add
-     * @return true if added/replaced, false otherwise
-     */
-    public boolean add(T x) {
-        if (root.element == null) {
-            root = new Entry<>(x, null, null);
-            size = 1;
-            return true;
-        }
-        BST.Entry<T> t = find(x);
+    void relax(Entry<T> t, T x) {
         if (t.element.compareTo(x) == 0) {
             t.element = x; //Replace
         } else if (t.element.compareTo(x) > 0) {
             t.left = new Entry<T>(x, null, null);
+            size++;
         } else {
             t.right = new Entry<T>(x, null, null);
+            size++;
         }
-        size++;
+    }
+
+    /**
+     * Add x to tree.
+     * If tree contains a node with same key, replace element by x.
+     * Returns true if x is a new element added to tree.
+     *
+     * @param x T type, value to add
+     * @return true if added/replaced, false otherwise
+     */
+    public boolean add(T x) {
+        if (root == null) {
+            root = new Entry<T>(x, null, null);
+            size = 1;
+            return true;
+        }
+        Entry<T> t = (Entry<T>) find(x);
+        relax(t, x);
         return isValid();
     }
 
     /**
      * Is there an element that is equal to x in the tree?
      * Element in tree that is equal to x is returned, null otherwise.
+     *
      * @param x T type, value to find
      * @return x, if present, else null
      */
     public T get(T x) {
         Entry<T> t = find(x);
-        return ((t.element != null) && (t.element.compareTo(x) == 0)) ? (T) t.element : null;
+        return ((t == null) && (t.element.compareTo(x) == 0)) ? (T) t.element : null;
     }
 
     /**
      * Remove x from tree.
-     *  Return x if found, otherwise return null
+     * Return x if found, otherwise return null
+     *
      * @param x value to remove
      * @return x, if found, otherwise null
      */
@@ -172,16 +187,51 @@ public class BST<T extends Comparable<? super T>> implements Iterable<BST.Entry>
      * Helper function for remove()
      * runs when t has only one child
      * replaces t with one of it's child
+     *
      * @param t type Entry<T>
      */
     void bypass(Entry<T> t) {
         Entry<T> parent = stack.isEmpty() ? null : stack.peek();
-        Entry<T> child = t.left == null ? t.right : t.left;
+        Entry<T> child = t.getLeft() == null ? t.getRight() : t.getLeft();
         if (child == null)
             child = new Entry<>();
         if (parent == null) root = child;
-        else if (parent.left == t) parent.left = child;
+        else if (parent.getLeft() == t) parent.left = child;
         else parent.right = child;
+    }
+
+    /**
+     * EXTRA UTILITY
+     */
+
+    /**
+     * Returns minimum from the BST
+     *
+     * @return min value (T)
+     */
+    public T min() {
+        stack = new Stack<>();
+        Entry<T> t = root;
+        while (t.getLeft() != null) {
+            stack.push(t);
+            t = t.getLeft();
+        }
+        return t.element;
+    }
+
+    /**
+     * Returns maximum from the BST
+     *
+     * @return maximum value (T)
+     */
+    public T max() {
+        stack = new Stack<>();
+        Entry<T> t = root;
+        while (t.getRight() != null) {
+            stack.push(t);
+            t = t.getRight();
+        }
+        return t.element;
     }
 
     public static void main(String[] args) {
@@ -236,12 +286,12 @@ public class BST<T extends Comparable<? super T>> implements Iterable<BST.Entry>
      * TREE TRAVERSALS
      */
 
-    void visit(Entry<T> node) {
-        //This function can be made to do anything
-        if(node == null)
-            return;
-        System.out.print(node.element + " ");
-    }
+//    void visit(Entry<T> node) {
+//        //This function can be made to do anything
+//        if(node == null)
+//            return;
+//        System.out.print(node.element + " ");
+//    }
 
     void inOrder() {
         inOrder(this.root);
@@ -250,15 +300,16 @@ public class BST<T extends Comparable<? super T>> implements Iterable<BST.Entry>
     void inOrder(Entry<T> root) {
         if (root != null) {
             inOrder(root.getLeft());
-            visit(root); // This function can be made to do anything
+            System.out.print(root.element + " "); // This function can be made to do anything
             inOrder(root.getRight());
         }
     }
 
     /**
      * Storing elements of a tree in an array
-     * @param root root of tree
-     * @param arr array, type = Comparable<T>
+     *
+     * @param root  root of tree
+     * @param arr   array, type = Comparable<T>
      * @param index index value
      * @return int, index
      */
@@ -275,14 +326,21 @@ public class BST<T extends Comparable<? super T>> implements Iterable<BST.Entry>
      * CHECK VALIDITY
      */
 
-    boolean isValid(){
-        return isValid(this.root);
+    boolean isValid() {
+        return this.isValid(this.root);
     }
 
-    boolean isValid(Entry<T> node){
-        if(node.element==null) return true;
-        if(node.getLeft().element.compareTo(node.element) < 0 && node.getRight().element.compareTo(node.element) > 0)
+    boolean isValid(Entry<T> node) {
+        if (node == null) return true;
+        if (node.isLeaf()) return true;
+        if (node.getLeft() == null && node.getRight().element.compareTo(node.element) > 0) return true;
+        if (node.getRight() == null && node.getLeft().element.compareTo(node.element) < 0) return true;
+        if (node.getLeft().element.compareTo(node.element) < 0
+                && node.getRight().element.compareTo(node.element) > 0)
             return isValid(node.getLeft()) & isValid(node.getRight());
+
+        System.out.println("INVALID BST AT: " + node + " :: " + node.getRight() + "::" + node.getLeft());
+
         return false;
     }
 

@@ -1,5 +1,7 @@
 package cs6301.g1025;
 
+import java.util.Scanner;
+
 public class RedBlackTree<T extends Comparable<? super T>> extends BST<T> {
     static class Entry<T> extends BST.Entry<T> {
         boolean isRed;
@@ -8,22 +10,72 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BST<T> {
             super(x, left, right);
             isRed = true;
         }
+
+        Entry() {
+            this.element = null;
+            this.isRed = false;
+        }
+
+        void set(T x) {
+            this.element = x;
+            this.setRed();
+        }
+
+        Entry<T> getLeft() {
+            return (Entry<T>) this.left;
+        }
+
+        Entry<T> getRight() {
+            return (Entry<T>) this.right;
+        }
+
+        void setBlack() {
+            this.isRed = false;
+        }
+
+        void setRed() {
+            this.isRed = true;
+        }
+
+        boolean isRed() {
+            return this.isRed;
+        }
+
+        boolean isBlack() {
+            return (!this.isRed);
+        }
     }
 
     RedBlackTree() {
-        super();
+        root = null;
+        size = 0;
     }
 
-    void right(Entry P, Entry Q) {
-        Entry Pright = (Entry) P.right;
+
+    Entry<T> right(Entry<T> P, Entry<T> Q) {
+        Entry<T> Pright = P.getRight();
         P.right = Q;
         Q.left = Pright;
+        return P;
     }
 
-    void left(Entry P, Entry Q) {
-        Entry Qleft = (Entry) Q.left;
+    Entry<T> left(Entry<T> P, Entry<T> Q) {
+        Entry<T> Qleft = Q.getLeft();
         Q.left = P;
         P.right = Qleft;
+        return Q;
+    }
+
+    void relax(Entry<T> t, T x) {
+        if (t.element.compareTo(x) == 0) {
+            t.element = x; //Replace
+        } else if (t.element.compareTo(x) > 0) {
+            t.left = new Entry<T>(x, null, null);
+            size++;
+        } else {
+            t.right = new Entry<T>(x, null, null);
+            size++;
+        }
     }
 
     /**
@@ -35,58 +87,64 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BST<T> {
      * @return true if added/replaced, false otherwise
      */
     public boolean add(T x) {
-        super.add(x);
-//        Entry t = new Entry(find(x)); // TODO : check casting here
-//        repair(t);
+        if (root == null) {
+            root = new Entry<T>(x, null, null);
+            size = 1;
+            ((Entry<T>) root).setBlack();
+            return true;
+        }
+        Entry<T> t = (Entry<T>) find(x);
+        relax(t, x);
+//        t = (Entry<T>) find(x); // TODO : check casting here
+        repair(t);
+        ((Entry<T>) root).setBlack();
         return true;
     }
 
-    void repair(Entry t) {
-        // TODO : check casting here
-        Entry parent = (Entry) (stack.isEmpty() ? null : stack.pop());
-        Entry grandparent = (Entry) (stack.isEmpty() ? null : stack.pop());
-        Entry uncle = null;
-        if (grandparent != null)
-            uncle = (Entry) (grandparent.left == parent ? grandparent.right : grandparent.left);
+    void repair(Entry<T> t) {
+        Entry<T> parent = (stack.isEmpty() ? null : (Entry<T>) stack.pop());
+        Entry<T> grandparent = (stack.isEmpty() ? null : (Entry<T>) stack.pop());
         if (grandparent == null) {
             return;
         }
-        while (t.isRed) {
-            if (parent == null || grandparent == null || !parent.isRed) {
+        Entry<T> uncle = grandparent.getLeft() == parent ? grandparent.getRight() : grandparent.getLeft();
+        while (t.isRed()) {
+            if (parent == null || parent == root || parent.isBlack()) {
                 return;
-            } else if (uncle.isRed) {
-                parent.isRed = false;
-                uncle.isRed = false;
-                grandparent.isRed = true;
+            } else if (uncle.isRed()) {
+                parent.setBlack();
+                uncle.setBlack();
+                grandparent.setRed();
                 // t <- g_t ??
-            } else if (!uncle.isRed) {
-                if (grandparent.left == parent && parent.left == t) {
+                continue;
+            } else if (uncle.isBlack()) {
+                if (grandparent.getLeft() == parent && parent.getLeft() == t) {
                     // 2a
-                    right(grandparent, parent);
-                    parent.isRed = false;
-                    grandparent.isRed = true;
+                    grandparent = right(grandparent, parent);
+                    parent.setBlack();
+                    grandparent.setRed();
                     return;
-                } else if (grandparent.right == parent && parent.right == t) {
+                } else if (grandparent.getRight() == parent && parent.getRight() == t) {
                     // 2b
-                    left(parent, grandparent);
-                    parent.isRed = false;
-                    grandparent.isRed = true;
+                    grandparent = left(parent, grandparent);
+                    parent.setBlack();
+                    grandparent.setRed();
                     return;
                 }
-            } else if (!uncle.isRed) {
-                if (grandparent.left == parent && parent.right == t) {
+            } else if (uncle.isBlack()) {
+                if (grandparent.getLeft() == parent && parent.getRight() == t) {
                     // 3a
-                    left(parent, grandparent);
-                    right(grandparent, parent);
-                    parent.isRed = false;
-                    grandparent.isRed = true;
+                    grandparent = left(parent, grandparent);
+                    parent = right(parent, t);
+                    parent.setBlack();
+                    grandparent.setRed();
                     return;
-                } else if (grandparent.right == parent && parent.left == t) {
+                } else if (grandparent.getRight() == parent && parent.getLeft() == t) {
                     // 3b
-                    right(grandparent, parent);
-                    left(parent, grandparent);
-                    parent.isRed = false;
-                    grandparent.isRed = true;
+                    grandparent = right(grandparent, parent);
+                    parent = left(t, parent);
+                    parent.setBlack();
+                    grandparent.setRed();
                     return;
                 }
             }
@@ -163,6 +221,103 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BST<T> {
         a.isRed = b.isRed;
         b.isRed = a.isRed;
     }
+
+    public static void main(String[] args) {
+        RedBlackTree<Integer> t = new RedBlackTree<>();
+        Scanner in = new Scanner(System.in);
+        while (in.hasNext()) {
+            int x = in.nextInt();
+            if (x > 0) {
+                System.out.print("Add " + x + " : ");
+                t.add(x);
+                System.out.println(t.isValid());
+                t.printTree();
+            } else if (x < 0) {
+                System.out.print("Remove " + x + " : ");
+                t.remove(-x);
+                t.printTree();
+            } else {
+                Comparable[] arr = t.toArray();
+                System.out.print("Final: ");
+                for (int i = 0; i < t.size; i++) {
+                    System.out.print(arr[i] + " ");
+                }
+                System.out.println();
+                return;
+            }
+        }
+    }
+
+    /**
+     * CHECKING VALIDITY
+     */
+
+    class Frame {
+        boolean flag;
+        int bh;
+        T min;
+        T max;
+
+        Frame(boolean flag, int bh, T min, T max) {
+            this.flag = flag;
+            this.bh = bh;
+            this.min = min;
+            this.max = max;
+        }
+
+    }
+
+    boolean isValid() {
+        Frame frame = isValid((Entry<T>) this.root);
+        return frame.flag;
+    }
+
+    Frame isValid(Entry<T> node) {
+        if (node.getRight() == null && node.getLeft() == null) {
+            if (node.isRed())
+                return new Frame(true, 0, node.element, node.element);
+            else
+                return new Frame(true, 1, node.element, node.element);
+        } else if (node.getLeft() == null) {
+            Frame frame = isValid(node.getRight());
+            frame.flag = frame.flag && frame.bh == 0
+                    && (node.element.compareTo(frame.min) < 0)
+                    && node.isBlack();
+            frame.bh++;
+            frame.min = node.element;
+            if (!frame.flag)
+                System.out.println("INVALID RB AT: " + node + " :: " + node.isRed + "->" +
+                        node.getRight() + "::" + node.getLeft());
+            return frame;
+        } else if (node.getRight() == null) {
+            Frame frame = isValid(node.getLeft());
+            frame.flag = frame.flag && frame.bh == 0
+                    && (node.element.compareTo(frame.max) > 0)
+                    && node.isBlack();
+            frame.bh++;
+            frame.max = node.element;
+            if (!frame.flag)
+                System.out.println("INVALID RB AT: " + node + " :: " + node.isRed + "->" +
+                        node.getRight() + "[" + node.getRight().isRed + "]::" + node.getLeft() + "[" + node.getLeft().isRed + "]");
+            return frame;
+        } else {
+            Frame frame1 = isValid(node.getLeft());
+            Frame frame2 = isValid(node.getRight());
+
+            boolean valid = (frame1.flag && frame2.flag) && (frame1.bh == frame2.bh)
+                    && (node.element.compareTo(frame1.max) > 0)
+                    && (node.element.compareTo(frame2.min) < 0)
+                    && node.isBlack();
+
+
+            if (!valid)
+                System.out.println("INVALID RB AT: " + node + " :: " + node.isRed + "->" +
+                        node.getRight() + "[" + node.getRight().isRed + "]::" + node.getLeft() + "[" + node.getLeft().isRed + "]");
+            return new Frame(valid, node.isRed() ? 0 : frame1.bh + 1, node.element, node.element);
+
+        }
+    }
+
 }
 
 
