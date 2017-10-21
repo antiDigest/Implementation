@@ -91,40 +91,37 @@ public class SplayTree<T extends Comparable<? super T>> extends BST<T> {
      * @param t BST.Entry type, node to be brought to root
      */
     void splay(BST.Entry<T> t) {
+        //TODO : Corrections to code, losing pointers
 
         t = find(t.element);
 
         Entry<T> parent = (stack.isEmpty() ? null : stack.pop());
         Entry<T> grandparent = (stack.isEmpty() ? null : stack.pop());
 
-        while (true) {
-            if (parent == null)
-                break;
-            if (grandparent == null)
-                break;
-
-            if (grandparent.getRight() == parent && parent.getRight() == t)
-                t = leftLeft(grandparent, parent, t);
-            else if (grandparent.getLeft() == parent && parent.getLeft() == t) {
-                t = rightRight(t, parent, grandparent);
-            } else if (grandparent.getLeft() == parent && parent.getRight() == t) {
-                t = leftRight(grandparent, parent, t);
-            } else if (grandparent.getRight() == parent && parent.getLeft() == t) {
-                t = rightLeft(grandparent, parent, t);
+        while (parent != null) {
+            if (parent.getLeft() == t) {
+                root = right(t, parent);
+            } else if (parent.getRight() == t) {
+                root = left(parent, t);
+            } else if(grandparent != null) {
+                if (grandparent.getRight() == parent && parent.getRight() == t) {
+                    System.out.println("LEFT LEFT");
+                    t = leftLeft(grandparent, parent, t);
+                } else if (grandparent.getLeft() == parent && parent.getLeft() == t) {
+                    System.out.println("RIGHT RIGHT");
+                    t = rightRight(t, parent, grandparent);
+                } else if (grandparent.getLeft() == parent && parent.getRight() == t) {
+                    System.out.println("LEFT RIGHT");
+                    t = leftRight(grandparent, parent, t);
+                } else if (grandparent.getRight() == parent && parent.getLeft() == t) {
+                    System.out.println("RIGHT LEFT");
+                    t = rightLeft(grandparent, parent, t);
+                }
             }
 
             parent = (stack.isEmpty() ? null : stack.pop());
             grandparent = (stack.isEmpty() ? null : stack.pop());
 
-        }
-
-        parent = (stack.isEmpty() ? null : stack.pop());
-        if (parent != null) {
-            if (parent.getLeft() == t) {
-                root = right(parent, t);
-            } else {
-                root = left(t, parent);
-            }
         }
     }
 
@@ -210,4 +207,20 @@ public class SplayTree<T extends Comparable<? super T>> extends BST<T> {
             }
         }
     }
+
+    /**
+     * CHECK VALIDITY
+     */
+
+    boolean isValid(T x) {
+        if(super.isValid(this.root))
+            return this.isValid(this.root, x);
+        return false;
+    }
+
+    boolean isValid(Entry<T> node, T x) {
+        return node.element==x;
+    }
+
+
 }
