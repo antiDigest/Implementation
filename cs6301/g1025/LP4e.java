@@ -2,7 +2,9 @@
 // Do not rename this file or move it away from cs6301/g??
 // Change following line to your group number.  Make no other changes.
 
-package cs6301.g00;
+package cs6301.g1025;
+
+import cs6301.g00.Graph;
 
 public class LP4e {
     static int VERBOSE = 0;

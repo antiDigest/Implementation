@@ -119,7 +119,7 @@ public class Graph implements Iterable<Graph.Vertex> {
     public static class Edge {
         Vertex from; // head vertex
         Vertex to;   // tail vertex
-        int weight;  // weight of edge
+        public int weight;  // weight of edge
         int name;    // name of edge
 
         /**
