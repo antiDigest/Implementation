@@ -44,7 +44,7 @@ public class BST<T extends Comparable<? super T>> implements Iterable<T> {
 	int size;
 	Stack<Entry<T>> stack;
 
-	public BST() {
+	BST() {
 		root = null;
 		size = 0;
 	}
@@ -55,7 +55,7 @@ public class BST<T extends Comparable<? super T>> implements Iterable<T> {
 
     @Override
 	public Iterator<T> iterator() {
-		return new BSTIterator<>(this);
+		return new BSTIterator<T>(this);
 
 	}
 
@@ -148,7 +148,7 @@ public class BST<T extends Comparable<? super T>> implements Iterable<T> {
 
 	}
 
-	protected boolean addHelper(T x, Entry<T> t, Entry<T> obj) {
+	boolean addHelper(T x, Entry<T> t, Entry<T> obj) {
 		if (t.element.compareTo(x) == 0) {
 			t.element = x; // Replace
 			return false;
