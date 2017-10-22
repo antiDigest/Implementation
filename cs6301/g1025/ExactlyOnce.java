@@ -3,6 +3,8 @@ package cs6301.g1025;
 
 
 
+
+
 import java.util.TreeMap;
 
 
@@ -15,7 +17,7 @@ import java.util.TreeMap;
 public class ExactlyOnce {
 
 	public static void main(String[] args) {
-		Integer[] A = new Integer[] { 0,0,1,2,3,4,0,4 };
+		Integer[] A = new Integer[] { 6,3,4,5,3,5,3,4,-9,0,6,5,2,12,34,9};
 		exactlyOnce(A);
 
 	}
@@ -29,27 +31,28 @@ public class ExactlyOnce {
 
 		// size is no of unique elements
 		int size = 0;
-		for (int i = 0; i < A.length; i++) {
-			if (map.containsKey(A[i])) {
-				int count = map.get(A[i]);
-				count = count + 1;
-				if (count <= 2) {
+		for (T ele:A) {
+			if (map.containsKey(ele)) {
+				int count = map.get(ele);
+				count=count+1;
+				if(count>2) continue;
+				else{
 					size--;
 				}
-				map.put(A[i], count);
+				map.put(ele, count);
 			} else {
 				size++;
-				map.put(A[i], 1);
+				map.put(ele, 1);
 			}
 
 		}
 		
 		T[] output = (T[]) new Comparable[size];
 		int k = 0;
-		for (int i = 0; i < A.length; i++) {
-			if (map.get(A[i]) == 1) {
-				System.out.println(A[i]);
-				output[k++] = A[i];
+		for (T ele:A) {
+			if (map.get(ele) == 1) {
+				System.out.println(ele);
+				output[k++] = ele;
 			}
 		}
 
