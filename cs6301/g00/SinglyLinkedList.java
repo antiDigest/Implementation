@@ -15,9 +15,7 @@ import java.util.Scanner;
 
 public class SinglyLinkedList<T> implements Iterable<T> {
 
-    /**
-     * Class Entry holds a single node of the list
-     */
+    /** Class Entry holds a single node of the list */
     public static class Entry<T> {
         public T element;
         public Entry<T> next;
@@ -93,7 +91,7 @@ public class SinglyLinkedList<T> implements Iterable<T> {
 
     public void printList() {
         /*
-         * Code without using implicit iterator in for each loop:
+		 * Code without using implicit iterator in for each loop:
 		 * 
 		 * Entry<T> x = head.next; while(x != null) { System.out.print(x.element
 		 * + " "); x = x.next; }
