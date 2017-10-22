@@ -1,14 +1,13 @@
 /**
  * @author Antriksh, Swaroop, Sai Kumar, Gunjan
- * Starter code for AVL Tree
+ * AVL Tree
  */
 
 package cs6301.g1025;
 
-
-
-
 import java.util.Scanner;
+
+import static java.lang.Math.abs;
 
 public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
 	static class Entry<T> extends BST.Entry<T> {
@@ -42,15 +41,14 @@ public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
 
 	}
 
-	AVLTree() {
+	private AVLTree() {
 		super();
 	}
 
 	/**
 	 * Remove x from tree. Return x if found, otherwise return null
 	 *
-	 * @param x
-	 *            value to remove
+	 * @param x value to remove
 	 * @return x, if found, otherwise null
 	 */
 	public T remove(T x) {
@@ -58,7 +56,6 @@ public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
 		if (result == null)
 			return result;
 		update();
-
 		return result;
 	}
 
@@ -66,8 +63,7 @@ public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
 	 * Add x to tree. If tree contains a node with same key, replace element by
 	 * x. Returns true if x is a new element added to tree.
 	 * 
-	 * @param x
-	 *            T type, value to add
+	 * @param x T type, value to add
 	 * @return true if added/replaced, false otherwise
 	 */
 	public boolean add(T x) {
@@ -90,39 +86,36 @@ public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
 	/**
 	 * set the height of the entry
 	 * 
-	 * @param t
-	 *            Entry<T> type
+	 * @param t Entry<T> type
 	 * @return void
 	 */
-	public void setHeight(Entry<T> t) {
+	private void setHeight(Entry<T> t) {
 		t.height = Math.max(height(t.getLeft()), height(t.getRight())) + 1;
-
 	}
 
 	/**
 	 * After rotation, link the stack peek(parent) with the correct child
 	 * 
-	 * @param head,child
-	 *            Entry<T> type
+	 * @param head Entry<T> type
+     * @param child Entry<T> type
 	 * @return void
 	 */
-	void linkChild(Entry<T> head, Entry<T> child) {
+	private void linkChild(Entry<T> head, Entry<T> child) {
 		Entry<T> parent = (Entry<T>) stack.peek();
 		if (parent != null) {
 			if (parent.left != null && head.element.compareTo(parent.left.element) == 0) {
 				parent.left = child;
 			} else if (parent.right != null && head.element.compareTo(parent.right.element) == 0) {
 				parent.right = child;
-
 			}
 		}
-
 	}
 
 	/**
 	 * ROTATIONS
 	 */
-	Entry<T> rotateRight(Entry<T> head) {
+
+	private Entry<T> rotateRight(Entry<T> head) {
 		Entry<T> headL = head.getLeft();
 		Entry<T> headLR = headL.getRight();
 		headL.right = head;
@@ -133,7 +126,7 @@ public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
 		return headL;
 	}
 
-	Entry<T> rotateLeft(Entry<T> head) {
+	private Entry<T> rotateLeft(Entry<T> head) {
 		Entry<T> headR = head.getRight();
 		Entry<T> headRL = headR.getLeft();
 		headR.left = head;
@@ -159,7 +152,7 @@ public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
 			int balance = getHeightDiff(t);
 			if (balance > 1) {
 				int l = getHeightDiff(t.getLeft());
-				// LL
+				// L
 				if (l >= 0) {
 					t = rotateRight(t);
 				}
@@ -172,7 +165,7 @@ public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
 
 			if (balance < -1) {
 				int r = getHeightDiff(t.getRight());
-				// RR
+				// R
 				if (r <= 0) {
 					t = rotateLeft(t);
 				}
@@ -181,7 +174,6 @@ public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
 					t.right = rotateRight(t.getRight());
 					t = rotateLeft(t);
 				}
-
 			}
 
 			if (stack.peek() == null) {
@@ -194,30 +186,28 @@ public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
 	}
 
 	/**
-	 * retuns the height of an entry in the tree
+	 * returns the height of an entry in the tree
 	 * 
-	 * @param t
-	 *            Entry<T> type
+	 * @param t Entry<T> type
 	 * @return int
 	 */
-	int height(Entry<T> t) {
+	private int height(Entry<T> t) {
 		if (t == null)
-			return 0;
+			return -1;
 
 		return t.getHeight();
 	}
 
 	/**
-	 * retuns the difference in the height of left child and right child
+	 * returns the difference in the height of left child and right child
 	 * 
-	 * @param t
-	 *            Entry<T> type
+	 * @param t Entry<T> type
 	 * @return int
 	 */
 
-	int getHeightDiff(Entry<T> t) {
+	private int getHeightDiff(Entry<T> t) {
 		if (t == null)
-			return 0;
+			return -1;
 
 		return height(t.getLeft()) - height(t.getRight());
 	}
@@ -230,7 +220,7 @@ public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
 			if (x > 0) {
 				System.out.print("Add " + x + " : ");
 				t.add(x);
-				t.printTree();
+                t.printTree();
 
 			} else if (x < 0) {
 				System.out.print("Remove " + x + " : ");
@@ -249,6 +239,34 @@ public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
 			}
 		}
 	}
+
+    /**
+     * CHECKING VALIDITY
+     */
+
+    boolean isValid() {
+        return isValid((Entry<T>) this.root);
+    }
+
+    boolean isValid(Entry<T> node) {
+        if (node == null) return true;
+        int rh = height(node.getRight());
+        int lh = height(node.getLeft());
+        if (node.getLeft() == null && node.getRight() == null) return true;
+        if (abs(lh - rh) <= 1 && node.height == (1 + Integer.max(lh, rh))) {
+            if (node.getLeft() == null && node.getRight().element.compareTo(node.element) > 0)
+                return isValid(node.getRight());
+            else if (node.getRight() == null && node.getLeft().element.compareTo(node.element) < 0)
+                return isValid(node.getLeft());
+            else if (node.getLeft().element.compareTo(node.element) < 0
+                    && node.getRight().element.compareTo(node.element) > 0)
+                return isValid(node.getLeft()) && isValid(node.getRight());
+        }
+        System.out.println("INVALID AVL AT: " + node + " :: " + node.height + "->" +
+                node.getRight() + "[" + height(node.getRight()) + "]::" + node.getLeft() + "[" + height(node.getRight()) + "]");
+        return false;
+    }
+
 
 }
 

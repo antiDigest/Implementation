@@ -11,11 +11,6 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BST<T> {
             isRed = true;
         }
 
-        Entry() {
-            this.element = null;
-            this.isRed = false;
-        }
-
         void set(T x) {
             this.element = x;
             this.setRed();
@@ -59,6 +54,7 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BST<T> {
         Entry<T> Pright = P.getRight();
         P.right = Q;
         Q.left = Pright;
+        linkChild(P, Q);
         return P;
     }
 
@@ -66,18 +62,25 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BST<T> {
         Entry<T> Qleft = Q.getLeft();
         Q.left = P;
         P.right = Qleft;
+        linkChild(Q, P);
         return Q;
     }
 
-    private void relax(Entry<T> t, T x) {
-        if (t.element.compareTo(x) == 0) {
-            t.element = x; //Replace
-        } else if (t.element.compareTo(x) > 0) {
-            t.left = new Entry<T>(x, null, null);
-            size++;
-        } else {
-            t.right = new Entry<T>(x, null, null);
-            size++;
+    /**
+     * After rotation, link the stack peek(parent) with the correct child
+     *
+     * @param head Entry<T> type
+     * @param child Entry<T> type
+     * @return void
+     */
+    private void linkChild(Entry<T> head, Entry<T> child) {
+        Entry<T> parent = (Entry<T>) stack.peek();
+        if (parent != null) {
+            if (parent.left != null && head.element.compareTo(parent.left.element) == 0) {
+                parent.left = child;
+            } else if (parent.right != null && head.element.compareTo(parent.right.element) == 0) {
+                parent.right = child;
+            }
         }
     }
 
@@ -97,9 +100,14 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BST<T> {
             return true;
         }
         Entry<T> t = (Entry<T>) find(x);
-        relax(t, x);
+        boolean res = addHelper(x, t, new Entry<T>(x, null, null));
 
-        t = (Entry<T>) find(x); // TODO : check casting here
+        stack.push(t);
+        if(x.compareTo(t.element) > 0)
+            t = t.getRight();
+        else
+            t = t.getLeft();
+
         repair(t);
         ((Entry<T>) root).setBlack();
         return true;

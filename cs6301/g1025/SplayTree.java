@@ -5,7 +5,7 @@ import java.util.Scanner;
 import static java.lang.Math.abs;
 
 public class SplayTree<T extends Comparable<? super T>> extends BST<T> {
-    SplayTree() {
+    private SplayTree() {
         super();
     }
 
@@ -104,72 +104,62 @@ public class SplayTree<T extends Comparable<? super T>> extends BST<T> {
      * @param t BST.Entry type, node to be brought to root
      */
     private void splay(BST.Entry<T> t) {
-//        Entry<T> parent = (stack.isEmpty() ? null : stack.pop());
-//        Entry<T> grandparent = (stack.isEmpty() ? null : stack.pop());
-//        Entry<T> greatgrandparent = (stack.isEmpty() ? null : stack.pop());
-//        boolean left;
-//
-//        if(greatgrandparent!=null && greatgrandparent.getRight() == grandparent)
-//            left = false;
-//        else left = true;
-//
-//        while (t != root) {
-//            if(grandparent != null) {
-//                if (grandparent.getRight() == parent && parent.getRight() == t) {
-//                    t = leftLeft(grandparent, parent, t);
-//                } else if (grandparent.getLeft() == parent && parent.getLeft() == t) {
-//                    t = rightRight(t, parent, grandparent);
-//                } else if (grandparent.getLeft() == parent && parent.getRight() == t) {
-//                    t = leftRight(grandparent, parent, t);
-//                } else if (grandparent.getRight() == parent && parent.getLeft() == t) {
-//                    t = rightLeft(grandparent, parent, t);
-//                }
-//            } else if (parent != null){
-//                if(parent.getLeft() == t) {
-//                    t = right(t, parent);
-//                } else if (parent.getRight() == t) {
-//                    t = left(parent, t);
-//                }
-//            }
-//
-//            parent = greatgrandparent;
-//            grandparent = (stack.isEmpty() ? null : stack.pop());
-//            greatgrandparent = (stack.isEmpty() ? null : stack.pop());
-//            if(parent == null){
-//                root = t;
-//            } else if (left) {
-//                parent.left = t;
-//            } else {
-//                parent.right = t;
-//            }
-//        }
         this.root = splay(this.root, t);
     }
 
     private Entry<T> splay(Entry<T> u, Entry<T> t){
-        if (u == null) return u;
-        if (u.isLeaf()) return u;
+        if (u == null || u.isLeaf()) return u;
 
-        u.left = u.left == null ? null : splay(u.getLeft(), t);
-        u.right = u.right == null ? null : splay(u.getRight(), t);
+        u.left = splay(u.getLeft(), t);
+        u.right = splay(u.getRight(), t);
 
         if (u.getLeft() == t) {
             u = right(t, u);
         } else if (u.getRight() == t) {
             u = left(u, t);
         } else {
-            if (u.getLeft() != null || u.getLeft().getLeft() == t) {
-                u = leftLeft(u, u.getLeft(), u.getLeft().getLeft());
-            } else if (u.getRight() != null || u.getRight().getRight() == t) {
-                u = rightRight(u.getRight().getRight(), u.getRight(), u);
-            } else if (u.getLeft() != null || u.getLeft().getRight() == t) {
-                u = leftRight(u, u.getLeft(), u.getLeft().getRight());
-            } else if (u.getRight() != null || u.getRight().getLeft() == t) {
-                u = rightLeft(u, u.getRight(), u.getRight().getLeft());
+            if (u.getLeft() != null) {
+                Entry<T> k = u.getLeft();
+                if(k.getLeft() != null && k.getLeft().element.compareTo(t.element) == 0) {
+                    //LL
+                    u = rightRight(u, k, k.getLeft());
+                }
+                else if (k.getRight() != null && k.getRight().element.compareTo(t.element) == 0){
+                    //LR
+                    u = leftRight(u, k, k.getRight());
+                }
+            } else if (u.getRight() != null ) {
+                Entry<T> k = u.getRight();
+                if(k.getLeft() != null && k.getLeft().element.compareTo(t.element) == 0) {
+                    //RL
+                    u = rightLeft(u, k, k.getLeft());
+                }
+                else if (k.getRight() != null && k.getRight().element.compareTo(t.element) == 0){
+                    //LL
+                    u = leftLeft(u, k, k.getRight());
+                }
             }
         }
 
         return u;
+    }
+
+    /**
+     * After rotation, link the stack peek(parent) with the correct child
+     *
+     * @param head Entry<T> type
+     * @param child Entry<T> type
+     * @return void
+     */
+    private void linkChild(Entry<T> head, Entry<T> child) {
+        Entry<T> parent = (Entry<T>) stack.peek();
+        if (parent != null) {
+            if (parent.left != null && head.element.compareTo(parent.left.element) == 0) {
+                parent.left = child;
+            } else if (parent.right != null && head.element.compareTo(parent.right.element) == 0) {
+                parent.right = child;
+            }
+        }
     }
 
     /**
@@ -180,6 +170,7 @@ public class SplayTree<T extends Comparable<? super T>> extends BST<T> {
         Entry<T> Pright = P.getRight();
         P.right = Q;
         Q.left = Pright;
+        linkChild(Q, P);
         return P;
     }
 
@@ -187,6 +178,7 @@ public class SplayTree<T extends Comparable<? super T>> extends BST<T> {
         Entry<T> Qleft = Q.getLeft();
         Q.left = P;
         P.right = Qleft;
+        linkChild(P, Q);
         return Q;
     }
 
@@ -201,8 +193,8 @@ public class SplayTree<T extends Comparable<? super T>> extends BST<T> {
     }
 
     private Entry<T> leftLeft(Entry<T> P, Entry<T> Q, Entry<T> R) {
-        Entry<T> Qleft = Q.left;
-        Entry<T> Rleft = R.left;
+        Entry<T> Qleft = Q.getLeft();
+        Entry<T> Rleft = R.getLeft();
         Q.left = P;
         P.right = Qleft;
         R.left = Q;
