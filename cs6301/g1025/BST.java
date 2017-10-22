@@ -6,6 +6,7 @@
 package cs6301.g1025;
 
 
+
 import java.util.Iterator;
 
 import java.util.Scanner;
@@ -49,26 +50,15 @@ public class BST<T extends Comparable<? super T>> implements Iterable<T> {
 		size = 0;
 	}
 
-    /**
-     * ITERATOR
-     */
-
-    @Override
+	@Override
 	public Iterator<T> iterator() {
 		return new BSTIterator<>(this);
 
 	}
 
-    /**
-     * UTILITY FUNCTIONS
-     */
-
-    /**
-     * Is x contained in tree?
-     *
-     * @param x value to find
-     * @return true if found, else fasle
-     */
+	/**
+	 * TO DO: Is x contained in tree?
+	 */
 	public boolean contains(T x) {
 		Entry<T> t = find(x);
 		return (t.element != null) && (t.element.compareTo(x) == 0);
@@ -78,7 +68,8 @@ public class BST<T extends Comparable<? super T>> implements Iterable<T> {
 	/**
 	 * find x in tree. Returns node where search ends.
 	 * 
-	 * @param x x to find
+	 * @param x
+	 *            x to find
 	 * @return x.
 	 */
 	Entry<T> find(T x) {
@@ -90,8 +81,10 @@ public class BST<T extends Comparable<? super T>> implements Iterable<T> {
 	/**
 	 * Helper function for find function find x in the tree
 	 * 
-	 * @param t root of tree
-	 * @param x x to find
+	 * @param root
+	 *            root of tree
+	 * @param x
+	 *            x to find
 	 * @return x, or smallest element greater than x
 	 */
 	Entry<T> find(Entry<T> t, T x) {
@@ -116,35 +109,38 @@ public class BST<T extends Comparable<? super T>> implements Iterable<T> {
 		return t;
 	}
 
-    /**
-     * Is there an element that is equal to x in the tree?
-     * Element in tree that is equal to x is returned, null otherwise.
-     *
-     * @param x T type, value to find
-     * @return x, if present, else null
-     */
+	/**
+	 * TO DO: Is there an element that is equal to x in the tree? Element in
+	 * tree that is equal to x is returned, null otherwise.
+	 */
 	public T get(T x) {
 		Entry<T> t = find(x);
 		return ((t.element != null) && (t.element.compareTo(x) == 0)) ? (T) t.element : null;
 
 	}
 
-    /**
-     * Add x to tree.
-     * If tree contains a node with same key, replace element by x.
-     * Returns true if x is a new element added to tree.
-     *
-     * @param x T type, value to add
-     * @return true if added/replaced, false otherwise
-     */
+	/**
+	 * TO DO: Add x to tree. If tree contains a node with same key, replace
+	 * element by x. Returns true if x is a new element added to tree.
+	 */
 	public boolean add(T x) {
+		Entry<T> obj = new Entry<T>(x, null, null);
 		if (root == null) {
-			root = new Entry<>(x, null, null);
-			size = 1;
-			return true;
+			return createRoot(obj);
 		}
 		Entry<T> t = find(x);
-		return addHelper(x, t, new Entry<T>(x, null, null));
+		return addHelper(x, t, obj);
+
+	}
+
+	/**
+	 * create the root if it is null
+	 */
+	public boolean createRoot(Entry<T> obj) {
+
+		root = obj;
+		size = 1;
+		return true;
 
 	}
 
@@ -162,23 +158,25 @@ public class BST<T extends Comparable<? super T>> implements Iterable<T> {
 
 	}
 
-    /**
-     * Remove x from tree.
-     * Return x if found, otherwise return null
-     *
-     * @param x value to remove
-     * @return x, if found, otherwise null
-     */
+	/**
+	 * Remove x from tree. Return x if found, otherwise return null
+	 * 
+	 * @param x
+	 *            value to remove
+	 * @return x, if found, otherwise null
+	 */
 	public T remove(T x) {
 		if (root == null)
 			return null;
 		Entry<T> t = find(x);
+		return removehelp(t, x);
+	}
+
+	protected T removehelp(Entry<T> t, T x) {
 		if (t.element.compareTo(x) != 0)
 			return null;
-
 		T result = t.element;
-
-		if (t.left == null || t.right == null) {
+        if (t.left == null || t.right == null) {
 			bypass(t); // If only one child is left
 		} else {
 			stack.push(t);
@@ -190,13 +188,13 @@ public class BST<T extends Comparable<? super T>> implements Iterable<T> {
 		return result;
 	}
 
-    /**
-     * Helper function for remove()
-     * runs when t has only one child
-     * replaces t with one of it's child
-     *
-     * @param t type Entry<T>
-     */
+	/**
+	 * Helper function for remove() runs when t has only one child replaces t
+	 * with one of it's child
+	 * 
+	 * @param t
+	 *            type Entry<T>
+	 */
 	void bypass(Entry<T> t) {
 		Entry<T> pt = stack.peek();
 		Entry<T> c = t.left == null ? t.right : t.left;
@@ -218,13 +216,12 @@ public class BST<T extends Comparable<? super T>> implements Iterable<T> {
 				System.out.print("Add " + x + " : ");
 				t.add(x);
 				t.printTree();
-				
 
 			} else if (x < 0) {
 				System.out.print("Remove " + x + " : ");
 				t.remove(-x);
 				t.printTree();
-				
+
 			} else {
 
 				Comparable[] arr = t.toArray();
@@ -240,10 +237,7 @@ public class BST<T extends Comparable<? super T>> implements Iterable<T> {
 
 	}
 
-    /**
-     * HELPER FUNCTIONS
-     */
-
+	// TODO: Create an array with the elements using in-order traversal of tree
 	public Comparable[] toArray() {
 		Comparable[] arr = new Comparable[size];
 		int index = 0;
@@ -255,15 +249,18 @@ public class BST<T extends Comparable<? super T>> implements Iterable<T> {
 	/**
 	 * Storing elements of a tree in an array
 	 * 
-	 * @param root root of tree
-	 * @param arr array, type = Comparable<T>
-	 * @param index index value
+	 * @param root
+	 *            root of tree
+	 * @param arr
+	 *            array, type = Comparable<T>
+	 * @param index
+	 *            index value
 	 * @return int, index
 	 */
 	int inOrder(Entry<T> root, Comparable<T>[] arr, int index) {
 		if (root != null) {
 			index = inOrder(root.left, arr, index);
-			arr[index++] = (Comparable<T>) root.element;
+			arr[index++] = (Comparable) root.element;
 			index = inOrder(root.right, arr, index);
 		}
 		return index;
@@ -275,6 +272,7 @@ public class BST<T extends Comparable<? super T>> implements Iterable<T> {
 		System.out.println();
 	}
 
+	// Inorder traversal of tree
 	void printTree(Entry<T> node) {
 		if (node != null) {
 			printTree(node.left);
@@ -318,11 +316,16 @@ public class BST<T extends Comparable<? super T>> implements Iterable<T> {
 	 * @return min value (T)
 	 */
 	public T min() {
+		if(root==null){
+			return null;
+		}
 		stack = new Stack<>();
+		stack.push(null);
 		Entry<T> t = root;
+		stack.push(t);
 		while (t.left != null) {
-			stack.push(t);
 			t = t.left;
+			stack.push(t);
 		}
 		return t.element;
 	}
@@ -333,8 +336,13 @@ public class BST<T extends Comparable<? super T>> implements Iterable<T> {
 	 * @return maximum value (T)
 	 */
 	public T max() {
+		if(root==null){
+			return null;
+		}
 		stack = new Stack<>();
+		stack.push(null);
 		Entry<T> t = root;
+		stack.push(t);
 		while (t.right != null) {
 			stack.push(t);
 			t = t.right;
