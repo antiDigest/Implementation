@@ -2,7 +2,8 @@ package cs6301.g1025;
 
 
 
-import java.util.HashMap;
+
+import java.util.TreeMap;
 
 
 //Given an array A, return an array B that has those elements of A that
@@ -24,7 +25,7 @@ public class ExactlyOnce {
 	 */
 	static <T extends Comparable<? super T>> T[] exactlyOnce(T[] A) {
 
-		HashMap<T, Integer> map = new HashMap<T, Integer>();
+		TreeMap<T, Integer> map = new TreeMap<T, Integer>();
 
 		// size is no of unique elements
 		int size = 0;
