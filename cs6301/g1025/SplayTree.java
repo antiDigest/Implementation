@@ -184,8 +184,7 @@ public class SplayTree<T extends Comparable<? super T>> extends BST<T> {
 	/**
 	 * Brings the node t to the root !
 	 * Bottom up splaying
-	 * @param t
-	 *            BST.Entry type, node to be brought to root
+	 * @param node BST.Entry type, node to be brought to root
 	 */
 	private void splay(Entry<T> node) {
 		if(stack.isEmpty()||stack.peek()==null){

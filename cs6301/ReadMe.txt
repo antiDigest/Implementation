@@ -5,23 +5,22 @@ Place the extracted folder (cs6301\g1025\..) in a src folder of an IDE (eg. ecli
 
 ##Using cmd:
 
-Level 1:
+Question 1: BST
+file: BST.java
+run as: java cs6301.g1025.BST
 
-Methods implemented:
-Constructors:
-Num : String, base
-Num : long, base 
-convertToBase
-add
-subtract
-divide
-product
-toString
-powerLong
-printList
+Question 2: AVL Tree
+file: AVLTree.java
+run as: java cs6301.g1025.AVLTree
 
-Level 2
+Question 3: Red Black Tree
+file: RedBlackTree.java
+run as: java cs6301.g1025.RedBlackTree
 
-divide
-mod 
-squareroot
+Question 4: Splay Tree
+file: SplayTree.java
+run as: java cs6301.g1025.SplayTree
+
+Question 5: BST Map
+file: BSTMap.java
+run as: java cs6301.g1025.BSTMap

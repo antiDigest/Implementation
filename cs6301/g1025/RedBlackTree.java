@@ -156,18 +156,12 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BST<T> {
                     parent.setBlack();
                     grandparent.setRed();
                     grandparent = (stack.isEmpty() ? null : (Entry<T>) stack.pop());
-//                    if(grandparent!=null)
-//                        grandparent.left = parent;
-//                    else root = parent;
                 } else if (grandparent.getRight() == parent && parent.getRight() == t) {
                     // 2b
                     parent = left(grandparent, parent);
                     parent.setBlack();
                     grandparent.setRed();
                     grandparent = (stack.isEmpty() ? null : (Entry<T>) stack.pop());
-//                    if(grandparent!=null)
-//                        grandparent.right = parent;
-//                    else root = parent;
                 } else if (grandparent.getLeft() == parent && parent.getRight() == t) {
                     // 3a
                     Entry<T> temp = parent;
