@@ -24,7 +24,7 @@ public class SplayTree<T extends Comparable<? super T>> extends BST<T> {
 	 */
 	public boolean contains(T x) {
 		Entry<T> t = find(x);
-		boolean result = (t == null) && (t.element.compareTo(x) == 0);
+		boolean result = (t != null) && (t.element.compareTo(x) == 0);
 		if (result)
 			splay(t);
 		return result;
@@ -68,7 +68,7 @@ public class SplayTree<T extends Comparable<? super T>> extends BST<T> {
 	 */
 	public T get(T x) {
 		Entry<T> t = find(x);
-		T result = ((t == null) && (t.element.compareTo(x) == 0)) ? (T) t.element : null;
+		T result = ((t != null) && (t.element.compareTo(x) == 0)) ? (T) t.element : null;
 		if (result != null)
 			splay(t);
 		return result;
