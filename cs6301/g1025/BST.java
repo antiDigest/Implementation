@@ -7,6 +7,7 @@ package cs6301.g1025;
 
 
 
+
 import java.util.Iterator;
 
 import java.util.Scanner;
@@ -45,14 +46,14 @@ public class BST<T extends Comparable<? super T>> implements Iterable<T> {
 	int size;
 	Stack<Entry<T>> stack;
 
-	BST() {
+	public BST() {
 		root = null;
 		size = 0;
 	}
 
 	@Override
 	public Iterator<T> iterator() {
-		return new BSTIterator<T>(this);
+		return new BSTIterator<>(this);
 
 	}
 
@@ -61,7 +62,7 @@ public class BST<T extends Comparable<? super T>> implements Iterable<T> {
 	 */
 	public boolean contains(T x) {
 		Entry<T> t = find(x);
-		return (t.element != null) && (t.element.compareTo(x) == 0);
+		return (t!= null) && (t.element.compareTo(x) == 0);
 
 	}
 
@@ -88,7 +89,7 @@ public class BST<T extends Comparable<? super T>> implements Iterable<T> {
 	 * @return x, or smallest element greater than x
 	 */
 	Entry<T> find(Entry<T> t, T x) {
-		if (t.element == null || t.element.compareTo(x) == 0) {
+		if (t== null || t.element.compareTo(x) == 0) {
 			return t;
 		}
 		while (true) {
@@ -115,7 +116,7 @@ public class BST<T extends Comparable<? super T>> implements Iterable<T> {
 	 */
 	public T get(T x) {
 		Entry<T> t = find(x);
-		return ((t.element != null) && (t.element.compareTo(x) == 0)) ? (T) t.element : null;
+		return ((t != null) && (t.element.compareTo(x) == 0)) ? (T) t.element : null;
 
 	}
 
@@ -144,7 +145,7 @@ public class BST<T extends Comparable<? super T>> implements Iterable<T> {
 
 	}
 
-	boolean addHelper(T x, Entry<T> t, Entry<T> obj) {
+	protected boolean addHelper(T x, Entry<T> t, Entry<T> obj) {
 		if (t.element.compareTo(x) == 0) {
 			t.element = x; // Replace
 			return false;
