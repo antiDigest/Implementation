@@ -249,8 +249,7 @@ public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
 					System.out.print(arr[i] + " ");
 				}
 				System.out.println();
-            t.preorder((Entry<Integer>) t.root);
-          System.out.println( t. isValid(t.root));
+           
 				return;
 			}
 		}
