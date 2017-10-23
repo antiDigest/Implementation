@@ -101,7 +101,6 @@ public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
 	 */
 	private void setHeight(Entry<T> t) {
 		t.height = Math.max(height(t.getLeft()), height(t.getRight())) + 1;
-
 	}
 
 	/**
@@ -118,10 +117,8 @@ public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
 				parent.left = child;
 			} else if (parent.right != null && head.element.compareTo(parent.right.element) == 0) {
 				parent.right = child;
-
 			}
 		}
-
 	}
 
 	/**
@@ -174,7 +171,6 @@ public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
 					t = rotateRight(t);
 				}
 			}
-
 			if (balance < -1) {
 				int r = getHeightDiff(t.getRight());
 				// RR
@@ -186,7 +182,6 @@ public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
 					t.right = rotateRight(t.getRight());
 					t = rotateLeft(t);
 				}
-
 			}
 
 			if (stack.peek() == null) {
