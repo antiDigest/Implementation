@@ -13,6 +13,7 @@ public class Shuffle {
 
     public static <T> void shuffle(T[] arr) {
         shuffle(arr, 0, arr.length - 1);
+
     }
 
     public static <T> void shuffle(T[] arr, int from, int to) {
