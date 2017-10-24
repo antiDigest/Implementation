@@ -14,7 +14,7 @@ public class KnuthL extends PermutationCombination {
             while (!(A[j] < A[l]) && l>j)
                 l--;
             swap(j, l);
-            reverse(j + 1, n - 1);
+            reverse(j + 1, n);
             visit(n);
         }
     }
@@ -29,13 +29,11 @@ public class KnuthL extends PermutationCombination {
     }
 
     void reverse(int start, int end) {
-        int k = end;
-        int mid = (end - start + 1) / 2;
-        for (int i = start; i <= mid; i++) {
-            swap(i, k);
-            k--;
+        while (start < end) {
+            swap(start, end);
+            start++;
+            end--;
         }
-
     }
 
     boolean descending(int start, int end) {
