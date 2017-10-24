@@ -85,7 +85,7 @@ public class XGraph extends Graph {
         }
     }
 
-    static class XEdge extends Edge {
+    public static class XEdge extends Edge {
         boolean disabled;
 
         XEdge(XVertex from, XVertex to, int weight) {
@@ -175,7 +175,7 @@ public class XGraph extends Graph {
         Vertex src = xg.getVertex(1);
 
         System.out.println("Node : Dist : Edges");
-        BFS b = new BFS(xg, src);
+        cs6301.g00.BFS b = new cs6301.g00.BFS(xg, src);
         b.bfs();
         Vertex farthest = DiameterTree.findFarthest(b);
         xg.printGraph(b);

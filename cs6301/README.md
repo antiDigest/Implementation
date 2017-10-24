@@ -33,3 +33,7 @@ run as: java cs6301.g1025.PermutationCombination
 Question 8: Knuth's L algorithm
 file: KnuthL.java
 run as: java cs6301.g1025.KnuthL
+
+Question 9: Heap's Algorithm
+file: HeapAlgorithm.java
+run as: java cs6301.g1025.HeapAlgorithm

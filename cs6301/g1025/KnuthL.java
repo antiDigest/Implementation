@@ -1,5 +1,7 @@
 package cs6301.g1025;
 
+import java.util.Scanner;
+
 public class KnuthL extends PermutationCombination {
 
     void permute(int n) {
@@ -8,10 +10,10 @@ public class KnuthL extends PermutationCombination {
         int l;
         while (!descending(0, n)) {
             j = n - 1;
-            while (!(A[j] < A[j + 1]) && j>=0)
+            while (!(A[j] < A[j + 1]) && j >= 0)
                 j--;
             l = n;
-            while (!(A[j] < A[l]) && l>j)
+            while (!(A[j] < A[l]) && l > j)
                 l--;
             swap(j, l);
             reverse(j + 1, n);
@@ -22,11 +24,6 @@ public class KnuthL extends PermutationCombination {
     /**
      * HELPER FUNCTIONS
      */
-
-    void visit(int n){
-        System.out.print(++count + ": ");
-        printList(0, n, A);
-    }
 
     void reverse(int start, int end) {
         while (start < end) {
@@ -46,8 +43,16 @@ public class KnuthL extends PermutationCombination {
     }
 
     public static void main(String[] args) {
+
+        Scanner scanner;
+        int VERBOSE = 0;
+
+        if (args.length > 0)
+            VERBOSE = Integer.parseInt(args[0]);
+
         int n = 6;
         KnuthL pc = new KnuthL();
+        pc.VERBOSE = VERBOSE;
         pc.A = new int[]{1, 2, 2, 3, 3, 4};
 //        for (int i = 0; i < n; i++) {
 //            pc.A[i] = i + 1;
