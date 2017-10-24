@@ -1,25 +1,23 @@
-/** @author rbk
- *  Ver 1.0: 2017/09/29
- *  Example to extend Graph/Vertex/Edge classes to implement algorithms in which nodes and edges
- *  need to be disabled during execution.  Design goal: be able to call other graph algorithms
- *  without changing their codes to account for disabled elements.
- *
- *  Ver 1.1: 2017/10/09
- *  Updated iterator with boolean field ready. Previously, if hasNext() is called multiple
- *  times, then cursor keeps moving forward, even though the elements were not accessed
- *  by next().  Also, if program calls next() multiple times, without calling hasNext()
- *  in between, same element is returned.  Added UnsupportedOperationException to remove.
+/**
+ * @author rbk
+ * Ver 1.0: 2017/09/29
+ * Example to extend Graph/Vertex/Edge classes to implement algorithms in which nodes and edges
+ * need to be disabled during execution.  Design goal: be able to call other graph algorithms
+ * without changing their codes to account for disabled elements.
+ * <p>
+ * Ver 1.1: 2017/10/09
+ * Updated iterator with boolean field ready. Previously, if hasNext() is called multiple
+ * times, then cursor keeps moving forward, even though the elements were not accessed
+ * by next().  Also, if program calls next() multiple times, without calling hasNext()
+ * in between, same element is returned.  Added UnsupportedOperationException to remove.
  **/
 
 package cs6301.g00;
-import cs6301.g00.Graph.Vertex;
-import cs6301.g00.Graph.Edge;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Scanner;
-
 
 
 public class XGraph extends Graph {
@@ -33,12 +31,18 @@ public class XGraph extends Graph {
             xadj = new LinkedList<>();
         }
 
-        boolean isDisabled() { return disabled; }
+        boolean isDisabled() {
+            return disabled;
+        }
 
-        void disable() { disabled = true; }
+        void disable() {
+            disabled = true;
+        }
 
         @Override
-        public Iterator<Edge> iterator() { return new XVertexIterator(this); }
+        public Iterator<Edge> iterator() {
+            return new XVertexIterator(this);
+        }
 
         class XVertexIterator implements Iterator<Edge> {
             XEdge cur;
@@ -51,10 +55,14 @@ public class XGraph extends Graph {
             }
 
             public boolean hasNext() {
-                if(ready) { return true; }
-                if(!it.hasNext()) { return false; }
+                if (ready) {
+                    return true;
+                }
+                if (!it.hasNext()) {
+                    return false;
+                }
                 cur = it.next();
-                while(cur.isDisabled() && it.hasNext()) {
+                while (cur.isDisabled() && it.hasNext()) {
                     cur = it.next();
                 }
                 ready = true;
@@ -62,8 +70,8 @@ public class XGraph extends Graph {
             }
 
             public Edge next() {
-                if(!ready) {
-                    if(!hasNext()) {
+                if (!ready) {
+                    if (!hasNext()) {
                         throw new java.util.NoSuchElementException();
                     }
                 }
@@ -96,14 +104,14 @@ public class XGraph extends Graph {
 
     public XGraph(Graph g) {
         super(g);
-        xv = new XVertex[2*g.size()];  // Extra space is allocated in array for nodes to be added later
-        for(Vertex u: g) {
+        xv = new XVertex[2 * g.size()];  // Extra space is allocated in array for nodes to be added later
+        for (Vertex u : g) {
             xv[u.getName()] = new XVertex(u);
         }
 
         // Make copy of edges
-        for(Vertex u: g) {
-            for(Edge e: u) {
+        for (Vertex u : g) {
+            for (Edge e : u) {
                 Vertex v = e.otherEnd(u);
                 XVertex x1 = getVertex(u);
                 XVertex x2 = getVertex(v);
@@ -113,21 +121,25 @@ public class XGraph extends Graph {
     }
 
     @Override
-    public Iterator<Vertex> iterator() { return new XGraphIterator(this); }
+    public Iterator<Vertex> iterator() {
+        return new XGraphIterator(this);
+    }
 
     class XGraphIterator implements Iterator<Vertex> {
         Iterator<XVertex> it;
         XVertex xcur;
 
         XGraphIterator(XGraph xg) {
-            this.it = new ArrayIterator<XVertex>(xg.xv, 0, xg.size()-1);  // Iterate over existing elements only
+            this.it = new ArrayIterator<XVertex>(xg.xv, 0, xg.size() - 1);  // Iterate over existing elements only
         }
 
 
         public boolean hasNext() {
-            if(!it.hasNext()) { return false; }
+            if (!it.hasNext()) {
+                return false;
+            }
             xcur = it.next();
-            while(xcur.isDisabled() && it.hasNext()) {
+            while (xcur.isDisabled() && it.hasNext()) {
                 xcur = it.next();
             }
             return !xcur.isDisabled();
@@ -145,7 +157,7 @@ public class XGraph extends Graph {
 
     @Override
     public Vertex getVertex(int n) {
-        return xv[n-1];
+        return xv[n - 1];
     }
 
     XVertex getVertex(Vertex u) {
@@ -180,9 +192,9 @@ public class XGraph extends Graph {
     }
 
     void printGraph(BFS b) {
-        for(Vertex u: this) {
+        for (Vertex u : this) {
             System.out.print("  " + u + "  :   " + b.distance(u) + "  : ");
-            for(Edge e: u) {
+            for (Edge e : u) {
                 System.out.print(e);
             }
             System.out.println();

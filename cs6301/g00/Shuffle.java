@@ -56,7 +56,8 @@ public class Shuffle {
     }
 }
 
-/** Sample output:
- Before: 0 1 2 3 4 5 6 7 8 9
- After: 3 7 9 8 2 4 6 1 0 5
+/**
+ * Sample output:
+ * Before: 0 1 2 3 4 5 6 7 8 9
+ * After: 3 7 9 8 2 4 6 1 0 5
  */
