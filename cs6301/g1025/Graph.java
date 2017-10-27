@@ -1,25 +1,27 @@
 /**
  * Class to represent a graph
- *  @author rbk
- *  Ver 1.1: 2017/08/28.  Updated some methods to public.  Added getName() to Vertex
- *  Ver 1.2: 2017/09/08.  Added getVertex() method for GraphAlgorithm.java
- *  Ver 1.3: 2017/09/28.  Added isDirected() and additional Vertex constructor
- *  Ver 2.0: 2017/10/11.  Added following OO features to allow the use of
- *  	cs6301.g00.Graph directly from cs6301.gXX, without having to copy the file:
- *	Renamed v to vertex (better name), but v is left as a synonym for vertex
- *	for backward compatibility.  Added a new field m for number of edges.
- *	Added name field to Edge to uniquely identify edges.
- *	Added hashCode, equals to Vertex and Edge for using them as keys in hashmaps.
- *	Changed == to equals() for Vertex and Edge checks for equality.
- *	Added methods fromVertex, toVertex, getWeight, setWeight, getName, setName,
- *	and field "name" to Edge class.
- *	Changed addEdge from void to return the Edge that it created.
- *	Added reverseIterator to Vertex and adj and revAdj fields changed to public.
- *	Constructors of Vertex and Edge changed to public.
- *	Added methods edgeSize, clear, setDirected, reverseGraph to Graph.
+ *
+ * @author rbk
+ * Ver 1.1: 2017/08/28.  Updated some methods to public.  Added getName() to Vertex
+ * Ver 1.2: 2017/09/08.  Added getVertex() method for GraphAlgorithm.java
+ * Ver 1.3: 2017/09/28.  Added isDirected() and additional Vertex constructor
+ * Ver 2.0: 2017/10/11.  Added following OO features to allow the use of
+ * cs6301.g1025.Graph directly from cs6301.gXX, without having to copy the file:
+ * Renamed v to vertex (better name), but v is left as a synonym for vertex
+ * for backward compatibility.  Added a new field m for number of edges.
+ * Added name field to Edge to uniquely identify edges.
+ * Added hashCode, equals to Vertex and Edge for using them as keys in hashmaps.
+ * Changed == to equals() for Vertex and Edge checks for equality.
+ * Added methods fromVertex, toVertex, getWeight, setWeight, getName, setName,
+ * and field "name" to Edge class.
+ * Changed addEdge from void to return the Edge that it created.
+ * Added reverseIterator to Vertex and adj and revAdj fields changed to public.
+ * Constructors of Vertex and Edge changed to public.
+ * Added methods edgeSize, clear, setDirected, reverseGraph to Graph.
  */
 
-package cs6301.g00;
+package cs6301.g1025;
+
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -27,7 +29,7 @@ import java.util.Scanner;
 
 public class Graph implements Iterable<Graph.Vertex> {
     Vertex[] v, vertex; // vertices of graph
-    int n; // number of verices in the graph
+    int n; // number of vertices in the graph
     int m; // number of edges in the graph
     boolean directed;  // true if graph is directed, false otherwise
 
@@ -53,7 +55,7 @@ public class Graph implements Iterable<Graph.Vertex> {
 
         /**
          * Constructor for vertex, to be used in applications that need to extend vertex
-         * @param u	: Vertex - the vertex to be cloned
+         * @param u    : Vertex - the vertex to be cloned
          */
         public Vertex(Vertex u) {
             name = u.name;
@@ -81,20 +83,24 @@ public class Graph implements Iterable<Graph.Vertex> {
         @Override
         public boolean equals(Object other) {
             Vertex otherVertex = (Vertex) other;
-            if(otherVertex == null) {
+            if (otherVertex == null) {
                 return false;
             }
             return this.name == otherVertex.name;
         }
 
         /** Iterator to go through edges out of vertex */
-        public Iterator<Edge> iterator() { return adj.iterator(); }
+        public Iterator<Edge> iterator() {
+            return adj.iterator();
+        }
 
         /** Iterator to go through edges into vertex */
-        public Iterator<Edge> reverseIterator() { return revAdj.iterator(); }
+        public Iterator<Edge> reverseIterator() {
+            return revAdj.iterator();
+        }
 
         // Helper function for parallel arrays used to store vertex attributes
-        public static<T> T getVertex(T[] node, Vertex u) {
+        public static <T> T getVertex(T[] node, Vertex u) {
             return node[u.name];
         }
 
@@ -102,7 +108,7 @@ public class Graph implements Iterable<Graph.Vertex> {
          * Method to get vertex number.  +1 is needed because [0] is vertex 1.
          */
         public String toString() {
-            return Integer.toString(name+1);
+            return Integer.toString(name + 1);
         }
     }
 
@@ -111,10 +117,12 @@ public class Graph implements Iterable<Graph.Vertex> {
      */
 
     public static class Edge {
-        Vertex from; // head vertex
+        //        Vertex from; // head vertex
         Vertex to;   // tail vertex
         int weight;  // weight of edge
         int name;    // name of edge
+        Vertex from;
+
         /**
          * Constructor for Edge
          *
@@ -167,7 +175,8 @@ public class Graph implements Iterable<Graph.Vertex> {
 
         /** Set weight of edge */
         public void setWeight(int newWeight) {
-            weight = newWeight;;
+            weight = newWeight;
+            ;
         }
 
         /** Get name of edge */
@@ -208,7 +217,7 @@ public class Graph implements Iterable<Graph.Vertex> {
         /** Edges are equal if they have the same name and connect same ends */
         @Override
         public boolean equals(Object other) {
-            if(other == null) {
+            if (other == null) {
                 return false;
             }
             Edge otherEdge = (Edge) other;
@@ -271,7 +280,7 @@ public class Graph implements Iterable<Graph.Vertex> {
      *           : int
      */
     public Vertex getVertex(int n) {
-        return vertex[n-1];
+        return vertex[n - 1];
     }
 
     /* Method to get the whole array. Why is this needed? */
@@ -289,7 +298,7 @@ public class Graph implements Iterable<Graph.Vertex> {
      */
     public Edge addEdge(Vertex from, Vertex to, int weight) {
         Edge e = new Edge(from, to, weight);
-        if(directed) {
+        if (directed) {
             from.adj.add(e);
             to.revAdj.add(e);
         } else {
@@ -303,7 +312,7 @@ public class Graph implements Iterable<Graph.Vertex> {
     /** Another version of addEdge to include name */
     public Edge addEdge(Vertex from, Vertex to, int weight, int name) {
         Edge e = new Edge(from, to, weight, name);
-        if(directed) {
+        if (directed) {
             from.adj.add(e);
             to.revAdj.add(e);
         } else {
@@ -327,7 +336,7 @@ public class Graph implements Iterable<Graph.Vertex> {
     /** Method to clear all edges */
     public void clear() {
         m = 0;
-        for(Vertex u: this) {
+        for (Vertex u : this) {
             u.adj = new LinkedList<>();
             u.revAdj = new LinkedList<>();
         }
@@ -345,8 +354,8 @@ public class Graph implements Iterable<Graph.Vertex> {
 
     /** Method to reverse the edges of a graph.  Applicable to directed graphs only. */
     public void reverseGraph() {
-        if(directed) {
-            for(Vertex u: this) {
+        if (directed) {
+            for (Vertex u : this) {
                 List<Edge> tmp = u.adj;
                 u.adj = u.revAdj;
                 u.revAdj = tmp;
@@ -383,7 +392,7 @@ public class Graph implements Iterable<Graph.Vertex> {
             int u = in.nextInt();
             int v = in.nextInt();
             int w = in.nextInt();
-            g.addEdge(g.getVertex(u), g.getVertex(v), w, i+1);
+            g.addEdge(g.getVertex(u), g.getVertex(v), w, i + 1);
         }
         return g;
     }

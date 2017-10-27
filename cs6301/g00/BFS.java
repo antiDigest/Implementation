@@ -7,6 +7,9 @@
 
 package cs6301.g00;
 
+import cs6301.g1025.Graph;
+import cs6301.g1025.GraphAlgorithm;
+
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -52,7 +55,7 @@ public class BFS extends GraphAlgorithm<BFS.BFSVertex> {
         getVertex(src).distance = 0;
     }
 
-    void bfs() {
+    public void bfs() {
         Queue<Graph.Vertex> q = new LinkedList<>();
         q.add(src);
         while (!q.isEmpty()) {
@@ -75,7 +78,7 @@ public class BFS extends GraphAlgorithm<BFS.BFSVertex> {
         return getVertex(u).parent;
     }
 
-    int distance(Graph.Vertex u) {
+    public int distance(Graph.Vertex u) {
         return getVertex(u).distance;
     }
 

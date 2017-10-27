@@ -8,6 +8,8 @@
 
 package cs6301.g00;
 
+import cs6301.g1025.Graph;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
@@ -34,13 +36,13 @@ public class CC {
         this.g = g;
         ccVertex = new CCVertex[g.size()];
         for (Graph.Vertex u : g) {
-            ccVertex[u.name] = new CCVertex(u);
+            ccVertex[u.getName()] = new CCVertex(u);
         }
     }
 
     // Main algorithm for finding the number of connected components of g using
     // DFS
-    int findCC() {
+    public int findCC() {
         int cno = 0;
         for (Graph.Vertex u : g) {
             if (!seen(u)) {
@@ -75,7 +77,7 @@ public class CC {
 
     // From Vertex to CCVertex (ugly)
     CCVertex getCCVertex(Graph.Vertex u) {
-        return ccVertex[u.name];
+        return ccVertex[u.getName()];
     }
 
     // From CCVertex to Vertex
