@@ -126,12 +126,9 @@ public class Graph implements Iterable<Graph.Vertex> {
         /**
          * Constructor for Edge
          *
-         * @param u
-         *            : Vertex - Vertex from which edge starts
-         * @param v
-         *            : Vertex - Vertex on which edge lands
-         * @param w
-         *            : int - Weight of edge
+         * @param u: Vertex - Vertex from which edge starts
+         * @param v: Vertex - Vertex on which edge lands
+         * @param w: int - Weight of edge
          */
         public Edge(Vertex u, Vertex v, int w) {
             from = u;

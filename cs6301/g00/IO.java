@@ -7,9 +7,9 @@
 
 package cs6301.g00;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.Scanner;
+import java.io.FileNotFoundException;
+import java.io.File;
 
 public class IO {
     // Use file name from command line arg (if given). Otherwise read from stdin (console)
@@ -27,6 +27,7 @@ public class IO {
         int s = in.nextInt();
         float t = in.nextFloat();
         System.out.println("s: " + s + " t: " + t);
+        in.close();
     }
 }
 /* Sample execution:
