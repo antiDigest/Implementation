@@ -1,7 +1,7 @@
 /**
  * Class to represent a graph
+ *  @author swaroop, saikumar, antriksh
  *
- * @author swaroop, saikumar, antriksh
  */
 
 package cs6301.g1025;
@@ -9,16 +9,26 @@ package cs6301.g1025;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Scanner;
 
-public class SCC {
 
-    SCCVertex[] node;
-    Graph g;
+public class SCC extends GraphAlgorithm<SCC.SCCVertex> {
+
+    int components = 0;// no of components in the SCC
+    ArrayList<Graph.Vertex> vertices = new ArrayList<Graph.Vertex>();// list of
+    // vertices
+    ArrayList<Graph.Vertex> lstOrder = new ArrayList<Graph.Vertex>();// list of
+    // vertices
+    // visited
+    // by
+    // DFS
+    // order
 
     public SCC(Graph g) {
-        this.g = g;
+        super(g);
         node = new SCCVertex[g.size()];
         // Create array for storing vertex properties
         for (Graph.Vertex u : g) {
@@ -29,32 +39,100 @@ public class SCC {
     /**
      * Wrapper to store component numbers
      */
-    static class SCCVertex extends XGraph.XVertex {
-        Graph.Vertex vertex;
+    static class SCCVertex {
         boolean seen;
+        int componentno;
 
         SCCVertex(Graph.Vertex u) {
-            super(u);
             seen = false;
-            cno = 0;
-            vertex = u;
+            componentno = 0;
         }
 
-        @Override
-        public String toString() {
-            return "(" + vertex.getName() + ", " + this.cno + ")";
+        int getCno(){
+            return componentno;
         }
+    }
+
+    /**
+     * Initializing DFS
+     * @return List of vertices visited (Finish order)
+     */
+    void dfs() {
+        components = 0;
+        this.vertices = (ArrayList<Graph.Vertex>) this.lstOrder.clone();
+        this.lstOrder.clear();
+        ListIterator<Graph.Vertex> itr = this.vertices.listIterator(vertices.size());
+        while (itr.hasPrevious()) {
+            Graph.Vertex u = itr.previous();
+            if (!seen(u)) {
+                assignComponentno(u, components++);
+                dfsUtil(u);
+            }
+        }
+    }
+
+    /**
+     * DFS Visit procedure
+     *
+     * @param u: start vertex
+     */
+    void dfsUtil(Graph.Vertex u) {
+        visit(u);
+
+        for (Graph.Edge e : u) {
+            Graph.Vertex v = e.otherEnd(u);
+            if (!seen(v)) {
+                assignComponentno(u, getComponentno(u));
+                dfsUtil(v);
+            }
+        }
+
+        this.lstOrder.add(u);
+
+    }
+
+    /**
+     * Main program to find SCC
+     *
+     * @param g:
+     *            graph
+     * @return Number of components
+     */
+    int stronglyConnectedComponents(Graph g) {
+        lstOrder = new ArrayList<Graph.Vertex>(Arrays.asList(g.v));
+        //this.lstOrder=(ArrayList<Vertex>) Arrays.asList(g.v);
+        this.dfs();
+        reinitialize();
+        reverseGraph(g);
+        this.dfs();
+        reverseGraph(g);
+        System.out.println("COMP: " + components);
+        return this.components;
+
     }
 
     /**
      * Assign Component Number to vertex
      *
-     * @param u:           vertex
-     * @param componentno: integer
+     * @param u:
+     *            vertex
+     * @param componentno:
+     *            integer
      */
     void assignComponentno(Graph.Vertex u, int componentno) {
+
         SCCVertex sc = getVertex(u);
-        sc.cno = componentno;
+        sc.componentno = componentno;
+    }
+
+    /**
+     *
+     * @param u:
+     *            vertex return Component Number of vertex
+     */
+    int getComponentno(Graph.Vertex u) {
+        SCCVertex sc = getVertex(u);
+        return sc.componentno;
     }
 
     /**
@@ -70,48 +148,12 @@ public class SCC {
     /**
      * Visit v
      *
-     * @param v: Vertex
+     * @param v:
+     *            Vertex
      */
     void visit(Graph.Vertex v) {
         SCCVertex sc = getVertex(v);
         sc.seen = true;
-    }
-
-    /**
-     * Reverse DFS
-     *
-     * @param lst: List of Vertices
-     * @return number of components
-     */
-    int dfsRev(List<Graph.Vertex> lst) {
-        int components = 0;
-
-        for (int i = lst.size() - 1; i >= 0; i--) {
-            Graph.Vertex v = lst.get(i);
-            if (!seen(v)) {
-                components = components + 1;
-                dfsRevUtil(v, components);
-            }
-        }
-        return components;
-
-    }
-
-    /**
-     * Utility to reverse graph
-     *
-     * @param u:           Vertex
-     * @param componentno: preserve component number of vertex
-     */
-    void dfsRevUtil(Graph.Vertex u, int componentno) {
-        visit(u);
-        assignComponentno(u, componentno);
-        for (Graph.Edge e : u.revAdj) {
-            Graph.Vertex v = e.otherEnd(u);
-            if (!seen(v)) {
-                dfsRevUtil(v, componentno);
-            }
-        }
 
     }
 
@@ -133,70 +175,25 @@ public class SCC {
     }
 
     /**
-     * Initializing DFS
-     *
-     * @return List of vertices visited (Finish order)
-     */
-    List<Graph.Vertex> dfsStraight() {
-        List<Graph.Vertex> l = new ArrayList<>();
-        for (Graph.Vertex u : this.g) {
-            if (!seen(u)) {
-                dfsStraightUtil(u, l);
-            }
-        }
-        return l;
-
-    }
-
-    /**
-     * DFS Visit procedure
-     *
-     * @param u: start vertex
-     * @param l: List of vertices storing finish order
-     */
-    void dfsStraightUtil(Graph.Vertex u, List<Graph.Vertex> l) {
-        visit(u);
-
-        for (Graph.Edge e : u) {
-            Graph.Vertex v = e.otherEnd(u);
-
-            if (!seen(v)) {
-                dfsStraightUtil(v, l);
-            }
-        }
-
-        l.add(u);
-
-    }
-
-    /**
-     * Main program to find SCC
-     *
-     * @param g: graph
-     * @return Number of components
-     */
-    int stronglyConnectedComponents(Graph g) {
-        List<Graph.Vertex> order = this.dfsStraight();
-        ((XGraph) g).reverseGraph();
-        reinitialize();
-        return this.dfsRev(order);
-
-    }
-
-    /**
      * Re-Initialise graph, reset everything
      */
     void reinitialize() {
-
         for (Graph.Vertex u : g) {
             SCCVertex v = this.getVertex(u);
             v.seen = false;
-
         }
     }
 
-    SCCVertex getVertex(Graph.Vertex u) {
-        return node[u.getName()];
+    /**
+     * Initializing DFS
+     * @param g:Graph
+     */
+    void reverseGraph(Graph g) {
+        for (Graph.Vertex u : this.g) {
+            List<Graph.Edge> temp = u.adj;
+            u.adj = u.revAdj;
+            u.revAdj = temp;
+        }
     }
 
 }

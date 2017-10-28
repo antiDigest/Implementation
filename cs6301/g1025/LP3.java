@@ -71,6 +71,7 @@ public class LP3 {
     public static int dMST(XGraph g, Vertex start, List<Edge> dmst) {
         SCC cc = new SCC(g);
         int components = cc.stronglyConnectedComponents(g);
+        System.out.println("COMPONENTS: " + components);
 
         while (components > 1) {
             // Transform Weights
@@ -95,7 +96,7 @@ public class LP3 {
             cc = new SCC(g);
             components = cc.stronglyConnectedComponents(g);
 
-            if (components <= 1)
+            if (components == 1)
                 break;
 
             // HashMap to store the list of vertices for each cno !
@@ -125,10 +126,12 @@ public class LP3 {
                 List<Vertex> list = map.getValue();
                 if (list.size() > 1) {
                     g.addVertex(list);
-                    g.disableAll(list);
                 }
             }
         }
+
+        BFS bfs = new BFS(g, start);
+        g.printGraph(bfs);
 
         // Unravel all components
         for (Vertex u : g) {
