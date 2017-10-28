@@ -14,8 +14,6 @@
 
 package cs6301.g1025;
 
-import cs6301.g00.BFS;
-
 import java.util.*;
 
 import static cs6301.g1025.LP3.INFINITY;
@@ -31,12 +29,14 @@ public class XGraph extends Graph {
         int cno;
         List<Vertex> collab;
         int name;
+        int size;
 
         XVertex(Vertex u) {
             super(u);
             disabled = false;
             xadj = new LinkedList<>();
             xrevAdj = new LinkedList<>();
+            size = 1;
         }
 
         XVertex(int n, List<Vertex> component) {
@@ -45,7 +45,8 @@ public class XGraph extends Graph {
             disabled = false;
             xadj = new LinkedList<>();
             xrevAdj = new LinkedList<>();
-            collab = new ArrayList<Vertex>();
+            collab = new ArrayList<>();
+            size = component.size();
             collab.addAll(component);
         }
 
@@ -65,8 +66,12 @@ public class XGraph extends Graph {
             return this.xadj;
         }
 
-        int getCno(){
+        int getCno() {
             return cno;
+        }
+
+        int size() {
+            return size;
         }
 
         @Override
@@ -205,44 +210,61 @@ public class XGraph extends Graph {
 
     }
 
-    public void addVertex(List<Vertex> cycle){
-        this.graphSize++;
-        XGraph.XVertex vertex = new XGraph.XVertex(size() - 1 , cycle);
-        for (Vertex v : vertex.collab) {
-            XGraph.XVertex k = this.getVertex(v);
+    public void addVertex(List<Vertex> cycle) {
+        incrementSize();
+        XGraph.XVertex vertex = new XGraph.XVertex(size() - 1, cycle);
+        this.xv[size() - 1] = vertex;
 
+        disableAll(cycle);
+
+        for (Vertex u : this) {
             int minWeight = INFINITY;
-            // Adding Reverse Adj
-            XEdge addRevAdj = null;
-            for (XGraph.XEdge e : k.getRevAdj()) {
-                if(e.getWeight() < minWeight) {
+            XEdge minEdge = null;
+            for (Vertex v : vertex.collab) {
+                XEdge e = getEdge(getVertex(u), getVertex(v));
+                if (e != null && e.getWeight() > 0 && minWeight > e.getWeight()) {
                     minWeight = e.getWeight();
-                    XGraph.XVertex x = this.getVertex(e.otherEnd(v));
-                    addRevAdj = new XGraph.XEdge(x, vertex, e.getWeight());
-                    x.xadj.add(addRevAdj);
+                    minEdge = new XEdge(getVertex(u), vertex, e.getWeight());
                 }
             }
-
-            // Adding Adj
-            XEdge addAdj = null;
-            minWeight = INFINITY;
-            for (XGraph.XEdge e : k.getAdj()) {
-                if(e.getWeight() < minWeight) {
-                    minWeight = e.getWeight();
-                    XGraph.XVertex x = this.getVertex(e.otherEnd(v));
-                    addAdj = new XGraph.XEdge(x, vertex, e.getWeight());
-                    x.xrevAdj.add(addAdj);
-                }
+            if (minEdge != null) {
+                vertex.xrevAdj.add(minEdge);
+                getVertex(u).xadj.add(minEdge);
             }
-
-            k.xrevAdj.add(addRevAdj);
-            k.xadj.add(addAdj);
-
-            k.disable();
-            System.out.println("DISABLING: " + k);
         }
-        this.xv[graphSize - 1] = vertex;
-        System.out.println("Registered Size: " + size());
+
+        for (Vertex u : this) {
+            int minWeight = INFINITY;
+            XEdge minEdge = null;
+            for (Vertex v : vertex.collab) {
+                XEdge e = getRevEdge(getVertex(u), getVertex(v));
+                if (e != null && e.getWeight() > 0 && minWeight > e.getWeight()) {
+                    minWeight = e.getWeight();
+                    minEdge = new XEdge(vertex, getVertex(u), e.getWeight());
+                }
+            }
+            if (minEdge != null) {
+                vertex.xadj.add(minEdge);
+                getVertex(u).xrevAdj.add(minEdge);
+            }
+        }
+    }
+
+    public void unRavel(Vertex u) {
+        XVertex k = getVertex(u);
+        if (k.size() <= 1) {
+            return;
+        }
+        for (Vertex v : k.collab) {
+            System.out.println(v);
+        }
+    }
+
+    void disableAll(List<Vertex> cycle){
+        for (Vertex v : cycle) {
+            XGraph.XVertex k = this.getVertex(v);
+            k.disable();
+        }
     }
 
     @Override
@@ -254,6 +276,19 @@ public class XGraph extends Graph {
         return Vertex.getVertex(xv, u);
     }
 
+    /**
+     * Method to reverse the edges of a graph.  Applicable to directed graphs only.
+     */
+    public void reverseGraph() {
+        if (directed) {
+            for (Graph.Vertex u : this) {
+                List<XGraph.XEdge> tmp = getVertex(u).getAdj();
+                getVertex(u).xadj = getVertex(u).getRevAdj();
+                getVertex(u).xrevAdj = tmp;
+            }
+        }
+    }
+
     public static void main(String[] args) {
         Graph g = Graph.readGraph(new Scanner(System.in));
         XGraph xg = new XGraph(g);
@@ -262,7 +297,7 @@ public class XGraph extends Graph {
 
     void printGraph(BFS b) {
         for (Vertex u : this) {
-            System.out.print("  " + u + "  :  " + b.distance(u) + "  :  ");
+            System.out.print("  " + u + "  :  " + (b.distance(u) == INFINITY ? "INF" : b.distance(u)) + "  :  ");
             for (Edge e : u) {
                 System.out.print(e);
             }
@@ -271,9 +306,34 @@ public class XGraph extends Graph {
 
     }
 
-    public int size(){
+    public int size() {
         return graphSize;
     }
+
+    void incrementSize() {
+        graphSize++;
+    }
+
+    XEdge getEdge(XVertex u, XVertex v) {
+        for (XEdge e : u.getAdj()) {
+            XVertex x = getVertex(e.otherEnd(u));
+            if (x == v) {
+                return e;
+            }
+        }
+        return null;
+    }
+
+    XEdge getRevEdge(XVertex u, XVertex v) {
+        for (XEdge e : u.getRevAdj()) {
+            XVertex x = getVertex(e.otherEnd(u));
+            if (x == v) {
+                return e;
+            }
+        }
+        return null;
+    }
+
 
 }
 

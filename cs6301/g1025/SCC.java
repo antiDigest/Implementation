@@ -1,7 +1,7 @@
 /**
  * Class to represent a graph
- *  @author swaroop, saikumar, antriksh
  *
+ * @author swaroop, saikumar, antriksh
  */
 
 package cs6301.g1025;
@@ -12,10 +12,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class SCC extends GraphAlgorithm<SCC.SCCVertex> {
+public class SCC {
+
+    SCCVertex[] node;
+    Graph g;
 
     public SCC(Graph g) {
-        super(g);
+        this.g = g;
         node = new SCCVertex[g.size()];
         // Create array for storing vertex properties
         for (Graph.Vertex u : g) {
@@ -26,48 +29,37 @@ public class SCC extends GraphAlgorithm<SCC.SCCVertex> {
     /**
      * Wrapper to store component numbers
      */
-    static class SCCVertex {
-        boolean seen;
-        int componentno;
+    static class SCCVertex extends XGraph.XVertex {
         Graph.Vertex vertex;
+        boolean seen;
 
         SCCVertex(Graph.Vertex u) {
+            super(u);
             seen = false;
-            componentno = 0;
+            cno = 0;
             vertex = u;
         }
 
-        int getCno(){
-            return componentno;
-        }
-
-//        @Override
-//        public int compareTo(SCCVertex o) {
-//            if(this.top > o.top)
-//                return 1;
-//            else if (this.top < o.top)
-//                return -1;
-//            else return 0;
-//        }
-
         @Override
         public String toString() {
-            return "(" + vertex.getName() + ", " + this.componentno + ")";
+            return "(" + vertex.getName() + ", " + this.cno + ")";
         }
     }
 
     /**
      * Assign Component Number to vertex
-     * @param u: vertex
+     *
+     * @param u:           vertex
      * @param componentno: integer
      */
     void assignComponentno(Graph.Vertex u, int componentno) {
         SCCVertex sc = getVertex(u);
-        sc.componentno = componentno;
+        sc.cno = componentno;
     }
 
     /**
      * u seen or not
+     *
      * @param u
      * @return: boolean
      */
@@ -77,23 +69,24 @@ public class SCC extends GraphAlgorithm<SCC.SCCVertex> {
 
     /**
      * Visit v
+     *
      * @param v: Vertex
      */
     void visit(Graph.Vertex v) {
         SCCVertex sc = getVertex(v);
         sc.seen = true;
-
     }
 
     /**
      * Reverse DFS
+     *
      * @param lst: List of Vertices
      * @return number of components
      */
     int dfsRev(List<Graph.Vertex> lst) {
         int components = 0;
 
-        for (int i=lst.size()-1; i>=0;i--) {
+        for (int i = lst.size() - 1; i >= 0; i--) {
             Graph.Vertex v = lst.get(i);
             if (!seen(v)) {
                 components = components + 1;
@@ -106,7 +99,8 @@ public class SCC extends GraphAlgorithm<SCC.SCCVertex> {
 
     /**
      * Utility to reverse graph
-     * @param u: Vertex
+     *
+     * @param u:           Vertex
      * @param componentno: preserve component number of vertex
      */
     void dfsRevUtil(Graph.Vertex u, int componentno) {
@@ -114,7 +108,6 @@ public class SCC extends GraphAlgorithm<SCC.SCCVertex> {
         assignComponentno(u, componentno);
         for (Graph.Edge e : u.revAdj) {
             Graph.Vertex v = e.otherEnd(u);
-
             if (!seen(v)) {
                 dfsRevUtil(v, componentno);
             }
@@ -141,10 +134,11 @@ public class SCC extends GraphAlgorithm<SCC.SCCVertex> {
 
     /**
      * Initializing DFS
+     *
      * @return List of vertices visited (Finish order)
      */
     List<Graph.Vertex> dfsStraight() {
-        List<Graph.Vertex> l = new ArrayList<Graph.Vertex>();
+        List<Graph.Vertex> l = new ArrayList<>();
         for (Graph.Vertex u : this.g) {
             if (!seen(u)) {
                 dfsStraightUtil(u, l);
@@ -156,13 +150,14 @@ public class SCC extends GraphAlgorithm<SCC.SCCVertex> {
 
     /**
      * DFS Visit procedure
+     *
      * @param u: start vertex
      * @param l: List of vertices storing finish order
      */
     void dfsStraightUtil(Graph.Vertex u, List<Graph.Vertex> l) {
         visit(u);
 
-        for (Graph.Edge e : u.adj) {
+        for (Graph.Edge e : u) {
             Graph.Vertex v = e.otherEnd(u);
 
             if (!seen(v)) {
@@ -174,25 +169,15 @@ public class SCC extends GraphAlgorithm<SCC.SCCVertex> {
 
     }
 
-    /** Method to reverse the edges of a graph.  Applicable to directed graphs only. */
-    public void reverseGraph(XGraph g) {
-        if (g.directed) {
-            for (Graph.Vertex u : g) {
-                List<XGraph.XEdge> tmp = g.getVertex(u).getAdj();
-                g.getVertex(u).xadj = g.getVertex(u).getRevAdj();
-                g.getVertex(u).xrevAdj = tmp;
-            }
-        }
-    }
-
     /**
      * Main program to find SCC
+     *
      * @param g: graph
      * @return Number of components
      */
     int stronglyConnectedComponents(Graph g) {
         List<Graph.Vertex> order = this.dfsStraight();
-        reverseGraph((XGraph) g);
+        ((XGraph) g).reverseGraph();
         reinitialize();
         return this.dfsRev(order);
 
@@ -208,6 +193,10 @@ public class SCC extends GraphAlgorithm<SCC.SCCVertex> {
             v.seen = false;
 
         }
+    }
+
+    SCCVertex getVertex(Graph.Vertex u) {
+        return node[u.getName()];
     }
 
 }

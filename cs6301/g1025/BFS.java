@@ -5,10 +5,7 @@
  * Version 1.0: 2017/09/08
  */
 
-package cs6301.g00;
-
-import cs6301.g1025.Graph;
-import cs6301.g1025.GraphAlgorithm;
+package cs6301.g1025;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -29,10 +26,10 @@ public class BFS extends GraphAlgorithm<BFS.BFSVertex> {
         }
     }
 
-    Graph.Vertex src;
+    public Graph.Vertex src;
 
     public BFS(Graph g, Graph.Vertex src) {
-        super(g);
+        super((XGraph) g);
         this.src = src;
         node = new BFSVertex[g.size()];
         // Create array for storing vertex properties
@@ -44,7 +41,7 @@ public class BFS extends GraphAlgorithm<BFS.BFSVertex> {
     }
 
     // reinitialize allows running BFS many times, with different sources
-    void reinitialize(Graph.Vertex newSource) {
+    public void reinitialize(Graph.Vertex newSource) {
         src = newSource;
         for (Graph.Vertex u : g) {
             BFSVertex bu = getVertex(u);
@@ -62,8 +59,9 @@ public class BFS extends GraphAlgorithm<BFS.BFSVertex> {
             Graph.Vertex u = q.remove();
             for (Graph.Edge e : u) {
                 Graph.Vertex v = e.otherEnd(u);
+                System.out.println("NOW TRAVERSING EDGE: " + ((XGraph.XEdge) e).isDisabled() + " -- " + e);
                 if (!seen(v)) {
-                    visit(u, v);
+                    visit(u, v, e);
                     q.add(v);
                 }
             }
@@ -74,7 +72,7 @@ public class BFS extends GraphAlgorithm<BFS.BFSVertex> {
         return getVertex(u).seen;
     }
 
-    Graph.Vertex getParent(Graph.Vertex u) {
+    public Graph.Vertex getParent(Graph.Vertex u) {
         return getVertex(u).parent;
     }
 
@@ -83,10 +81,10 @@ public class BFS extends GraphAlgorithm<BFS.BFSVertex> {
     }
 
     // Visit a node v from u
-    void visit(Graph.Vertex u, Graph.Vertex v) {
+    void visit(Graph.Vertex u, Graph.Vertex v, Graph.Edge e) {
         BFSVertex bv = getVertex(v);
         bv.seen = true;
         bv.parent = u;
-        bv.distance = distance(u) + 1;
+        bv.distance = distance(u) + e.getWeight();
     }
 }

@@ -1,15 +1,15 @@
 package cs6301.g1025;
 
 public class GraphAlgorithm<T> {
-    public Graph g;
+    public XGraph g;
     // Algorithm uses a parallel array for storing information about vertices
     public T[] node;
 
-    public GraphAlgorithm(Graph g) {
+    public GraphAlgorithm(XGraph g) {
         this.g = g;
     }
 
-    protected T getVertex(Graph.Vertex u) {
-        return Graph.Vertex.getVertex(node, u);
+    protected T getVertex(XGraph.Vertex u) {
+        return XGraph.Vertex.getVertex(node, u);
     }
 }
