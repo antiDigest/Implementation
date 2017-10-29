@@ -16,7 +16,15 @@ public class BFS extends GraphAlgorithm<BFS.BFSVertex> {
     // Class to store information about a vertex in this algorithm
     static class BFSVertex {
         boolean seen;
-        Graph.Vertex parent;
+        public Graph.Vertex getParent() {
+			return parent;
+		}
+
+		public void setParent(Graph.Vertex parent) {
+			this.parent = parent;
+		}
+
+		Graph.Vertex parent;
         int distance; // distance of vertex from source
 
         BFSVertex(Graph.Vertex u) {
@@ -26,10 +34,10 @@ public class BFS extends GraphAlgorithm<BFS.BFSVertex> {
         }
     }
 
-    public Graph.Vertex src;
+    Graph.Vertex src;
 
     public BFS(Graph g, Graph.Vertex src) {
-        super((XGraph) g);
+        super(g);
         this.src = src;
         node = new BFSVertex[g.size()];
         // Create array for storing vertex properties
@@ -38,10 +46,11 @@ public class BFS extends GraphAlgorithm<BFS.BFSVertex> {
         }
         // Set source to be at distance 0
         getVertex(src).distance = 0;
+        getVertex(src).seen=true;
     }
 
     // reinitialize allows running BFS many times, with different sources
-    public void reinitialize(Graph.Vertex newSource) {
+    void reinitialize(Graph.Vertex newSource) {
         src = newSource;
         for (Graph.Vertex u : g) {
             BFSVertex bu = getVertex(u);
@@ -52,16 +61,16 @@ public class BFS extends GraphAlgorithm<BFS.BFSVertex> {
         getVertex(src).distance = 0;
     }
 
-    public void bfs() {
+    void bfs() {
         Queue<Graph.Vertex> q = new LinkedList<>();
         q.add(src);
+       // visit(null, src);
         while (!q.isEmpty()) {
             Graph.Vertex u = q.remove();
             for (Graph.Edge e : u) {
                 Graph.Vertex v = e.otherEnd(u);
-                System.out.println("NOW TRAVERSING EDGE: " + ((XGraph.XEdge) e).isDisabled() + " -- " + e);
                 if (!seen(v)) {
-                    visit(u, v, e);
+                    visit(u, v);
                     q.add(v);
                 }
             }
@@ -72,19 +81,20 @@ public class BFS extends GraphAlgorithm<BFS.BFSVertex> {
         return getVertex(u).seen;
     }
 
-    public Graph.Vertex getParent(Graph.Vertex u) {
+    Graph.Vertex getParent(Graph.Vertex u) {
         return getVertex(u).parent;
     }
 
-    public int distance(Graph.Vertex u) {
+    int distance(Graph.Vertex u) {
         return getVertex(u).distance;
     }
 
     // Visit a node v from u
-    void visit(Graph.Vertex u, Graph.Vertex v, Graph.Edge e) {
+    void visit(Graph.Vertex u, Graph.Vertex v) {
+    	
         BFSVertex bv = getVertex(v);
         bv.seen = true;
         bv.parent = u;
-        bv.distance = distance(u) + e.getWeight();
+        bv.distance = distance(u) + 1;
     }
 }
