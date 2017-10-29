@@ -4,7 +4,7 @@
  * @author rbk
  * Ver 1.0: 2017/08/08
  * Ver 1.1: 2017/08/28.  Updated some methods to public
- */
+*/
 
 package cs6301.g1025;
 
@@ -21,7 +21,7 @@ public class ArrayIterator<T> implements Iterator<T> {
         cursor = -1;
     }
 
-    public ArrayIterator(T[] a, int start, int end) {
+    ArrayIterator(T[] a, int start, int end) {
         arr = a;
         startIndex = start;
         endIndex = end;
