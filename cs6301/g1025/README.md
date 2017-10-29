@@ -5,26 +5,9 @@ Place the extracted folder (cs6301\g1025\..) in a src folder of an IDE (eg. ecli
 
 ##Using cmd:
 
-Question 1: BST
-file: BST.java
-run as: java cs6301.g1025.BST
-
-Question 2: AVL Tree
-file: AVLTree.java
-run as: java cs6301.g1025.AVLTree
-
-Question 3: Red Black Tree
-file: RedBlackTree.java
-One case for remove is still not working (fix function)
-run as: java cs6301.g1025.RedBlackTree
-
-Question 4: Splay Tree
-file: SplayTree.java
-run as: java cs6301.g1025.SplayTree
-
-Question 6: How Many
-file: CountPairsSum.java
-run as: java cs6301.g1025.CountPairsSum
+Question 1: BFS
+file: BFS.java
+run as: java cs6301.g1025.BFS
 
 Question 7: Permutation and Combination
 file: PermutationCombination.java
