@@ -178,7 +178,7 @@ public class XGraph extends Graph {
 
 		@Override
 		public String toString() {
-			return "(" + from + ", " + to +  ")";
+			 return "(" + from + "," + to + ")";
 		}
 	}
 
@@ -376,6 +376,12 @@ public class XGraph extends Graph {
 	void disableCycle(List<Vertex> cycle) {
 		for (Vertex v : cycle) {
 			XGraph.XVertex k = this.getVertex(v);
+//			for(Edge e:v){
+//				XGraph.XEdge xe=(XEdge) e;
+//				if(xe.getModifyWeight()!=0){
+//					
+//				}
+//			}
 			k.disable();
 		}
 	}
@@ -387,15 +393,9 @@ public class XGraph extends Graph {
 		}
 	}
 
-	void disableWithoutCycle(List<Vertex> cycle) {
-		for (Vertex v : this) {
-			if (!cycle.contains(v)) {
-				XGraph.XVertex k = this.getVertex(v);
-				k.disable();
-			}
-		}
+	
 
-	}
+
 	
 
 	XEdge getEdge(XVertex u, XVertex v) {
