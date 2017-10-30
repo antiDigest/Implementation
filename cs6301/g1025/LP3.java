@@ -8,6 +8,7 @@
 // Do not rename this file or move it away from cs6301/g??
 
 // change following line to your group number
+
 package cs6301.g1025;
 
 import java.util.Scanner;
@@ -16,6 +17,7 @@ import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 
 import cs6301.g00.Timer;
 import cs6301.g1025.BFS.BFSVertex;
@@ -80,6 +82,8 @@ public class LP3 {
 			}
 			for (Edge e : xg.getVertex(v).getXAdj()) {
 				XEdge e1 = (XEdge) e;
+			
+				//System.out.println(e1+" "+e1.disabled);
 			}
 
 		}
@@ -91,17 +95,19 @@ public class LP3 {
 		XGraph xg = new XGraph(g);
        int mst = -1;
 		while (mst == -1) {
-			ArrayList<Edge> disabledEdges = zeroGraph(xg);
-			
+			//System.out.println(xg);
+			ArrayList<Edge> disabledEdges = zeroGraph(xg,start);
+			//System.out.println(xg);
 			
 			mst = doBFS(xg, xg.getVertex(start), dmst);
-			
+			//System.out.println(xg);
 			
 			if(mst!=-1){
-				System.out.println("found");
+				//System.out.println("found");
 			}
 			if (mst == -1) {
 				IterativeTarjan(xg, disabledEdges, start);
+				//checkGraph(xg);
 			}
 		}
 		mst = 0;
@@ -111,7 +117,7 @@ public class LP3 {
 			for (Edge e : u) {
 				out[e.to.getName()]=e;
 				//dmst.add(e.to.getName(),e);
-			
+			//System.out.println(e+""+e.getWeight());
 				mst = mst + ((XEdge) e).getWeight();
 
 			}
@@ -157,7 +163,7 @@ public class LP3 {
 		@Override
 		public String toString() {
 			for (Vertex xv : v) {
-				// System.out.print(xv + ", ");
+				//System.out.print(xv + ", ");
 			}
 			// System.out.println();
 			return "";
@@ -180,7 +186,8 @@ public class LP3 {
 			compList[sc.getComponentno(v)].getList().add(v);
 		}
 
-		Edge minEdges[][] = new Edge[compList.length][compList.length];
+		HashMap<String,Edge> minEdgeMap=new HashMap<String,Edge>();
+		//Edge minEdges[][] = new Edge[compList.length][compList.length];
 		for (int i = 0; i < compList.length; i++) {
 			for (int j = 0; j < compList.length; j++) {
 				if (j != i) {
@@ -194,7 +201,12 @@ public class LP3 {
 							XEdge xe = (XEdge) e;
 							if (xe.isDisabled())
 								continue;
-							if (sc.getComponentno(e.otherEnd(xv)) == i) {
+							if(sc.getComponentno(e.otherEnd(xv)) == j){
+								if(xe.getModifyWeight()!=0){
+									xe.disable();
+								}
+							}
+							else if (sc.getComponentno(e.otherEnd(xv)) == i) {
 								xe.disable();
 								if (minWeight > xe.getModifyWeight()) {
 									minWeight = xe.getModifyWeight();
@@ -205,7 +217,8 @@ public class LP3 {
 						}
 					}
 					if (minEdge != null) {
-						minEdges[i][j] = minEdge;
+						//minEdges[i][j] = minEdge;
+						minEdgeMap.put(i+" "+j,minEdge);
 						XEdge xe = (XEdge) minEdge;
 
 						// System.out.println("BetweenComponent" + i + " " + j +
@@ -238,7 +251,7 @@ public class LP3 {
 			}
 			for (int j = 0; j < compList.length; j++) {
 				if (j != i) {
-					if (minEdges[i][j] != null) {
+					if (minEdgeMap.get(i+" "+j) != null) {
 						if (compList[j].getXv() != null) {
 							to = compList[j].getXv();
 						} else {
@@ -256,14 +269,14 @@ public class LP3 {
 						}
 
 						if ((compList[i].getList().size() > 1 || compList[j].getList().size() > 1)) {
-							XEdge minE = new XEdge(xg.getVertex(from), xg.getVertex(to), minEdges[i][j].getWeight(),
-									((XEdge) minEdges[i][j]).getModifyWeight());
-							minE.minEdge = (XEdge) minEdges[i][j];
+							XEdge minE = new XEdge(xg.getVertex(from), xg.getVertex(to), minEdgeMap.get(i+" "+j).getWeight(),
+									((XEdge) minEdgeMap.get(i+" "+j)).getModifyWeight());
+							minE.minEdge = (XEdge) minEdgeMap.get(i+" "+j);
 							minE.enable();
 							xg.getVertex(from).xadj.add(minE);
 							xg.getVertex(to).xrevadj.add(minE);
 						} else {
-							XEdge xe = (XEdge) minEdges[i][j];
+							XEdge xe = (XEdge) minEdgeMap.get(i+" "+j);
 							xe.enable();
 						}
 					}
@@ -284,12 +297,14 @@ public class LP3 {
 		boolean isAllSeen = isAllVerticesSeen(xg, b, start);
 		if (isAllSeen) {
 			while (xg.graphSize > xg.originalSize) {
-				ArrayList<Vertex> disableVertices = new ArrayList<Vertex>();
-				for (Vertex u : xg) {
+				//ArrayList<Vertex> disableVertices = new ArrayList<Vertex>();
+				Vertex u=xg.xv[xg.graphSize-1];
+				
 					if (xg.getVertex(u).collab != null && xg.getVertex(u).collab.size() > 0) {
 
 						xg.EnableCycle(xg.getVertex(u).collab);
-						disableVertices.add(u);
+		
+						//disableVertices.add(u);
 						// System.out.println(xg);
 						for (Edge xe : xg.getVertex(u).xrevadj) {
 							XEdge e1 = (XEdge) xe;
@@ -298,15 +313,14 @@ public class LP3 {
 									findST(xg, e1.minEdge.to, xg.getVertex(u).collab);
 									e1.minEdge.enable();
 									e1.disable();
-									// System.out.println(xg);
+									//System.out.println(xg);
 									break;
 								}
 							}
 						}
 					}
-
-					else {
-						for (Edge e : xg.getVertex(u).getXRevAdj()) {
+					for(Edge e2:xg.getVertex(u).getXAdj()){
+                        for (Edge e : xg.getVertex(e2.to).getXRevAdj()) {
 							XEdge e1 = (XEdge) e;
 							if (!e1.isDisabled()) {
 								if (e1.minEdge != null) {
@@ -318,19 +332,17 @@ public class LP3 {
 
 						}
 					}
-				}
+				//}
 
-				for (Vertex xv : disableVertices) {
-					xg.getVertex(xv).disable();
+				
+					xg.getVertex(u).disable();
 					xg.graphSize--;
 				}
-
-			}
 			return 1;
+			}
+			
 
-		}
 
-		else
 			return -1;
 
 	}
@@ -340,7 +352,7 @@ public class LP3 {
 		// System.out.println(xg);
 		b.bfs();
 		if (isCycleSeen(xg, b, start, cycle)) {
-
+          
 			for (Edge xe : xg.getVertex(start).getXRevAdj()) {
 				XEdge e1 = (XEdge) xe;
 				if (!e1.isDisabled()) {
@@ -391,10 +403,11 @@ public class LP3 {
 		return true;
 	}
 
-	static ArrayList<Edge> zeroGraph(XGraph xg) {
+	static ArrayList<Edge> zeroGraph(XGraph xg,Vertex start) {
 		Integer minWeight = null;
 		ArrayList<Edge> disabledEdges = new ArrayList<Edge>();
 		for (Vertex v : xg) {
+		if(!v.equals(start)){
 			XGraph.XVertex xv = xg.getVertex(v);
 			minWeight = null;
 			for (Edge xe : xv.getXRevAdj()) {
@@ -422,6 +435,7 @@ public class LP3 {
 				}
 
 			}
+		}
 		}
 		return disabledEdges;
 	}
