@@ -9,7 +9,16 @@
 // Do not rename this file or move it away from cs6301/g??
 
 // change following line to your group number
+
 package cs6301.g1025;
+
+import java.util.Scanner;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 
 import cs6301.g00.Timer;
 import cs6301.g1025.BFS.BFSVertex;
@@ -158,7 +167,7 @@ public class LP3 {
         for(Edge e: xroot){
             XVertex xv = xg.getVertex(e.otherEnd(xroot));
             XEdge xe = (XEdge) e;
-            if()
+//            if()
             dmst.add(e);
             if (xv.size() > 1 && !xv.seen()){
                 MST(xe.minEdgeTo, xv, xg, dmst);

@@ -446,7 +446,6 @@ public class XGraph extends Graph {
     int originalSize(){
         return this.original.size();
     }
-
 }
 
 /*
