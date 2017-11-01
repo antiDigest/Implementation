@@ -16,15 +16,16 @@ public class BFS extends GraphAlgorithm<BFS.BFSVertex> {
     // Class to store information about a vertex in this algorithm
     static class BFSVertex {
         boolean seen;
+
         public Graph.Vertex getParent() {
-			return parent;
-		}
+            return parent;
+        }
 
-		public void setParent(Graph.Vertex parent) {
-			this.parent = parent;
-		}
+        public void setParent(Graph.Vertex parent) {
+            this.parent = parent;
+        }
 
-		Graph.Vertex parent;
+        Graph.Vertex parent;
         int distance; // distance of vertex from source
 
         BFSVertex(Graph.Vertex u) {
@@ -46,11 +47,10 @@ public class BFS extends GraphAlgorithm<BFS.BFSVertex> {
         }
         // Set source to be at distance 0
         getVertex(src).distance = 0;
-        getVertex(src).seen=true;
     }
 
     // reinitialize allows running BFS many times, with different sources
-    void reinitialize(Graph.Vertex newSource) {
+    public void reinitialize(Graph.Vertex newSource) {
         src = newSource;
         for (Graph.Vertex u : g) {
             BFSVertex bu = getVertex(u);
@@ -61,10 +61,10 @@ public class BFS extends GraphAlgorithm<BFS.BFSVertex> {
         getVertex(src).distance = 0;
     }
 
-    void bfs() {
+    public void bfs() {
         Queue<Graph.Vertex> q = new LinkedList<>();
         q.add(src);
-       // visit(null, src);
+        visit(null, src);
         while (!q.isEmpty()) {
             Graph.Vertex u = q.remove();
             for (Graph.Edge e : u) {
@@ -81,17 +81,17 @@ public class BFS extends GraphAlgorithm<BFS.BFSVertex> {
         return getVertex(u).seen;
     }
 
-    Graph.Vertex getParent(Graph.Vertex u) {
+    public Graph.Vertex getParent(Graph.Vertex u) {
         return getVertex(u).parent;
     }
 
-    int distance(Graph.Vertex u) {
+    public int distance(Graph.Vertex u) {
+        if(u == null) return -1;
         return getVertex(u).distance;
     }
 
     // Visit a node v from u
     void visit(Graph.Vertex u, Graph.Vertex v) {
-    	
         BFSVertex bv = getVertex(v);
         bv.seen = true;
         bv.parent = u;
