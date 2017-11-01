@@ -1,22 +1,23 @@
-
-/** @author rbk
- *  Sample IO class
- *  Ver 1.0: 2017/08/08
+/**
+ * @author rbk
+ * Sample IO class
+ * Ver 1.0: 2017/08/08
  **/
 
 
 package cs6301.g00;
-import java.util.Scanner;
-import java.io.FileNotFoundException;
+
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
 
 public class IO {
     // Use file name from command line arg (if given). Otherwise read from stdin (console)
     // If reading from Console up to end of input, type
     // Ctrl-D (Unix, apple) or Ctril-Z (Windows) to signal EOF.
 
-    public static void main(String[] args) throws FileNotFoundException
-    { Scanner in;
+    public static void main(String[] args) throws FileNotFoundException {
+        Scanner in;
         if (args.length > 0) {
             File inputFile = new File(args[0]);
             in = new Scanner(inputFile);
@@ -29,6 +30,11 @@ public class IO {
     }
 }
 /* Sample execution:
+> java cs6301.g00.IO
+15                  <---- Input line
+2.3E2               <---- Input line (in scientific notation; it is 2.3*10^2)
+s: 15 t: 230.0      <---- Output line
+*//* Sample execution:
 > java cs6301.g00.IO
 15                  <---- Input line
 2.3E2               <---- Input line (in scientific notation; it is 2.3*10^2)

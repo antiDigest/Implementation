@@ -7,7 +7,7 @@
  * to the list, code would do the wrong thing.
  */
 
-package cs6301.g00;
+package cs6301.g1025;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
