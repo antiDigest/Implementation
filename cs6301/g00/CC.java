@@ -13,28 +13,38 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 public class CC {
-    // Class to store information about a vertex in this algorithm
-    class CCVertex {
-        Graph.Vertex element;
-        boolean seen;
-        int cno;
-
-        CCVertex(Graph.Vertex u) {
-            element = u;
-            seen = false;
-            cno = -1;
-        }
-    }
-
     // Algorithm uses a parallel array for storing information about vertices
     CCVertex[] ccVertex;
     Graph g;
-
     public CC(Graph g) {
         this.g = g;
         ccVertex = new CCVertex[g.size()];
         for (Graph.Vertex u : g) {
             ccVertex[u.name] = new CCVertex(u);
+        }
+    }
+
+    public static void main(String[] args) throws FileNotFoundException {
+        int evens = 0;
+        Scanner in;
+        if (args.length > 0) {
+            File inputFile = new File(args[0]);
+            in = new Scanner(inputFile);
+        } else {
+            in = new Scanner(System.in);
+        }
+        Graph g = Graph.readGraph(in);
+        CC cc = new CC(g);
+        int nc = cc.findCC();
+
+        System.out.println("Input Graph has " + nc + " components:");
+        for (Graph.Vertex u : g) {
+            System.out.print(u + " [ " + cc.getCCVertex(u).cno + " ] :");
+            for (Graph.Edge e : u.adj) {
+                Graph.Vertex v = e.otherEnd(u);
+                System.out.print(e + " ");
+            }
+            System.out.println();
         }
     }
 
@@ -83,27 +93,16 @@ public class CC {
         return c.element;
     }
 
-    public static void main(String[] args) throws FileNotFoundException {
-        int evens = 0;
-        Scanner in;
-        if (args.length > 0) {
-            File inputFile = new File(args[0]);
-            in = new Scanner(inputFile);
-        } else {
-            in = new Scanner(System.in);
-        }
-        Graph g = Graph.readGraph(in);
-        CC cc = new CC(g);
-        int nc = cc.findCC();
+    // Class to store information about a vertex in this algorithm
+    class CCVertex {
+        Graph.Vertex element;
+        boolean seen;
+        int cno;
 
-        System.out.println("Input Graph has " + nc + " components:");
-        for (Graph.Vertex u : g) {
-            System.out.print(u + " [ " + cc.getCCVertex(u).cno + " ] :");
-            for (Graph.Edge e : u.adj) {
-                Graph.Vertex v = e.otherEnd(u);
-                System.out.print(e + " ");
-            }
-            System.out.println();
+        CCVertex(Graph.Vertex u) {
+            element = u;
+            seen = false;
+            cno = -1;
         }
     }
 }

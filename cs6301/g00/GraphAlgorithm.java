@@ -1,9 +1,9 @@
 package cs6301.g00;
 
 public class GraphAlgorithm<T> {
-    Graph g;
     // Algorithm uses a parallel array for storing information about vertices
     public T[] node;
+    Graph g;
 
     public GraphAlgorithm(Graph g) {
         this.g = g;

@@ -12,20 +12,6 @@ import java.util.Queue;
 
 public class BFS extends GraphAlgorithm<BFS.BFSVertex> {
     public static final int INFINITY = Integer.MAX_VALUE;
-
-    // Class to store information about a vertex in this algorithm
-    static class BFSVertex {
-        boolean seen;
-        Graph.Vertex parent;
-        int distance; // distance of vertex from source
-
-        BFSVertex(Graph.Vertex u) {
-            seen = false;
-            parent = null;
-            distance = INFINITY;
-        }
-    }
-
     Graph.Vertex src;
 
     public BFS(Graph g, Graph.Vertex src) {
@@ -85,5 +71,18 @@ public class BFS extends GraphAlgorithm<BFS.BFSVertex> {
         bv.seen = true;
         bv.parent = u;
         bv.distance = distance(u) + 1;
+    }
+
+    // Class to store information about a vertex in this algorithm
+    static class BFSVertex {
+        boolean seen;
+        Graph.Vertex parent;
+        int distance; // distance of vertex from source
+
+        BFSVertex(Graph.Vertex u) {
+            seen = false;
+            parent = null;
+            distance = INFINITY;
+        }
     }
 }
