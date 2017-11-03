@@ -16,6 +16,7 @@ public class CC {
     // Algorithm uses a parallel array for storing information about vertices
     CCVertex[] ccVertex;
     Graph g;
+
     public CC(Graph g) {
         this.g = g;
         ccVertex = new CCVertex[g.size()];

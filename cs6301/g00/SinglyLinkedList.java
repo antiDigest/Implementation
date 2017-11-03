@@ -18,6 +18,7 @@ public class SinglyLinkedList<T> implements Iterable<T> {
     // Dummy header is used. tail stores reference of tail element of list
     protected Entry<T> head, tail;
     protected int size;
+
     public SinglyLinkedList() {
         head = new Entry<>(null, null);
         tail = head;
