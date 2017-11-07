@@ -422,11 +422,11 @@ public class SkipList<T extends Comparable<? super T>> implements Iterable<T> {
 	 */
 
 	void checkgeti() {
-		Integer[] arr = new Integer[size];
+		T[] arr = (T[]) new Object[size];
 		Entry<T> p = head;
 		for (int i = 0; i < size; i++) {
 			p = p.next[0];
-			arr[i] = (int) p.element;
+			arr[i] = p.element;
 		}
 		for (int i = 0; i < size; i++) {
 			if (!arr[i].equals(get(i))) {
@@ -445,11 +445,11 @@ public class SkipList<T extends Comparable<? super T>> implements Iterable<T> {
 	 * @return
 	 */
 	void checkIterator() {
-		Integer[] arr = new Integer[size];
+		T[] arr = (T[]) new Object[size];
 		Entry<T> p = head;
 		for (int i = 0; i < size; i++) {
 			p = p.next[0];
-			arr[i] = (int) p.element;
+			arr[i] = p.element;
 		}
 		int i = 0;
 		Iterator<T> it = this.iterator();
