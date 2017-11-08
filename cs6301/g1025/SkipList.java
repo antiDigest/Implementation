@@ -1,6 +1,7 @@
 // Change this to your group number
 package cs6301.g1025;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 
@@ -422,7 +423,7 @@ public class SkipList<T extends Comparable<? super T>> implements Iterable<T> {
 	 */
 
 	void checkgeti() {
-		T[] arr = (T[]) new Object[size];
+		T[] arr = (T[]) Array.newInstance(Comparable.class, size);
 		Entry<T> p = head;
 		for (int i = 0; i < size; i++) {
 			p = p.next[0];
@@ -445,7 +446,7 @@ public class SkipList<T extends Comparable<? super T>> implements Iterable<T> {
 	 * @return
 	 */
 	void checkIterator() {
-		T[] arr = (T[]) new Object[size];
+        T[] arr = (T[]) Array.newInstance(Comparable.class, size);
 		Entry<T> p = head;
 		for (int i = 0; i < size; i++) {
 			p = p.next[0];
