@@ -1,9 +1,10 @@
-// Change this to your group number
+/*
+ * @author Antriksh, Swaroop, Sai Kumar, Gunjan
+ */
 package cs6301.g1025;
 
 import java.lang.reflect.Array;
 import java.util.*;
-
 
 // Skeleton for skip list implementation.
 
@@ -76,72 +77,19 @@ public class SkipList<T extends Comparable<? super T>> implements Iterable<T> {
 			}
 			Entry<T> n = new Entry<>(x, lev);
 			for (int i = 0; i < lev; i++) {
-				if (i == 1) {
-					if (prev[i].equals(head)) {
-						if (head.next[i].equals(tail)) {
-							head.span[i] = count;
-							n.span[i] = size - head.span[i];
-						} else {
-							n.span[i] = head.span[i] - count;
-							head.span[i] = count;
-						}
-
-					} else {
-						n.span[i] = prev[i].span[i] - count;
-						prev[i].span[i] = count;
-					}
+				if (prev[i].next[i].equals(tail)) {
+					n.span[i] = size - count[0] + count[i];
+				} else {
+					n.span[i] = count[i] + prev[i].span[i] - count[0];
 				}
-
-				else if (i > 0) {
-					if (prev[i].equals(head)) {
-						Entry<T> q = head;
-						// use onelevel function to calculate current level span
-						// from below level span
-						int c = onelevel(q, i - 1, n);
-						if (head.next[i].equals(tail)) {
-							prev[i].span[i] = c;
-							n.span[i] = size - c;
-						} else {
-							n.span[i] = prev[i].span[i] - c;
-							prev[i].span[i] = c;
-						}
-
-					} else if (!prev[i].equals(prev[i - 1])) {
-						Entry<T> q = prev[i];
-						// use onelevel function to calculate current level span
-						// from below level span
-						int c = onelevel(q, i - 1, n);
-						n.span[i] = prev[i].span[i] - c;
-						prev[i].span[i] = c;
-
-					} else {
-						n.span[i] = prev[i].span[i] - prev[i].span[i - 1];
-						prev[i].span[i] = prev[i - 1].span[i - 1];
-					}
-				}
-
+				prev[i].span[i] = count[0] - count[i];
 				n.next[i] = prev[i].next[i];
 				prev[i].next[i] = n;
 			}
 			size++;
 			return true;
-		}
-	}
 
-	/**
-	 * just count from given level span-useful for add functionality
-	 * 
-	 * 
-	 * @param x
-	 * @return T type
-	 */
-	int onelevel(Entry<T> q, int level, Entry<T> n) {
-		int c = -1;
-		while (!q.equals(n)) {
-			c = c + q.span[level] + 1;
-			q = q.next[level];
 		}
-		return c;
 	}
 
 	/**
@@ -180,7 +128,11 @@ public class SkipList<T extends Comparable<? super T>> implements Iterable<T> {
 	 */
 	public T floor(T x) {
 		Entry<T>[] prev = find(x);
-		return prev[0].equals(head) ? null : (prev[0].next[0].element == x ? prev[0].next[0].element : prev[0].element);
+
+		if (prev[0].next[0] != null && prev[0].next[0].element != null && prev[0].next[0].element.equals(x)) {
+			return x;
+		} else
+			return prev[0].element;
 	}
 
 	/**
@@ -336,17 +288,20 @@ public class SkipList<T extends Comparable<? super T>> implements Iterable<T> {
 	 * @return
 	 */
 
-	Integer count = 0;// useful for span implementation
+	Integer count[];// useful for span implementation
 
 	Entry<T>[] find(T x) {
 		Entry<T> p = head;
 		Entry<T>[] prev = new Entry[maxLevel + 1];
+		count = new Integer[maxLevel + 1];
+		int index = 0;
 		for (int i = maxLevel; i >= 0; i--) {
-			count = 0;
+			count[i] = 0;
 			while (!p.next[i].equals(tail) && p.next[i].element.compareTo(x) < 0) {
+				index = index + p.span[i] + 1;
 				p = p.next[i];
-				count = i == 0 ? count + 1 : 0;
 			}
+			count[i] = index;
 			prev[i] = p;
 		}
 		return prev;
@@ -372,8 +327,7 @@ public class SkipList<T extends Comparable<? super T>> implements Iterable<T> {
 	}
 
 	/**
-	 * Print the elements at each level of SkipList and reports whether Skip
-	 * list is valid or not . For each entry it prints element and its span.
+	 * Print the elements at each level of SkipList.For each entry it prints element and its span.
 	 * span meaning-gap between two nodes at a level
 	 */
 
@@ -394,23 +348,7 @@ public class SkipList<T extends Comparable<? super T>> implements Iterable<T> {
 
 			}
 			p = head;
-			int c = -1;
-
-			while (i == maxLevel - 1) {
-				System.out.println();
-				c = c + p.span[i] + 1;
-				p = p.next[i];
-				if (p.equals(tail)) {
-					if (c == size) {
-						System.out.println("SkipList is valid");
-					} else {
-						System.out.println("SkipList is invalid");
-					}
-					break;
-				}
-			}
-
-			System.out.println();
+		    System.out.println();
 		}
 
 	}
@@ -446,7 +384,7 @@ public class SkipList<T extends Comparable<? super T>> implements Iterable<T> {
 	 * @return
 	 */
 	void checkIterator() {
-        T[] arr = (T[]) Array.newInstance(Comparable.class, size);
+		T[] arr = (T[]) Array.newInstance(Comparable.class, size);
 		Entry<T> p = head;
 		for (int i = 0; i < size; i++) {
 			p = p.next[0];
@@ -458,7 +396,7 @@ public class SkipList<T extends Comparable<? super T>> implements Iterable<T> {
 			if (!it.next().equals(arr[i++])) {
 				System.out.println("Iterator not working");
 			}
-        }
+		}
 		System.out.println("Iterator working");
 
 	}
@@ -466,10 +404,14 @@ public class SkipList<T extends Comparable<? super T>> implements Iterable<T> {
 	public static void main(String[] args) {
 		SkipList<Integer> sl = new SkipList<>();
 		Random r = new Random();
-		r.nextInt(500);
-		for (int i = 1; i <= 50; i++) {
-			sl.add(r.nextInt(50));
+		r.nextInt(15);
+
+		for (int i = 0; i < 100; i++) {
+
+			sl.add(r.nextInt(500));
+			sl.print();
 		}
+
 		sl.print();
 		sl.checkgeti();
 		sl.checkIterator();
@@ -477,7 +419,7 @@ public class SkipList<T extends Comparable<? super T>> implements Iterable<T> {
 	}
 
 	/*
-	 * Implemented Rebuild but not working perfectly
+	 * Implemented Rebuild but not working
 	 * 
 	 */
 
