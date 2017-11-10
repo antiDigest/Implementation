@@ -5,11 +5,11 @@
 // change following line to your group number
 package cs6301.g1025;
 
-import cs6301.g00.Graph.Vertex;
-import cs6301.g00.Graph;
-import cs6301.g00.Graph.Edge;
-
 import java.util.List;
+
+import cs6301.g1025.Graph.Edge;
+import cs6301.g1025.Graph.Vertex;
+
 import java.util.HashMap;
 
 public class LP4 {
@@ -39,8 +39,9 @@ public class LP4 {
 	// Part c. Return the number of shortest paths from s to t
 	// Return -1 if the graph has a negative or zero cycle
 	public long countShortestPaths(Vertex t) {
-		// To do
-		return 0;
+
+		EnumerateSP c = new EnumerateSP();
+		return c.Count(g, s, t);
 	}
 
 	// Part d. Print all shortest paths from s to t, one per line, and
@@ -48,15 +49,17 @@ public class LP4 {
 	// Return -1 if the graph has a negative or zero cycle.
 	public long enumerateShortestPaths(Vertex t) {
 		// To do
-		return 0;
+		EnumerateSP d = new EnumerateSP();
+		return d.Enumerate(g, s, t);
+
 	}
 
 	// Part e. Return weight of shortest path from s to t using at most k edges
 	public int constrainedShortestPath(Vertex t, int k) {
 		// To do
-		CSP e=new CSP(g,k);
-		return e.ShortestPathK(s,t,k,g);
-	
+		CSP e = new CSP(g, k);
+		return e.ShortestPathK(s, t, k, g);
+
 	}
 
 	// Part f. Reward collection problem
