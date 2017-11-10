@@ -1,10 +1,8 @@
 package cs6301.g1025;
 
-import cs6301.g00.Graph;
-import cs6301.g00.Graph.Edge;
-import cs6301.g00.Graph.Vertex;
+import cs6301.g1025.Graph.Edge;
+import cs6301.g1025.Graph.Vertex;
 import cs6301.g1025.TopologicalOrders.TOPVertex;
-import cs6301.g00.GraphAlgorithm;
 
 public class CSP extends GraphAlgorithm<CSP.CSPVertex> {
 
