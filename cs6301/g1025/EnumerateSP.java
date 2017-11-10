@@ -11,45 +11,79 @@ import cs6301.g1025.XGraph.XVertex;
 
 public class EnumerateSP {
 
-	long Enumerate(Graph g, Vertex s, Vertex t) {
+	long Count(Graph g, Vertex s, Vertex t) {
 		XGraph xg = new XGraph(g);
-		boolean isNegCycle = BellmanFord(xg, xg.getVertex(s), t);
-		if (!isNegCycle) {
-			System.out.println("Non-positive cycle in graph.  Unable to solve problem");
+		if (!EnumOrCount(xg, xg.getVertex(s))) {
 			return -1;
 		} else {
-			for (Vertex v : xg) {
-				XVertex xv = (XVertex) v;
-				if (xv.distance == null) {
-					//System.out.println("Disabled Vertices are " + (xv.getName() + 1));
-					xg.disable(xv.getName()+1);
+			Queue<Vertex> q = new LinkedList<Vertex>();
+			long[] count = new long[xg.size()];
+			count[s.name] = 1;
+			q.add(s);
+			while (!q.isEmpty()) {
+				Vertex u = q.poll();
+				XVertex xu = xg.getVertex(u);
+				for (Edge e : xu) {
+					if(count[e.to.name]<=0)
+						q.add(e.to);
+					count[e.to.name] += count[e.from.name];
+					
 				}
 			}
-			List<Graph.Vertex> SPath = new ArrayList<Graph.Vertex>();
-			SPath.add(s);
-	        return EnumerateDFS(xg, s, t, SPath);
-	     }
+			return count[t.name];
+		}
+
+	}
+
+	long Enumerate(Graph g, Vertex s, Vertex t) {
+		XGraph xg = new XGraph(g);
+		if (!EnumOrCount(xg, xg.getVertex(s))) {
+			return -1;
+		}
+		List<Graph.Vertex> SPath = new ArrayList<Graph.Vertex>();
+		SPath.add(s);
+		return EnumerateDFS(xg, s, t, SPath);
+	}
+
+	boolean EnumOrCount(Graph g, Vertex s) {
+
+		boolean isNegCycle = BellmanFord(g, s);
+		if (!isNegCycle) {
+			System.out.println("Non-positive cycle in graph.  Unable to solve problem");
+			return false;
+		} else {
+			XGraph xg = (XGraph) g;
+			for (Vertex v : g) {
+				XVertex xv = (XVertex) v;
+				if (xv.distance == null) {
+					xg.disable(xv.getName() + 1);
+				}
+			}
+			return true;
+		}
 	}
 
 	long EnumerateDFS(Graph g, Vertex s, Vertex t, List<Graph.Vertex> SPath) {
 		long count = 0;
 		if (s.equals(t)) {
 			printPath(SPath);
-			if(SPath.size()<2) return 0;
-			else{
-			count++;
-			return count;}
+			if (SPath.size() < 2)
+				return 0;
+			else {
+				count++;
+				return count;
+			}
 		}
 		for (Edge e : s) {
 			SPath.add(e.otherEnd(s));
 			count = count + EnumerateDFS(g, e.otherEnd(s), t, SPath);
 			SPath.remove(SPath.size() - 1);
 		}
-		
+
 		return count;
 	}
 
-	boolean BellmanFord(Graph g, Vertex s, Vertex t) {
+	boolean BellmanFord(Graph g, Vertex s) {
 
 		Queue<Vertex> q = new LinkedList<Vertex>();
 		XVertex xs = (XVertex) s;
@@ -69,7 +103,7 @@ public class EnumerateSP {
 					xv.distance = xu.distance + e.weight;
 				} else {
 					XEdge xe = (XEdge) e;
-					//System.out.println(xe);
+					// System.out.println(xe);
 					xe.setDisabled(true);
 				}
 				if (!xv.seen)
