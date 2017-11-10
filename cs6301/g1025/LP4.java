@@ -1,6 +1,6 @@
 
 // Starter code for LP4
-// Do not rename this file or move it away from cs6301/g??
+// Do not rename this file or move it away from cs6301/g1025
 
 // change following line to your group number
 package cs6301.g1025;
@@ -24,15 +24,16 @@ public class LP4 {
 
 	// Part a. Return number of topological orders of g
 	public long countTopologicalOrders() {
-		// To do
-		return 0;
+		TopologicalOrders P1a = new TopologicalOrders(g);
+		return P1a.countToporders(g);
+
 	}
 
 	// Part b. Print all topological orders of g, one per line, and
 	// return number of topological orders of g
 	public long enumerateTopologicalOrders() {
-		// To do
-		return 0;
+		TopologicalOrders P1b = new TopologicalOrders(g);
+		return P1b.enumerateTopOrders(g, true);
 	}
 
 	// Part c. Return the number of shortest paths from s to t
@@ -75,7 +76,7 @@ public class LP4 {
 				System.out.print(u + "\t: ");
 			}
 			for (Edge e : u) {
-				System.out.print(e + "[" + e.weight + "] ");
+				System.out.print(e + "[" + e.getWeight() + "] ");
 			}
 			System.out.println();
 		}
