@@ -106,9 +106,9 @@ public class EnumerateSP {
 					// System.out.println(xe);
 					xe.setDisabled(true);
 				}
-				if (!xv.seen)
+				if (!xv.seen){
 					xv.seen = true;
-				q.add(xv);
+				q.add(xv);}
 
 			}
 
