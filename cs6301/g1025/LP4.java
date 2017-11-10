@@ -24,16 +24,16 @@ public class LP4 {
 
 	// Part a. Return number of topological orders of g
 	public long countTopologicalOrders() {
-		TopologicalOrders P1a = new TopologicalOrders(g);
-		return P1a.countToporders(g);
+		TopologicalOrders a = new TopologicalOrders(g);
+		return a.countToporders(g);
 
 	}
 
 	// Part b. Print all topological orders of g, one per line, and
 	// return number of topological orders of g
 	public long enumerateTopologicalOrders() {
-		TopologicalOrders P1b = new TopologicalOrders(g);
-		return P1b.enumerateTopOrders(g, true);
+		TopologicalOrders b = new TopologicalOrders(g);
+		return b.enumerateTopOrders(g, true);
 	}
 
 	// Part c. Return the number of shortest paths from s to t
@@ -54,7 +54,9 @@ public class LP4 {
 	// Part e. Return weight of shortest path from s to t using at most k edges
 	public int constrainedShortestPath(Vertex t, int k) {
 		// To do
-		return 0;
+		CSP e=new CSP(g,k);
+		return e.ShortestPathK(s,t,k,g);
+	
 	}
 
 	// Part f. Reward collection problem
