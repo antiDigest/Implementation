@@ -4,8 +4,7 @@
 
 package cs6301.g1025;
 
-import cs6301.g00.Graph;
-import cs6301.g00.Graph.Vertex;
+import cs6301.g1025.Graph.Vertex;
 
 public class LP4f {
 	static int VERBOSE = 0;
