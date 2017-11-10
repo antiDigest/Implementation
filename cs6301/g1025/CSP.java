@@ -35,14 +35,14 @@ public class CSP extends GraphAlgorithm<CSP.CSPVertex> {
 	}
 
 	Integer ShortestPathK(Vertex s, Vertex t, int k, Graph g) {
-
-		if (getCSPVertex(t).distance != null) {
-			return getCSPVertex(t).distance;
-		} else if (!CSPAtmostK(s, g)) {
+		boolean result = CSPAtmostK(s, g);
+		if (getCSPVertex(t).distance == null) {
+			System.out.println("cannot be reached with given constraints");
+			return Integer.MAX_VALUE;
+		} else if (!result) {
 			System.out.println("Graph has a negative cycle");
 			return -1;
 		}
-
 		return getCSPVertex(t).distance;
 
 	}
@@ -57,29 +57,20 @@ public class CSP extends GraphAlgorithm<CSP.CSPVertex> {
 				for (Edge e : u.revAdj) {
 					Vertex p = e.fromVertex();
 
-					if (getCSPVertex(u).d[k] != null && getCSPVertex(p).d[k - 1] != null) {
-						if (getCSPVertex(u).d[k] > getCSPVertex(p).d[k - 1] + e.getWeight()) {
-							getCSPVertex(u).d[k] = getCSPVertex(p).d[k - 1] + e.getWeight();
-
-//							System.out.println("for vertex " + (u.getName() + 1) + " weight is " + getCSPVertex(u).d[k]
-//									+ " parent is " + (p.getName() + 1));
-							getCSPVertex(u).parent = p;
-							noChange = false;
-						}
-					} else if (getCSPVertex(p).d[k - 1] != null) {
+					if ((getCSPVertex(u).d[k] != null && getCSPVertex(p).d[k - 1] != null
+							&& getCSPVertex(u).d[k] > getCSPVertex(p).d[k - 1] + e.getWeight())
+							|| (getCSPVertex(p).d[k - 1] != null && getCSPVertex(u).d[k] == null)) {
 						getCSPVertex(u).d[k] = getCSPVertex(p).d[k - 1] + e.getWeight();
-//						System.out.println("for vertex " + (u.getName() + 1) + " weight is " + getCSPVertex(u).d[k]
-//								+ " parent is " + (p.getName() + 1));
 						getCSPVertex(u).parent = p;
 						noChange = false;
+
 					}
 
 				}
 
 			}
-			
 
-			if (noChange||k==getCSPVertex(s).d.length-1) {
+			if (noChange || k == getCSPVertex(s).d.length - 1) {
 				for (Vertex u : g) {
 					getCSPVertex(u).distance = getCSPVertex(u).d[k];
 				}
