@@ -24,17 +24,16 @@ public class EnumerateSP {
 				Vertex u = q.poll();
 				XVertex xu = xg.getVertex(u);
 				for (Edge e : xu) {
-					if(count[e.to.name]<=0)
+					if (count[e.to.name]<=0)
 						q.add(e.to);
 					count[e.to.name] += count[e.from.name];
-					
+
 				}
 			}
 			return count[t.name];
 		}
 
 	}
-
 	long Enumerate(Graph g, Vertex s, Vertex t) {
 		XGraph xg = new XGraph(g);
 		if (!EnumOrCount(xg, xg.getVertex(s))) {
@@ -42,7 +41,7 @@ public class EnumerateSP {
 		}
 		List<Graph.Vertex> SPath = new ArrayList<Graph.Vertex>();
 		SPath.add(s);
-		return EnumerateDFS(xg, s, t, SPath);
+		return EnumerateDFS(xg, xg.getVertex(s), xg.getVertex(t), SPath);
 	}
 
 	boolean EnumOrCount(Graph g, Vertex s) {
@@ -53,11 +52,19 @@ public class EnumerateSP {
 			return false;
 		} else {
 			XGraph xg = (XGraph) g;
-			for (Vertex v : g) {
-				XVertex xv = (XVertex) v;
-				if (xv.distance == null) {
-					xg.disable(xv.getName() + 1);
+			for (Vertex u : g) {
+				XVertex xu = (XVertex) u;
+				if (xu.distance == null) {
+					xg.disable(xu.getName() + 1);
 				}
+				for (Edge e : u) {
+					XVertex xv = (XVertex) e.otherEnd(u);
+					if (xv.distance != e.weight + xu.distance) {
+						XEdge xe = (XEdge) e;
+						xe.setDisabled(true);
+					}
+				}
+
 			}
 			return true;
 		}
@@ -75,6 +82,7 @@ public class EnumerateSP {
 			}
 		}
 		for (Edge e : s) {
+
 			SPath.add(e.otherEnd(s));
 			count = count + EnumerateDFS(g, e.otherEnd(s), t, SPath);
 			SPath.remove(SPath.size() - 1);
@@ -101,14 +109,11 @@ public class EnumerateSP {
 				XVertex xv = (XVertex) e.otherEnd(xu);
 				if (xv.distance == null || xv.distance >= xu.distance + e.weight) {
 					xv.distance = xu.distance + e.weight;
-				} else {
-					XEdge xe = (XEdge) e;
-					// System.out.println(xe);
-					xe.setDisabled(true);
 				}
-				if (!xv.seen){
+				if (!xv.seen) {
 					xv.seen = true;
-				q.add(xv);}
+					q.add(xv);
+				}
 
 			}
 
