@@ -16,24 +16,23 @@ public class EnumerateSP {
 		if (!EnumOrCount(xg, xg.getVertex(s))) {
 			return -1;
 		} else {
-			Queue<Vertex> q = new LinkedList<Vertex>();
-			long[] count = new long[xg.size()];
-			count[s.name] = 1;
-			q.add(s);
-			while (!q.isEmpty()) {
-				Vertex u = q.poll();
-				XVertex xu = xg.getVertex(u);
-				for (Edge e : xu) {
-					if (count[e.to.name]<=0)
-						q.add(e.to);
-					count[e.to.name] += count[e.from.name];
-
+			List<Graph.Vertex> topList = new ArrayList<Graph.Vertex>();
+			TopologicalOrders c = new TopologicalOrders(xg);
+            c.toplogicalOrder(xg, topList);
+			long[] count = new long[topList.size()];
+			count[s.getName()]=1;
+			for(Vertex u:topList){
+				for(Edge e:u){
+					count[e.otherEnd(u).getName()] += count[u.getName()];
 				}
 			}
-			return count[t.name];
+			return count[t.getName()];
 		}
 
 	}
+	
+	
+
 	long Enumerate(Graph g, Vertex s, Vertex t) {
 		XGraph xg = new XGraph(g);
 		if (!EnumOrCount(xg, xg.getVertex(s))) {
@@ -52,14 +51,12 @@ public class EnumerateSP {
 			return false;
 		} else {
 			XGraph xg = (XGraph) g;
-			for (Vertex u : g) {
+			for (Vertex u : xg) {
 				XVertex xu = (XVertex) u;
-				if (xu.distance == null) {
-					xg.disable(xu.getName() + 1);
-				}
+			
 				for (Edge e : u) {
 					XVertex xv = (XVertex) e.otherEnd(u);
-					if (xv.distance != e.weight + xu.distance) {
+					if (xu.distance == null||xv.distance != e.weight + xu.distance) {
 						XEdge xe = (XEdge) e;
 						xe.setDisabled(true);
 					}
@@ -109,10 +106,10 @@ public class EnumerateSP {
 				XVertex xv = (XVertex) e.otherEnd(xu);
 				if (xv.distance == null || xv.distance >= xu.distance + e.weight) {
 					xv.distance = xu.distance + e.weight;
-				}
-				if (!xv.seen) {
-					xv.seen = true;
-					q.add(xv);
+                    if (!xv.seen) {
+						xv.seen = true;
+						q.add(xv);
+					}
 				}
 
 			}
