@@ -38,6 +38,14 @@ public class Graph implements Iterable<Graph.Vertex> {
     public static class Vertex implements Iterable<Edge> {
 	int name; // name of the vertex
 	public List<Edge> adj, revAdj; // adjacency list; use LinkedList or ArrayList
+	
+	
+	
+	
+
+	public int getRevAdjSize() {
+		return revAdj.size();
+	}
 
 	/**
 	 * Constructor for vertex
