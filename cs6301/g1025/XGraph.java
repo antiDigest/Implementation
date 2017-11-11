@@ -28,10 +28,11 @@ public class XGraph extends Graph {
 		boolean disabled;
 		List<XEdge> xadj;
 		
+		
 		Integer distance;
 		int count;
 		boolean seen;
-		int xrevadjSize;
+		
 
 		XVertex(Vertex u) {
 			super(u);
@@ -106,11 +107,7 @@ public class XGraph extends Graph {
 			this.disabled = disabled;
 			
 			XVertex xto = (XVertex) this.to;
-			if(disabled){
-			xto.xrevadjSize--;}
-			else{
-				xto.xrevadjSize++;
-			}
+			
 		}
 
 
@@ -147,7 +144,7 @@ public class XGraph extends Graph {
 				XEdge edge = new XEdge(x1, x2, e.getWeight());
 				x1.xadj.add(edge);
 				
-				x2.xrevadjSize++;
+				
 			}
 		}
 	}
