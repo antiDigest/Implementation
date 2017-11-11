@@ -19,16 +19,17 @@ import java.util.List;
 
 import cs6301.g1025.Graph.Edge;
 import cs6301.g1025.Graph.Vertex;
+import cs6301.g1025.XGraph.XEdge;
 
 import java.util.LinkedList;
 
 public class XGraph extends Graph {
-	
+	int size;
 	public static class XVertex extends Vertex {
 		boolean disabled;
 		List<XEdge> xadj;
-		
-		
+		List<XEdge> xrevadj;
+		int revAdjSize;
 		Integer distance;
 		int count;
 		boolean seen;
@@ -38,10 +39,16 @@ public class XGraph extends Graph {
 			super(u);
 			disabled = false;
 			xadj = new LinkedList<>();
+			xrevadj= new LinkedList<>();
 			distance=null;
+			revAdjSize=0;
 			count=0;
 			seen=false;
 			
+		}
+		@Override
+		public int getRevAdjSize(){
+			return revAdjSize;
 		}
 		
 		
@@ -52,6 +59,8 @@ public class XGraph extends Graph {
 
 		void disable() {
 			disabled = true;
+			revAdjSize--;
+			
 		}
 
 		@Override
@@ -105,8 +114,12 @@ public class XGraph extends Graph {
 
 		public void setDisabled(boolean disabled) {
 			this.disabled = disabled;
-			
 			XVertex xto = (XVertex) this.to;
+			if(disabled==true)
+			xto.revAdjSize--;
+			else{
+				xto.revAdjSize++;
+			}
 			
 		}
 
@@ -132,6 +145,7 @@ public class XGraph extends Graph {
 	public XGraph(Graph g) {
 		super(g);
 		xv = new XVertex[g.size()];
+		size=g.size();
 		
 		for (Vertex u : g) {
 			xv[u.getName()] = new XVertex(u);
@@ -143,6 +157,8 @@ public class XGraph extends Graph {
 				XVertex x2 = getVertex(v);
 				XEdge edge = new XEdge(x1, x2, e.getWeight());
 				x1.xadj.add(edge);
+				x2.xrevadj.add(edge);
+				x2.revAdjSize++;
 				
 				
 			}
@@ -216,13 +232,14 @@ public class XGraph extends Graph {
 	void disable(int i) {
 		XVertex u = (XVertex) getVertex(i);
 		u.disable();
-		
+		//u.revAdjSize--;
+		size--;
+	}
+	@Override
+	public int size(){
+		return this.size;
 	}
 
-	public static void main(String[] args) {
-
-	}
-	
 	@Override
 	public String toString() {
 		for (Vertex u : this) {
