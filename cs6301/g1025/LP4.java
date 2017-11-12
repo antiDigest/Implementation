@@ -68,7 +68,9 @@ public class LP4 {
 	// Return total reward for tour
 	public int reward(HashMap<Vertex, Integer> vertexRewardMap, List<Vertex> tour) {
 		// To do
-		return 0;
+		RewardCollection f=new RewardCollection(g,s,vertexRewardMap);
+		return f.rewardProblem(tour);
+		
 	}
 
 	// Do not modify this function
