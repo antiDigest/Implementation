@@ -108,7 +108,6 @@ public class TopologicalOrders extends GraphAlgorithm<TopologicalOrders.TOPVerte
 		}
 		while (!q.isEmpty()) {
 			Graph.Vertex u = q.poll();
-
 			topList.add(u);
 			for (Graph.Edge e : u) {
 				Graph.Vertex v = e.otherEnd(u);

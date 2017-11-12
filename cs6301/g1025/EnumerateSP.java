@@ -44,8 +44,7 @@ public class EnumerateSP {
 	}
 
 	boolean EnumOrCount(Graph g, Vertex s) {
-
-		boolean isNegCycle = BellmanFord(g, s);
+        boolean isNegCycle = BellmanFordFast.BellmanFord(g, s);
 		if (!isNegCycle) {
 			System.out.println("Non-positive cycle in graph.  Unable to solve problem");
 			return false;
@@ -53,8 +52,7 @@ public class EnumerateSP {
 			XGraph xg = (XGraph) g;
 			for (Vertex u : xg) {
 				XVertex xu = (XVertex) u;
-			
-				for (Edge e : u) {
+			    for (Edge e : u) {
 					XVertex xv = (XVertex) e.otherEnd(u);
 					if (xu.distance == null||xv.distance != e.weight + xu.distance) {
 						XEdge xe = (XEdge) e;
@@ -79,8 +77,7 @@ public class EnumerateSP {
 			}
 		}
 		for (Edge e : s) {
-
-			SPath.add(e.otherEnd(s));
+            SPath.add(e.otherEnd(s));
 			count = count + EnumerateDFS(g, e.otherEnd(s), t, SPath);
 			SPath.remove(SPath.size() - 1);
 		}
@@ -88,36 +85,7 @@ public class EnumerateSP {
 		return count;
 	}
 
-	boolean BellmanFord(Graph g, Vertex s) {
-
-		Queue<Vertex> q = new LinkedList<Vertex>();
-		XVertex xs = (XVertex) s;
-		xs.distance = 0;
-		xs.seen = true;
-		q.add(xs);
-		while (!q.isEmpty()) {
-			XVertex xu = (XVertex) q.remove();
-			xu.seen = false;
-			xu.count = xu.count + 1;
-			if (xu.count >= g.size()) {
-				return false;
-			}
-			for (Edge e : xu) {
-				XVertex xv = (XVertex) e.otherEnd(xu);
-				if (xv.distance == null || xv.distance >= xu.distance + e.weight) {
-					xv.distance = xu.distance + e.weight;
-                    if (!xv.seen) {
-						xv.seen = true;
-						q.add(xv);
-					}
-				}
-
-			}
-
-		}
-		return true;
-
-	}
+	
 
 	void printPath(List<Graph.Vertex> SPath) {
 

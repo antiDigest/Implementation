@@ -4,8 +4,6 @@
 
 package cs6301.g1025;
 
-
-
 public class LP4b {
 	static int VERBOSE = 0;
 
