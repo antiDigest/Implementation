@@ -11,9 +11,8 @@
  *  in between, same element is returned.  Added UnsupportedOperationException to remove.
  **/
 
-package cs6301.g00;
-import cs6301.g00.Graph.Vertex;
-import cs6301.g00.Graph.Edge;
+package cs6301.g1025;
+import cs6301.g00.ArrayIterator;
 
 import java.util.Iterator;
 import java.util.List;
@@ -79,10 +78,14 @@ public class XGraph extends Graph {
 
     static class XEdge extends Edge {
         boolean disabled;
+        int capacity;
+        int flow;
 
         XEdge(XVertex from, XVertex to, int weight) {
             super(from, to, weight);
             disabled = false;
+            capacity = this.getWeight();
+            flow = 0;
         }
 
         boolean isDisabled() {
@@ -90,13 +93,22 @@ public class XGraph extends Graph {
             XVertex xto = (XVertex) to;
             return disabled || xfrom.isDisabled() || xto.isDisabled();
         }
+
+        int getCapacity(){
+            return capacity;
+        }
+
+        int flow(){
+            return flow;
+        }
     }
 
     XVertex[] xv; // vertices of graph
+    XEdge[] edges; //Edges of Graph
 
     public XGraph(Graph g) {
         super(g);
-        xv = new XVertex[2*g.size()];  // Extra space is allocated in array for nodes to be added later
+        xv = new XVertex[g.size()];  // Extra space is allocated in array for nodes to be added later
         for(Vertex u: g) {
             xv[u.getName()] = new XVertex(u);
         }
@@ -155,28 +167,6 @@ public class XGraph extends Graph {
     void disable(int i) {
         XVertex u = (XVertex) getVertex(i);
         u.disable();
-    }
-
-    public static void main(String[] args) {
-        Graph g = Graph.readGraph(new Scanner(System.in));
-        XGraph xg = new XGraph(g);
-        Vertex src = xg.getVertex(1);
-
-        System.out.println("Node : Dist : Edges");
-        BFS b = new BFS(xg, src);
-        b.bfs();
-//        Vertex farthest = DiameterTree.findFarthest(b);
-        xg.printGraph(b);
-//        System.out.println("Source: " + src + " Farthest: " + farthest + " Distance: " + b.distance(farthest));
-
-        System.out.println("\nDisabling vertices 8 and 9");
-        xg.disable(8);
-        xg.disable(9);
-        b.reinitialize(src);
-        b.bfs();
-//        farthest = DiameterTree.findFarthest(b);
-        xg.printGraph(b);
-//        System.out.println("Source: " + src + " Farthest: " + farthest + " Distance: " + b.distance(farthest));
     }
 
     void printGraph(BFS b) {

@@ -5,7 +5,7 @@
  *  Ver 1.2: 2017/09/08.  Added getVertex() method for GraphAlgorithm.java
  *  Ver 1.3: 2017/09/28.  Added isDirected() and additional Vertex constructor
  *  Ver 2.0: 2017/10/11.  Added following OO features to allow the use of
- *  	cs6301.g00.Graph directly from cs6301.gXX, without having to copy the file:
+ *  	cs6301.g1025.Graph directly from cs6301.gXX, without having to copy the file:
  *	Renamed v to vertex (better name), but v is left as a synonym for vertex
  *	for backward compatibility.  Added a new field m for number of edges.
  *	Added name field to Edge to uniquely identify edges.
@@ -19,7 +19,9 @@
  *	Added methods edgeSize, clear, setDirected, reverseGraph to Graph.
  */
 
-package cs6301.g00;
+package cs6301.g1025;
+import cs6301.g00.ArrayIterator;
+
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;

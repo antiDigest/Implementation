@@ -1,7 +1,6 @@
 // Starter code for LP7
 package cs6301.g1025;
-import cs6301.g00.Graph;
-import cs6301.g00.Graph.*;
+import cs6301.g1025.Graph.*;
 import java.util.HashMap;
 import java.util.Set;
 
