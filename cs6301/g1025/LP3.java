@@ -253,6 +253,16 @@ public class LP3 {
         return it.hasNext() ? it.next() : null;
     }
 
+    class Frame{
+        boolean flag;
+        int edgeSum;
+
+        Frame(boolean flag, int sum){
+            this.flag = flag;
+            this.edgeSum = sum;
+        }
+    }
+
     boolean isValid(Graph g, Vertex r){
         XGraph xg = (XGraph) g;
         XVertex xr = (XVertex) r;
@@ -260,27 +270,42 @@ public class LP3 {
         BFS b = new BFS(xg, xr);
         b.bfs();
 
-        if(!isValidMST(xr, b))
+        Frame frame = isValidMST(xr, b);
+
+        if(!frame.flag)
+            return false;
+
+        int distSum = 0;
+        for(Vertex u: xg){
+            BFSVertex bu = b.getVertex(u);
+            distSum += bu.distance;
+        }
+
+        if(frame.edgeSum != distSum)
             return false;
 
         return true;
     }
 
-    boolean isValidMST(Vertex r, BFS b){
+    Frame isValidMST(Vertex r, BFS b){
         XVertex xr = (XVertex) r;
 
-        for (Edge e: xr){
+        if (xr.getAdj() == null){
+            return new Frame(true, 0);
+        }
+
+        for (Edge e: xr.getAdj()){
             XEdge xe = (XEdge) e;
             XVertex xv = (XVertex) xe.otherEnd(xr);
             BFSVertex br = b.getVertex(xr);
             BFSVertex bv = b.getVertex(xv);
-            if( (xv.getParent() == xr && xe.getWeight() != bv.distance) &&
-                    !isValidMST(xv, b))
-                return false;
-            else if(!isValidMST(xv, b) && xe.getWeight() >= bv.distance)
-                return false;
+            Frame frame = isValidMST(xv, b);
+            frame.flag = frame.flag && ((xv.getParent() == xr && xe.getWeight() != bv.distance) ||
+                    (xe.getWeight() >= bv.distance));
+            frame.edgeSum += xe.getWeight();
+            return frame;
         }
 
-        return true;
+        return new Frame(false, 0);
     }
 }
