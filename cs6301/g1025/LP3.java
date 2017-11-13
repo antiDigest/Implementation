@@ -290,10 +290,6 @@ public class LP3 {
     Frame isValidMST(Vertex r, BFS b){
         XVertex xr = (XVertex) r;
 
-        if (xr.getAdj() == null){
-            return new Frame(true, 0);
-        }
-
         for (Edge e: xr.getAdj()){
             XEdge xe = (XEdge) e;
             XVertex xv = (XVertex) xe.otherEnd(xr);
@@ -306,6 +302,6 @@ public class LP3 {
             return frame;
         }
 
-        return new Frame(false, 0);
+        return new Frame(true, 0);
     }
 }
