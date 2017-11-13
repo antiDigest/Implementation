@@ -33,7 +33,7 @@ public class Dinitz {
             if(bsink.parent == null){
                 break;
             }
-            List<Graph.Edge> pathEdges = getPath(Graph.Vertex source, Graph.Vertex sink); // TODO
+            List<Graph.Edge> pathEdges = getPath(source, sink);
             int minCapacity = minCapacity(pathEdges);
             for(Graph.Edge e:pathEdges){
                 /** TODO:
@@ -47,8 +47,13 @@ public class Dinitz {
     }
 
     int minCapacity(List<Graph.Edge> path){
-        //TODO
+        //TODO: from all capacities select the one having min capacity
         return 0;
+    }
+
+    List<Graph.Edge> getPath(Graph.Vertex src, Graph.Vertex snk){
+        //TODO: get a path of edges from source to sink
+        return null;
     }
 
 }
