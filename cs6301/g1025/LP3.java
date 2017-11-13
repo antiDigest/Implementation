@@ -253,4 +253,34 @@ public class LP3 {
         return it.hasNext() ? it.next() : null;
     }
 
+    boolean isValid(Graph g, Vertex r){
+        XGraph xg = (XGraph) g;
+        XVertex xr = (XVertex) r;
+
+        BFS b = new BFS(xg, xr);
+        b.bfs();
+
+        if(!isValidMST(xr, b))
+            return false;
+
+        return true;
+    }
+
+    boolean isValidMST(Vertex r, BFS b){
+        XVertex xr = (XVertex) r;
+
+        for (Edge e: xr){
+            XEdge xe = (XEdge) e;
+            XVertex xv = (XVertex) xe.otherEnd(xr);
+            BFSVertex br = b.getVertex(xr);
+            BFSVertex bv = b.getVertex(xv);
+            if( (xv.getParent() == xr && xe.getWeight() != bv.distance) &&
+                    !isValidMST(xv, b))
+                return false;
+            else if(!isValidMST(xv, b) && xe.getWeight() >= bv.distance)
+                return false;
+        }
+
+        return true;
+    }
 }

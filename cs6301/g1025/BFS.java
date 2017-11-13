@@ -64,13 +64,13 @@ public class BFS extends GraphAlgorithm<BFS.BFSVertex> {
     public void bfs() {
         Queue<Graph.Vertex> q = new LinkedList<>();
         q.add(src);
-        visit(null, src);
+        visit(null, src, null);
         while (!q.isEmpty()) {
             Graph.Vertex u = q.remove();
             for (Graph.Edge e : u) {
                 Graph.Vertex v = e.otherEnd(u);
                 if (!seen(v)) {
-                    visit(u, v);
+                    visit(u, v, e);
                     q.add(v);
                 }
             }
@@ -91,10 +91,13 @@ public class BFS extends GraphAlgorithm<BFS.BFSVertex> {
     }
 
     // Visit a node v from u
-    void visit(Graph.Vertex u, Graph.Vertex v) {
+    void visit(Graph.Vertex u, Graph.Vertex v, Graph.Edge e) {
         BFSVertex bv = getVertex(v);
         bv.seen = true;
         bv.parent = u;
-        bv.distance = distance(u) + 1;
+        if(e!=null)
+            bv.distance = distance(u) + e.getWeight();
+        else
+            bv.distance = distance(u) + 1;
     }
 }
