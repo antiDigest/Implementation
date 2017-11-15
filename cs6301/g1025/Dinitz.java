@@ -5,10 +5,10 @@
 
 package cs6301.g1025;
 
+import cs6301.g1025.XGraph.*;
+import cs6301.g1025.Graph.*;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import static cs6301.g1025.BFS.INFINITY;
 
@@ -22,11 +22,6 @@ public class Dinitz {
         this.g = new XGraph(g, capacity);
         this.source = this.g.getVertex(src.getName());
         this.sink = this.g.getVertex(sink.getName());
-    }
-
-    class MinCut {
-        int maxFlow;
-        // TODO add min cut {S, T}
     }
 
     int maxFlow() {
@@ -71,6 +66,46 @@ public class Dinitz {
         System.out.println("PATH: " + L);
 
         return L;
+    }
+
+    Set<Graph.Vertex> reacheableFrom(Graph.Vertex src){
+        Set<Graph.Vertex> minCut = new LinkedHashSet<>();
+        Queue<Graph.Vertex> q = new LinkedList<>();
+        q.add(src);
+        while (!q.isEmpty()) {
+            XGraph.XVertex xu = (XGraph.XVertex) q.remove();
+            for (Graph.Edge e : xu) {
+                XGraph.XVertex xv = (XGraph.XVertex) e.otherEnd(xu);
+                if (!xv.seen && inResidualGraph(xu, e)) {
+                    xv.seen = true;
+                    minCut.add(xv);
+                    q.add(xv);
+                }
+            }
+        }
+        return minCut;
+    }
+
+    Set<Graph.Vertex> minCutS(){
+        return reacheableFrom(source);
+    }
+
+    Set<Graph.Vertex> minCutT(){
+        return reacheableFrom(sink);
+    }
+
+    /**
+     * Edge out of u in Residual Graph (Gf) because of e ?
+     *
+     * @param u
+     * @param e
+     * @return
+     */
+    boolean inResidualGraph(Vertex u, Edge e) {
+        XEdge xe = (XEdge) e;
+        XVertex xu = (XVertex) u;
+
+        return xe.fromVertex() == xu ? xe.flow < xe.capacity : xe.flow > 0;
     }
 
 }

@@ -29,6 +29,7 @@ public class XGraph extends Graph {
         List<XEdge> xrevAdj;
         int height;
         int excess;
+        boolean seen;
 
         XVertex(Vertex u) {
             super(u);

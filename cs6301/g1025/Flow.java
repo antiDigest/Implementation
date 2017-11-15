@@ -12,9 +12,8 @@ public class Flow {
     Graph g;
     Vertex s;
     Vertex t;
-
-    RelabelToFront rtf = new RelabelToFront(g, s, t, capacity);
-    Dinitz d = new Dinitz(g, s, t, capacity);
+    Set<Vertex> minCutS;
+    Set<Vertex> minCutT;
 
     public Flow(Graph g, Vertex s, Vertex t, HashMap<Edge, Integer> capacity) {
         this.g = g;
@@ -25,13 +24,21 @@ public class Flow {
 
     // Return max flow found by Dinitz's algorithm
     public int dinitzMaxFlow() {
-        return 0;
+        Dinitz d = new Dinitz(g, s, t, capacity);
+        int maxFlow = d.maxFlow();
+        g = d.g;
+        minCutS = d.minCutS();
+        minCutT = d.minCutT();
+        return maxFlow;
     }
 
     // Return max flow found by relabelToFront algorithm
     public int relabelToFront() {
+        RelabelToFront rtf = new RelabelToFront(g, s, t, capacity);
         rtf.relabelToFront();
         g = rtf.g;
+        minCutS = rtf.minCutS();
+        minCutT = rtf.minCutT();
         return rtf.maxFlow();
     }
 
@@ -49,13 +56,13 @@ public class Flow {
        get the "S"-side of the min-cut found by the algorithm
     */
     public Set<Vertex> minCutS() {
-        return null;
+        return minCutS;
     }
 
     /* After maxflow has been computed, this method can be called to
        get the "T"-side of the min-cut found by the algorithm
     */
     public Set<Vertex> minCutT() {
-        return null;
+        return minCutT;
     }
 }

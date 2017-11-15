@@ -81,12 +81,7 @@ public class RelabelToFront {
         XEdge xe = (XEdge) e;
         XVertex xu = (XVertex) u;
 
-        if(xe.fromVertex() == xu ? xe.flow < xe.capacity : xe.flow > 0){
-            return true;
-        } else {
-            xe.disable();
-            return false;
-        }
+        return xe.fromVertex() == xu ? xe.flow < xe.capacity : xe.flow > 0;
     }
 
     void relabel(Vertex u) {
@@ -166,30 +161,30 @@ public class RelabelToFront {
         return it.hasNext() ? it.next() : null;
     }
 
-    Set<Vertex> minCutS(){
-        Set<Vertex> minCutS = new LinkedHashSet<>();
-        BFS b = new BFS(((XGraph)this.g).initialGraph, this.source);
-        b.bfs();
-        for(Vertex u: b.g){
-            BFS.BFSVertex bu = b.getVertex(u);
-            if(bu.parent!=null && !((XEdge)bu.parentEdge).isDisabled())
-                minCutS.add(u);
+    Set<Vertex> reacheableFrom(Vertex src){
+        Set<Vertex> minCut = new LinkedHashSet<>();
+        Queue<Vertex> q = new LinkedList<>();
+        q.add(src);
+        while (!q.isEmpty()) {
+            XVertex xu = (XVertex) q.remove();
+            xu.seen = true;
+            for (Edge e : xu) {
+                XVertex xv = (XVertex) e.otherEnd(xu);
+                if (!xv.seen && inResidualGraph(xu, e)) {
+                    minCut.add(xv);
+                    q.add(xv);
+                }
+            }
         }
+        return minCut;
+    }
 
-        return minCutS;
+    Set<Vertex> minCutS(){
+        return reacheableFrom(source);
     }
 
     Set<Vertex> minCutT(){
-        Set<Vertex> minCutT = new LinkedHashSet<>();
-        BFS b = new BFS(((XGraph)this.g).initialGraph, this.sink);
-        b.bfs();
-        for(Vertex u: b.g){
-            BFS.BFSVertex bu = b.getVertex(u);
-            if(bu.parent!=null && !((XEdge)bu.parentEdge).isDisabled())
-                minCutT.add(u);
-        }
-
-        return minCutT;
+        return reacheableFrom(sink);
     }
 
     public static void main(String[] args) throws FileNotFoundException {
