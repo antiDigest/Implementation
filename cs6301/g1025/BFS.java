@@ -1,25 +1,30 @@
-/** Breadth-first search
- *  @author rbk
- *  Version 1.0: 2017/09/08
+/**
+ * Breadth-first search
+ *
+ * @author rbk
+ * Version 1.0: 2017/09/08
  */
 
 package cs6301.g1025;
 
-import java.util.Queue;
 import java.util.LinkedList;
-
+import java.util.Queue;
 
 
 public class BFS extends GraphAlgorithm<BFS.BFSVertex> {
     public static final int INFINITY = Integer.MAX_VALUE;
+
     // Class to store information about a vertex in this algorithm
     static class BFSVertex {
         boolean seen;
         Graph.Vertex parent;
+        Graph.Edge parentEdge;
         int distance;  // distance of vertex from source
+
         BFSVertex(Graph.Vertex u) {
             seen = false;
             parent = null;
+            parentEdge = null;
             distance = INFINITY;
         }
     }
@@ -31,7 +36,7 @@ public class BFS extends GraphAlgorithm<BFS.BFSVertex> {
         this.src = src;
         node = new BFSVertex[g.size()];
         // Create array for storing vertex properties
-        for(Graph.Vertex u: g) {
+        for (Graph.Vertex u : g) {
             node[u.getName()] = new BFSVertex(u);
         }
         // Set source to be at distance 0
@@ -41,7 +46,7 @@ public class BFS extends GraphAlgorithm<BFS.BFSVertex> {
     // reinitialize allows running BFS many times, with different sources
     void reinitialize(Graph.Vertex newSource) {
         src = newSource;
-        for(Graph.Vertex u: g) {
+        for (Graph.Vertex u : g) {
             BFSVertex bu = getVertex(u);
             bu.seen = false;
             bu.parent = null;
@@ -53,12 +58,12 @@ public class BFS extends GraphAlgorithm<BFS.BFSVertex> {
     void bfs() {
         Queue<Graph.Vertex> q = new LinkedList<>();
         q.add(src);
-        while(!q.isEmpty()) {
+        while (!q.isEmpty()) {
             Graph.Vertex u = q.remove();
-            for(Graph.Edge e: u) {
+            for (Graph.Edge e : u) {
                 Graph.Vertex v = e.otherEnd(u);
-                if(!seen(v)) {
-                    visit(u,v);
+                if (!seen(v)) {
+                    visit(u, v, e);
                     q.add(v);
                 }
             }
@@ -79,10 +84,11 @@ public class BFS extends GraphAlgorithm<BFS.BFSVertex> {
 
 
     // Visit a node v from u
-    void visit(Graph.Vertex u, Graph.Vertex v) {
+    void visit(Graph.Vertex u, Graph.Vertex v, Graph.Edge e) {
         BFSVertex bv = getVertex(v);
         bv.seen = true;
         bv.parent = u;
+        bv.parentEdge = e;
         bv.distance = distance(u) + 1;
     }
 }
