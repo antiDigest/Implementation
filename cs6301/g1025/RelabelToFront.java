@@ -161,9 +161,10 @@ public class RelabelToFront {
         return it.hasNext() ? it.next() : null;
     }
 
-    Set<Vertex> reacheableFrom(Vertex src){
+    Set<Vertex> reachableFrom(Vertex src){
         Set<Vertex> minCut = new LinkedHashSet<>();
         Queue<Vertex> q = new LinkedList<>();
+        minCut.add(src);
         q.add(src);
         while (!q.isEmpty()) {
             XVertex xu = (XVertex) q.remove();
@@ -180,11 +181,11 @@ public class RelabelToFront {
     }
 
     Set<Vertex> minCutS(){
-        return reacheableFrom(source);
+        return reachableFrom(source);
     }
 
     Set<Vertex> minCutT(){
-        return reacheableFrom(sink);
+        return reachableFrom(sink);
     }
 
     public static void main(String[] args) throws FileNotFoundException {
