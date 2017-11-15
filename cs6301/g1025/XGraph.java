@@ -108,6 +108,7 @@ public class XGraph extends Graph {
         int capacity;
         int flow;
         int name;
+        boolean reverseEdge;
 
         XEdge(XVertex from, XVertex to, int weight, int name) {
             super(from, to, weight);
@@ -115,6 +116,16 @@ public class XGraph extends Graph {
             capacity = weight;
             flow = 0;
             this.name = name;
+            reverseEdge = false;
+        }
+
+        XEdge(XVertex from, XVertex to, int weight, int name, boolean reverse) {
+            super(from, to, weight);
+            disabled = false;
+            capacity = weight;
+            flow = 0;
+            this.name = name;
+            reverseEdge = reverse;
         }
 
         boolean isDisabled() {
@@ -133,6 +144,10 @@ public class XGraph extends Graph {
 
         int flow() {
             return flow;
+        }
+
+        boolean isReverse(){
+            return reverseEdge;
         }
     }
 
@@ -188,10 +203,10 @@ public class XGraph extends Graph {
         initialGraph = g;
     }
 
-    public void addNewEdge(Vertex from, Vertex to, int weight) {
+    public void addNewEdge(Vertex from, Vertex to, int weight, boolean reverse) {
         XVertex x1 = getVertex(from);
         XVertex x2 = getVertex(to);
-        XEdge edge = new XEdge(x1, x2, weight, numEdges);
+        XEdge edge = new XEdge(x1, x2, weight, numEdges, reverse);
         x1.xadj.add(edge);
         x2.xrevAdj.add(edge);
         edges[numEdges++] = edge;
