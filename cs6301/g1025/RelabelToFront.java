@@ -33,6 +33,9 @@ public class RelabelToFront {
         this.sink = this.g.getVertex(sink.getName());
     }
 
+    /**
+     * Initializing Max-Flow Relabel to Front
+     */
     void initialize() {
         XVertex xsource = (XVertex) source;
         xsource.height = g.size();
@@ -46,6 +49,13 @@ public class RelabelToFront {
         }
     }
 
+    /**
+     * Push flow out of u using e
+     * edge (u, v) = e: is in Residual Graph (Gf)
+     * @param u From Vertex
+     * @param v To Vertex
+     * @param e Edge: (u, v)
+     */
     void push(Vertex u, Vertex v, Edge e) {
         XEdge xe = (XEdge) e;
         XVertex xu = (XVertex) u;
@@ -63,27 +73,34 @@ public class RelabelToFront {
 
         // Adding an edge for back flow
         XEdge revEdge = ((XGraph) this.g).getEdge(xv, xu);
-        if (revEdge != null) {
+        if (revEdge != null && !revEdge.reverseEdge) {
             revEdge.flow -= delta;
         } else {
             ((XGraph) this.g).addNewEdge(xv, xu, xe.flow(), true);
+        }
+
+        if (!inResidualGraph(xu, xe) || xe.flow == xe.capacity) {
+            xe.disable();
         }
     }
 
     /**
      * Edge out of u in Residual Graph (Gf) because of e ?
-     *
-     * @param u
-     * @param e
-     * @return
+     * @param u From vertex
+     * @param e Edge (u, ?)
+     * @return true if in residual graph, else false
      */
     boolean inResidualGraph(Vertex u, Edge e) {
         XEdge xe = (XEdge) e;
         XVertex xu = (XVertex) u;
-
         return xe.fromVertex() == xu ? xe.flow < xe.capacity : xe.flow > 0;
     }
 
+    /**
+     * increase the height of u, to allow u to get rid of its excess
+     * Precondition: u.excess > 0, and for all ( u, v ) in Gf, u.height <= v.height
+     * @param u Vertex
+     */
     void relabel(Vertex u) {
         XVertex xu = (XVertex) u;
 
@@ -101,6 +118,10 @@ public class RelabelToFront {
 
     }
 
+    /**
+     * push all excess flow out of u, raising its height, as needed
+     * @param u Vertex
+     */
     void discharge(Vertex u) {
         XVertex xu = (XVertex) u;
         while (xu.excess > 0) {
@@ -116,6 +137,9 @@ public class RelabelToFront {
         }
     }
 
+    /**
+     * Algorithm to find max flow !
+     */
     void relabelToFront() {
         initialize();
         List<Vertex> L = new LinkedList<>();
@@ -152,6 +176,10 @@ public class RelabelToFront {
         }
     }
 
+    /**
+     * gives max flow value: excess value at sink node
+     * @return int
+     */
     int maxFlow() {
         XVertex xsink = (XVertex) sink;
         return abs(xsink.excess);
@@ -161,17 +189,19 @@ public class RelabelToFront {
         return it.hasNext() ? it.next() : null;
     }
 
+
     Set<Vertex> reachableFrom(Vertex src){
-        Set<Vertex> minCut = new LinkedHashSet<>();
-        Queue<Vertex> q = new LinkedList<>();
-        minCut.add(src);
+        Set<Graph.Vertex> minCut = new LinkedHashSet<>();
+        Queue<Graph.Vertex> q = new LinkedList<>();
+        minCut.add((XVertex) src);
         q.add(src);
         while (!q.isEmpty()) {
-            XVertex xu = (XVertex) q.remove();
-            xu.seen = true;
-            for (Edge e : xu) {
-                XVertex xv = (XVertex) e.otherEnd(xu);
+            XGraph.XVertex xu = (XGraph.XVertex) q.remove();
+            for (Graph.Edge e : xu) {
+                XEdge xe = (XEdge) e;
+                XGraph.XVertex xv = (XGraph.XVertex) e.otherEnd(xu);
                 if (!xv.seen && inResidualGraph(xu, e)) {
+                    xv.seen = true;
                     minCut.add(xv);
                     q.add(xv);
                 }
@@ -180,11 +210,19 @@ public class RelabelToFront {
         return minCut;
     }
 
-    Set<Vertex> minCutS(){
+    /**
+     * Find Min-Cut reachable from s (source)
+     * @return Set
+     */
+    Set<Graph.Vertex> minCutS() {
         return reachableFrom(source);
     }
 
-    Set<Vertex> minCutT(){
+    /**
+     * Find Min-Cut reachable from t (sink)
+     * @return Set
+     */
+    Set<Graph.Vertex> minCutT() {
         return reachableFrom(sink);
     }
 
@@ -214,5 +252,70 @@ public class RelabelToFront {
         System.out.println(rtf.maxFlow());
         System.out.println(rtf.minCutS());
         System.out.println(rtf.minCutT());
+
+        rtf.verify();
     }
+
+    boolean verify() {
+        int outFlow = 0;
+        XVertex xsource = (XVertex) source;
+        for (Edge e : xsource.xadj) {
+            XEdge xe = (XEdge) e;
+            outFlow += xe.flow();
+        }
+
+        int inFlow = 0;
+        XVertex xsink = (XVertex) sink;
+        for (Edge e : xsink.xrevAdj) {
+            XEdge xe = (XEdge) e;
+            inFlow += xe.flow();
+        }
+
+        if (inFlow != outFlow
+                && inFlow != abs(((XVertex) source).excess)
+                && outFlow != abs(((XVertex) sink).excess)) {
+            System.out.println("Invalid: total flow from the source (" + outFlow + ") != total flow to the sink (" + inFlow + ")");
+            return false;
+        }
+
+        for(Vertex u: g){
+            XVertex xu = (XVertex) u;
+            xu.seen = false;
+        }
+
+        Set<Vertex> minCutS = this.minCutS();
+        Set<Vertex> minCutT = this.minCutT();
+
+        if (minCutS.size() + minCutT.size() != g.size()) {
+            System.out.println("Invalid size of Min-Cut: " + (minCutS.size() + minCutT.size()));
+            return false;
+        }
+
+        for (Vertex u : g) {
+            if (u != source && u != sink) {
+                XVertex xu = (XVertex) u;
+                int outVertexFlow = 0;
+                for (Edge e : xu.xadj) {
+                    XEdge xe = (XEdge) e;
+                    if (xe.reverseEdge) continue;
+                    outVertexFlow += xe.flow();
+                }
+
+                int inVertexFlow = 0;
+                for (Edge e : xu.xrevAdj) {
+                    XEdge xe = (XEdge) e;
+                    if (xe.reverseEdge) continue;
+                    inVertexFlow += xe.flow();
+                }
+
+                if (inVertexFlow != outVertexFlow) {
+                    System.out.println("Invalid: Total incoming flow != Total outgoing flow at " + u);
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
 }
