@@ -10,7 +10,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
 
-import static cs6301.g1025.BFS.INFINITY;
+import static cs6301.g1025.XGraph.INFINITY;
 import static java.lang.Integer.min;
 import static java.lang.Math.abs;
 
@@ -70,18 +70,6 @@ public class RelabelToFront {
 
         xu.excess -= delta;
         xv.excess += delta;
-
-        // Adding an edge for back flow
-        XEdge revEdge = ((XGraph) this.g).getEdge(xv, xu);
-        if (revEdge != null && !revEdge.reverseEdge) {
-            revEdge.flow -= delta;
-        } else {
-            ((XGraph) this.g).addNewEdge(xv, xu, xe.flow(), true);
-        }
-
-        if (!inResidualGraph(xu, xe) || xe.flow == xe.capacity) {
-            xe.disable();
-        }
     }
 
     /**
@@ -90,7 +78,7 @@ public class RelabelToFront {
      * @param e Edge (u, ?)
      * @return true if in residual graph, else false
      */
-    boolean inResidualGraph(Vertex u, Edge e) {
+    static boolean inResidualGraph(Vertex u, Edge e) {
         XEdge xe = (XEdge) e;
         XVertex xu = (XVertex) u;
         return xe.fromVertex() == xu ? xe.flow < xe.capacity : xe.flow > 0;
@@ -114,6 +102,15 @@ public class RelabelToFront {
             }
         }
 
+        for (Edge e : xu.xrevAdj) {
+            XEdge xe = (XEdge) e;
+            XVertex xv = (XVertex) e.otherEnd(xu);
+            if (xv.height < xu.height) continue;
+            if (xv.height < minHeight) {
+                minHeight = xv.height;
+            }
+        }
+
         xu.height = 1 + minHeight;
 
     }
@@ -126,6 +123,15 @@ public class RelabelToFront {
         XVertex xu = (XVertex) u;
         while (xu.excess > 0) {
             for (Edge e : u) {
+                XEdge xe = (XEdge) e;
+                XVertex xv = (XVertex) e.otherEnd(xu);
+                if (inResidualGraph(xu, xe) && xu.height == 1 + xv.height) {
+                    push(xu, xv, xe);
+                    if (xu.excess == 0) return;
+                }
+            }
+
+            for (Edge e : ((XVertex) u).xrevAdj) {
                 XEdge xe = (XEdge) e;
                 XVertex xv = (XVertex) e.otherEnd(xu);
                 if (inResidualGraph(xu, xe) && xu.height == 1 + xv.height) {
@@ -189,33 +195,12 @@ public class RelabelToFront {
         return it.hasNext() ? it.next() : null;
     }
 
-
-    Set<Vertex> reachableFrom(Vertex src){
-        Set<Graph.Vertex> minCut = new LinkedHashSet<>();
-        Queue<Graph.Vertex> q = new LinkedList<>();
-        minCut.add((XVertex) src);
-        q.add(src);
-        while (!q.isEmpty()) {
-            XGraph.XVertex xu = (XGraph.XVertex) q.remove();
-            for (Graph.Edge e : xu) {
-                XEdge xe = (XEdge) e;
-                XGraph.XVertex xv = (XGraph.XVertex) e.otherEnd(xu);
-                if (!xv.seen && inResidualGraph(xu, e)) {
-                    xv.seen = true;
-                    minCut.add(xv);
-                    q.add(xv);
-                }
-            }
-        }
-        return minCut;
-    }
-
     /**
      * Find Min-Cut reachable from s (source)
      * @return Set
      */
     Set<Graph.Vertex> minCutS() {
-        return reachableFrom(source);
+        return Dinitz.reachableFrom(source);
     }
 
     /**
@@ -223,7 +208,7 @@ public class RelabelToFront {
      * @return Set
      */
     Set<Graph.Vertex> minCutT() {
-        return reachableFrom(sink);
+        return Dinitz.reachableFrom(sink);
     }
 
     public static void main(String[] args) throws FileNotFoundException {
@@ -259,7 +244,7 @@ public class RelabelToFront {
     boolean verify() {
         int outFlow = 0;
         XVertex xsource = (XVertex) source;
-        for (Edge e : xsource.xadj) {
+        for (Edge e : xsource) {
             XEdge xe = (XEdge) e;
             outFlow += xe.flow();
         }
@@ -295,16 +280,14 @@ public class RelabelToFront {
             if (u != source && u != sink) {
                 XVertex xu = (XVertex) u;
                 int outVertexFlow = 0;
-                for (Edge e : xu.xadj) {
+                for (Edge e : xu) {
                     XEdge xe = (XEdge) e;
-                    if (xe.reverseEdge) continue;
                     outVertexFlow += xe.flow();
                 }
 
                 int inVertexFlow = 0;
                 for (Edge e : xu.xrevAdj) {
                     XEdge xe = (XEdge) e;
-                    if (xe.reverseEdge) continue;
                     inVertexFlow += xe.flow();
                 }
 

@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 
+
 public class BFS extends GraphAlgorithm<BFS.BFSVertex> {
     public static final int INFINITY = Integer.MAX_VALUE;
 
@@ -18,13 +19,11 @@ public class BFS extends GraphAlgorithm<BFS.BFSVertex> {
     static class BFSVertex {
         boolean seen;
         Graph.Vertex parent;
-        Graph.Edge parentEdge;
-        int distance;  // distance of vertex from source
+        int distance; // distance of vertex from source
 
         BFSVertex(Graph.Vertex u) {
             seen = false;
             parent = null;
-            parentEdge = null;
             distance = INFINITY;
         }
     }
@@ -63,7 +62,7 @@ public class BFS extends GraphAlgorithm<BFS.BFSVertex> {
             for (Graph.Edge e : u) {
                 Graph.Vertex v = e.otherEnd(u);
                 if (!seen(v)) {
-                    visit(u, v, e);
+                    visit(u, v);
                     q.add(v);
                 }
             }
@@ -82,13 +81,11 @@ public class BFS extends GraphAlgorithm<BFS.BFSVertex> {
         return getVertex(u).distance;
     }
 
-
     // Visit a node v from u
-    void visit(Graph.Vertex u, Graph.Vertex v, Graph.Edge e) {
+    void visit(Graph.Vertex u, Graph.Vertex v) {
         BFSVertex bv = getVertex(v);
         bv.seen = true;
         bv.parent = u;
-        bv.parentEdge = e;
         bv.distance = distance(u) + 1;
     }
 }

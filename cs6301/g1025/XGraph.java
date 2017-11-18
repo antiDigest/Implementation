@@ -22,7 +22,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 
+
 public class XGraph extends Graph {
+    public static final int INFINITY = Integer.MAX_VALUE;
+
     public static class XVertex extends Vertex {
         boolean disabled;
         List<XEdge> xadj;
@@ -30,6 +33,9 @@ public class XGraph extends Graph {
         int height;
         int excess;
         boolean seen;
+        int distance;
+        Vertex parent;
+        Edge parentEdge;
 
         XVertex(Vertex u) {
             super(u);
@@ -38,6 +44,9 @@ public class XGraph extends Graph {
             xrevAdj = new LinkedList<>();
             height = 0;
             excess = 0;
+            distance = INFINITY;
+            parent = null;
+            parentEdge = null;
         }
 
         boolean isDisabled() {
@@ -281,16 +290,16 @@ public class XGraph extends Graph {
         u.disable();
     }
 
-    void printGraph(BFS b) {
-        for (Vertex u : this) {
-            System.out.print("  " + u + "  :   " + b.distance(u) + "  : ");
-            for (Edge e : u) {
-                System.out.print(e);
-            }
-            System.out.println();
-        }
-
-    }
+//    void printGraph(BFS b) {
+//        for (Vertex u : this) {
+//            System.out.print("  " + u + "  :   " + b.distance(u) + "  : ");
+//            for (Edge e : u) {
+//                System.out.print(e);
+//            }
+//            System.out.println();
+//        }
+//
+//    }
 
 }
 
