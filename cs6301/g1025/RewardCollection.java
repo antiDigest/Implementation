@@ -1,12 +1,10 @@
 package cs6301.g1025;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
-
+import cs6301.g1025.BFS.BFSVertex;
 import cs6301.g1025.Graph.Edge;
 import cs6301.g1025.Graph.Vertex;
 import cs6301.g1025.XGraph.XVertex;
@@ -16,152 +14,111 @@ public class RewardCollection {
 	Graph g;
 	Vertex s;
 	HashMap<Vertex, Integer> vertexRewardMap;
-	List<Path> SPaths;
+	BFS bfshandle;
+	int maxProfit;
+	List<Vertex> tour;
 
-	public RewardCollection(Graph g, Vertex s, HashMap<Vertex, Integer> vertexRewardMap) {
+	/**
+	 * Constructor for Reward Collection problem
+	 * 
+	 * @param g
+	 *            : Graph g
+	 * @param s
+	 *            : Vertex
+	 * 
+	 * @param vertexRewardMap:HashMap
+	 * @ param tour:List<Vertex>
+	 *
+	 */
+	public RewardCollection(Graph g, Vertex s, HashMap<Vertex, Integer> vertexRewardMap, List<Vertex> tour) {
 		this.g = g;
 		this.s = s;
 		this.vertexRewardMap = vertexRewardMap;
-
+		bfshandle = new BFS(g, s);
+		maxProfit = 0;
+		this.tour = tour;
 	}
 
-	int rewardProblem(List<Vertex> tour) {
+	/**
+	 * returns the maxprofit obtained through the
+	 * tour.
+	 */
+
+	int rewardProblem() {
 		XGraph xg = new XGraph(g);
 		BellmanFordFast.BellmanFord(xg, xg.getVertex(s));
-		// System.out.println(xg.toString());
-		// for (Vertex v : xg) {
-		// //System.out.println("for vertex " + (v.getName() + 1) + " " +
-		// xg.getVertex(v).distance);
-		// }
-
-		for (Vertex u : xg) {
-			XVertex xu = (XVertex) u;
-			xu.seen = false;
-			xu.count = 0;
-			if (xu.distance == null) {
-				xg.disable(xu.getName() + 1);
-			}
-
-		}
-
-		List<Graph.Vertex> SPath = new ArrayList<Graph.Vertex>();
 		xg.getVertex(s).seen = true;
-		SPath.add(s);
-		SPaths = new ArrayList<Path>();
-		enumerate(xg, xg.getVertex(s), SPath);
-		Collections.sort(SPaths);
-		for (Path prev : SPaths) {
-			for (Path p : SPaths) {
-				if (checkDisjoint(prev, p, s)) {
-					addTour(prev.path, p.path, tour);
-					return prev.pathreward;
-				}
-			}
-
-		}
-		return 0;
-
+		ArrayList<Vertex> curpath = new ArrayList<Vertex>();
+		curpath.add(s);
+		enumerate(xg, xg.getVertex(s), vertexRewardMap.get(s),curpath);
+		return maxProfit;
 	}
 
-	void addTour(ArrayList<Vertex> list1, ArrayList<Vertex> list2, List<Vertex> tour) {
-		for (Vertex v : list1) {
-			tour.add(v);
-		}
-		ListIterator<Vertex> li = list2.listIterator(list2.size());
-		while (li.hasPrevious()) {
-			tour.add(li.previous());
-		}
-
-	}
-
-	void enumerate(XGraph xg, XVertex s, List<Graph.Vertex> SPath) {
+	/**
+	 * By taking design in to consideration and Without changing anything
+	 * in standard BFS class,i implemented this function. i can improve the time
+	 * complexity a little bit if i can change the bfs() method in BFS class.
+	 * 
+	 */
+	void callBFS(Graph g, Vertex v, List<Vertex> path, int profit) {
+		bfshandle.reinitialize(v);
+		reinitialize(path);
+		bfshandle.bfs();
+		Vertex end = null;
+		//finding where bfs ends after calling bfs method-just checking the edges of the source
 		for (Edge e : s) {
-			XVertex xv = xg.getVertex(e.otherEnd(s));
-			if (!xv.seen) {
-				if (xv.distance == s.distance + e.weight) {
-					if (xv.count != 0) {
-						storePath(SPath, e);
-					}
-					SPath.add(e.otherEnd(s));
-					xv.seen = true;
-					xv.count = xv.count + 1;
-					enumerate(xg, xv, SPath);
-					xv.seen = false;
-					SPath.remove(SPath.size() - 1);
-				} else {
-					storePath(SPath, e);
-				}
+			if ((v.equals(e.otherEnd(s)) && path.size() > 2)
+					|| (bfshandle.getVertex(e.otherEnd(s)).seen && bfshandle.getVertex(e.otherEnd(s)).parent != null)) {
+				end = e.otherEnd(s);
+				break;
+			}
+		}
+		LinkedList<Vertex> temp = new LinkedList<Vertex>();// using linked list  to make add operation in o(1)  time
+	       if (end != null) {
+			tour.clear();
+			temp.add(0, s);
+			while (bfshandle.getVertex(end).parent != null) {
+				temp.add(0, end);
+				end = bfshandle.getVertex(end).parent;
+			}
+			temp.addAll(0, path);
+			tour.addAll(temp);
+			maxProfit = profit;
+		}
+	}
+
+	/**@param path:List<Vertex> path
+	 *  sets the bfshandle vertices-seen to true according to the path.   
+	 */
+	void reinitialize(List<Vertex> path) {
+		for (Graph.Vertex u : path) {
+			BFSVertex bu = bfshandle.getVertex(u);
+			bu.seen = true;
+		}
+	}
+
+	/**@param path:XGraph xg
+	 * @param xu:XVertex
+	 * @param int: pathcost
+	 * @param curpath:ArrayList<Vertex> 
+	 * checks the paths while enumerating
+	 *    
+	 */
+	void enumerate(XGraph xg, XVertex xu, int pathcost, ArrayList<Vertex> curpath) {
+		XVertex xu1 = xg.getVertex(xu);
+		if (!xu1.equals(s) && pathcost > maxProfit) {
+			callBFS(xg, xu, curpath, pathcost);
+		}
+		for (Edge e : xu1) {
+			XVertex xv = (XVertex) e.otherEnd(xu1);
+			if ((!xv.seen && xv.distance == xu1.distance + e.weight)) {
+				curpath.add(xv);
+				xv.seen = true;
+				enumerate(xg, xv, vertexRewardMap.get(xv) + pathcost,curpath);
+				curpath.remove(curpath.size() - 1);
+				xv.seen = false;
 			}
 
 		}
-
-		return;
-
 	}
-
-	class Path implements Comparable<Path> {
-		ArrayList<Vertex> path;
-		Integer pathreward;
-		Edge crossEdge;
-
-		Path(ArrayList<Vertex> path, int totalreward, Edge crossEdge) {
-			this.path = path;
-			this.pathreward = totalreward;
-			this.crossEdge = crossEdge;
-		}
-
-		@Override
-		public int compareTo(Path p) {
-			return p.pathreward.compareTo(this.pathreward);
-		}
-
-		@Override
-		public String toString() {
-			System.out.println(path.toString() + " " + crossEdge + " " + pathreward);
-			return "";
-		}
-
-	}
-
-	boolean checkDisjoint(Path p1, Path p2, Vertex s) {
-
-		if (p1.path.size() > 1 && p2.path.size() > 1 && p1.path.get(1).equals(p2.path.get(1))) {
-			return false;
-		}
-		if (!(p1.crossEdge.from.equals(p2.crossEdge.to) && p1.crossEdge.to.equals(p2.crossEdge.from))) {
-			return false;
-		}
-		ArrayList<Vertex> list1 = p1.path;
-		ArrayList<Vertex> list2 = p2.path;
-		HashSet<Vertex> h1 = new HashSet<Vertex>();
-		if (list1.size() > list2.size()) {
-			list1 = p2.path;
-			list2 = p1.path;
-		}
-
-		for (Vertex v : list1) {
-			h1.add(v);
-		}
-		for (Vertex u : list2) {
-			if ((!u.equals(s)) && h1.contains(u)) {
-				return false;
-			}
-		}
-		return true;
-
-	}
-
-	void storePath(List<Graph.Vertex> SPath, Edge e) {
-
-		ArrayList<Graph.Vertex> list = new ArrayList<Graph.Vertex>();
-		int totalreward = 0;
-		for (Vertex v : SPath) {
-			totalreward += vertexRewardMap.get(v);
-			list.add(v);
-		}
-		Path p = new Path(list, totalreward, e);
-		SPaths.add(p);
-
-	}
-
 }

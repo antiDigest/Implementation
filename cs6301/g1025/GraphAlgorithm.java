@@ -9,7 +9,7 @@ public class GraphAlgorithm<T> {
         this.g = g;
     }
 
-    T getVertex(Graph.Vertex u) {
+  public  T getVertex(Graph.Vertex u) {
         return Graph.Vertex.getVertex(node, u);
     }
 }

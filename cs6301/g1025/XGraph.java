@@ -243,11 +243,13 @@ public class XGraph extends Graph {
 	@Override
 	public String toString() {
 		for (Vertex u : this) {
+			if(!this.getVertex(u).seen){
 			System.out.println("AjacencyList for Vertex " + u + " :");
 			for (Edge e : u) {
 				System.out.print(e);
 			}
 			System.out.println();
+		}
 		}
 		return "";
 	}

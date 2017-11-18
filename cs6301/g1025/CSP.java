@@ -6,6 +6,11 @@ import cs6301.g1025.TopologicalOrders.TOPVertex;
 
 public class CSP extends GraphAlgorithm<CSP.CSPVertex> {
 
+	
+	/**
+	 * Constructor for CSP  
+	 * @parameters Graphg and and the constraint k
+	 */
 	public CSP(Graph g, int k) {
 		super(g);
 		node = new CSPVertex[g.size()];
@@ -13,11 +18,19 @@ public class CSP extends GraphAlgorithm<CSP.CSPVertex> {
 			node[u.getName()] = new CSPVertex(u, k);
 		}
 	}
-
+	
 	public CSPVertex getCSPVertex(Graph.Vertex u) {
 		return Graph.Vertex.getVertex(node, u);
 	}
 
+	/**
+     * class CSPVertex
+     *
+     * @param parent : Vertex - parent
+     * @param distance : distance-Shortest distance
+     * @param d : Integer array -d 
+     * 
+     */
 	static class CSPVertex {
 		Vertex parent;
 		Integer d[];
@@ -32,6 +45,13 @@ public class CSP extends GraphAlgorithm<CSP.CSPVertex> {
 		}
 	}
 
+	/**
+     * @param s : Vertex - Source s
+     * @param t : Vertex - Source t
+     * @param g :  Graph g
+     * Intger.Max_Value is like infinity if it is not possible then returns Integer.MaxValue
+     * returns distance
+     */
 	Integer ShortestPathK(Vertex s, Vertex t, int k, Graph g) {
 		boolean result = CSPAtmostK(s, g);
 		if (getCSPVertex(t).distance == null) {
@@ -45,9 +65,15 @@ public class CSP extends GraphAlgorithm<CSP.CSPVertex> {
 
 	}
 
+	/**
+     * @param s : Vertex - Source s
+     * @param g : Graph g
+     * returns boolean -whether graph has a negative cycle or it satisfies the constraints.
+     * 
+     */
 	boolean CSPAtmostK(Vertex s, Graph g) {
 		getCSPVertex(s).d[0] = 0;
-		boolean noChange = false;
+		boolean noChange = false; 
 		for (int k = 1; k < getCSPVertex(s).d.length; k++) {
 			noChange = true;
 			for (Vertex u : g) {

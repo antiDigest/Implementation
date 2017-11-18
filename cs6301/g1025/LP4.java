@@ -40,8 +40,8 @@ public class LP4 {
 	// Return -1 if the graph has a negative or zero cycle
 	public long countShortestPaths(Vertex t) {
 
-		EnumerateSP c = new EnumerateSP();
-		return c.Count(g, s, t);
+		EnumerateSP c = new EnumerateSP(g,s,t);
+		return c.Count();
 	}
 
 	// Part d. Print all shortest paths from s to t, one per line, and
@@ -49,8 +49,8 @@ public class LP4 {
 	// Return -1 if the graph has a negative or zero cycle.
 	public long enumerateShortestPaths(Vertex t) {
 		// To do
-		EnumerateSP d = new EnumerateSP();
-		return d.Enumerate(g, s, t);
+		EnumerateSP d = new EnumerateSP(g,s,t);
+		return d.Enumerate();
 
 	}
 
@@ -68,8 +68,8 @@ public class LP4 {
 	// Return total reward for tour
 	public int reward(HashMap<Vertex, Integer> vertexRewardMap, List<Vertex> tour) {
 		// To do
-		RewardCollection f=new RewardCollection(g,s,vertexRewardMap);
-		return f.rewardProblem(tour);
+		RewardCollection f=new RewardCollection(g,s,vertexRewardMap,tour);
+		return f.rewardProblem();
 		
 	}
 

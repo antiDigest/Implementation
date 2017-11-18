@@ -9,7 +9,9 @@ import cs6301.g1025.XGraph.XVertex;
 
 public class BellmanFordFast {
 	
-	
+	/**
+	 * Input graph -outputs the shortest distances for all nodes
+	 */
 	static boolean BellmanFord(Graph g, Vertex s) {
 	
 			Queue<Vertex> q = new LinkedList<Vertex>();
