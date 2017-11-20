@@ -168,7 +168,6 @@ public class XGraph extends Graph {
                 x1.xadj.add(edge);
                 x2.xrevAdj.add(edge);
                 edges[e.getName()] = edge;
-                System.out.println(Arrays.toString(edges));
             }
         }
     }

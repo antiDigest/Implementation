@@ -23,14 +23,14 @@ public class RelabelToFront {
 
     RelabelToFront(Graph g, Vertex source, Vertex sink, HashMap<Edge, Integer> capacity) {
         this.g = new XGraph(g, capacity);
-        this.source = this.g.getVertex(source.getName());
-        this.sink = this.g.getVertex(sink.getName());
+        this.source = this.g.getVertex(source.getName() + 1);
+        this.sink = this.g.getVertex(sink.getName() + 1);
     }
 
     RelabelToFront(Graph g, Vertex source, Vertex sink) {
         this.g = new XGraph(g);
-        this.source = this.g.getVertex(source.getName());
-        this.sink = this.g.getVertex(sink.getName());
+        this.source = this.g.getVertex(source.getName() + 1);
+        this.sink = this.g.getVertex(sink.getName() + 1);
     }
 
     /**
@@ -45,7 +45,6 @@ public class RelabelToFront {
             xe.flow = xe.capacity;
             xsource.excess = xsource.excess - xe.capacity;
             xu.excess = xu.excess + xe.capacity;
-//            ((XGraph) this.g).addNewEdge(xu, xsource, xe.flow(), true);
         }
     }
 
