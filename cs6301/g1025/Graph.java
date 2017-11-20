@@ -117,6 +117,8 @@ public class Graph implements Iterable<Graph.Vertex> {
         Vertex to;   // tail vertex
         int weight;  // weight of edge
         int name;    // name of edge
+
+        int cost; //TODO: Should not be here, but I cannot write an algo to put it into hashmap, so here
         /**
          * Constructor for Edge
          *
@@ -141,6 +143,16 @@ public class Graph implements Iterable<Graph.Vertex> {
             to = v;
             weight = w;
             name = n;
+        }
+
+        /** New constructor of Edge that sets name and cost of edge also
+         */
+        public Edge(Vertex u, Vertex v, int w, int n, int cost) {
+            from = u;
+            to = v;
+            weight = w;
+            name = n;
+            this.cost = cost;
         }
 
         /** New constructor of Edge for extended edge classes
@@ -285,10 +297,8 @@ public class Graph implements Iterable<Graph.Vertex> {
      * Method to add an edge to the graph
      * This version is obsolete and kept for backward compatibility
      *
-     * @param a
-     *            : int - one end of edge
-     * @param b
-     *            : int - other end of edge
+     * @param from : int - one end of edge
+     * @param to : int - other end of edge
      * @param weight
      *            : int - the weight of the edge
      */
@@ -308,6 +318,20 @@ public class Graph implements Iterable<Graph.Vertex> {
     /** Another version of addEdge to include name */
     public Edge addEdge(Vertex from, Vertex to, int weight, int name) {
         Edge e = new Edge(from, to, weight, name);
+        if(directed) {
+            from.adj.add(e);
+            to.revAdj.add(e);
+        } else {
+            from.adj.add(e);
+            to.adj.add(e);
+        }
+        m++;  // Increment edge count
+        return e;
+    }
+
+    /** Another version of addEdge to include cost */
+    public Edge addEdge(Vertex from, Vertex to, int weight, int name, int cost) {
+        Edge e = new Edge(from, to, weight, name, cost);
         if(directed) {
             from.adj.add(e);
             to.revAdj.add(e);
@@ -388,7 +412,8 @@ public class Graph implements Iterable<Graph.Vertex> {
             int u = in.nextInt();
             int v = in.nextInt();
             int w = in.nextInt();
-            g.addEdge(g.getVertex(u), g.getVertex(v), w, i+1);
+            int c = in.nextInt();
+            g.addEdge(g.getVertex(u), g.getVertex(v), w, i+1, c);
         }
         return g;
     }

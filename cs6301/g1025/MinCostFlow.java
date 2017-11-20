@@ -32,21 +32,23 @@ public class MinCostFlow {
     // Return cost of d units of flow found by cost scaling algorithm
     int costScalingMinCostFlow(int d) {
         CostScaling cs = new CostScaling(g, source, sink, capacity, cost);
+        cs.minCostCirculation();
+        this.g = cs.g;
         return 0;
     }
 
     // flow going through edge e
     public int flow(Edge e) {
-        return 0;
+        return ((XGraph) g).flow(e);
     }
 
     // capacity of edge e
     public int capacity(Edge e) {
-        return 0;
+        return ((XGraph) g).capacity(e);
     }
 
     // cost of edge e
     public int cost(Edge e) {
-        return 0;
+        return ((XGraph) g).cost(e);
     }
 }

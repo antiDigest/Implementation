@@ -102,6 +102,18 @@ public class XGraph extends Graph {
             XVertex xto = (XVertex) to;
             return disabled || xfrom.isDisabled() || xto.isDisabled();
         }
+
+        int flow(){
+            return this.flow;
+        }
+
+        int capacity(){
+            return this.capacity;
+        }
+
+        int cost(){
+            return this.cost;
+        }
     }
 
     XVertex[] xv; // vertices of graph
@@ -123,10 +135,11 @@ public class XGraph extends Graph {
                 Vertex v = e.otherEnd(u);
                 XVertex x1 = getVertex(u);
                 XVertex x2 = getVertex(v);
-                XEdge edge = new XEdge(x1, x2, e.getWeight(), 1);
+                XEdge edge = new XEdge(x1, x2, e.getWeight(), e.cost);
                 x1.xadj.add(edge);
                 x2.xrevAdj.add(edge);
                 edges[e.getName()] = edge;
+                System.out.println(Arrays.toString(edges));
             }
         }
     }
@@ -161,7 +174,7 @@ public class XGraph extends Graph {
         for(Vertex u: g) {
             xv[u.getName()] = new XVertex(u);
         }
-        edges = new XEdge[g.m * 2];
+        edges = new XEdge[g.m + 1];
         numEdges = g.m;
 
         // Make copy of edges
@@ -220,6 +233,21 @@ public class XGraph extends Graph {
     void disable(int i) {
         XVertex u = (XVertex) getVertex(i);
         u.disable();
+    }
+
+    int flow(Edge e) {
+        XEdge xe = (XEdge) e;
+        return xe.flow();
+    }
+
+    int capacity(Edge e) {
+        XEdge xe = (XEdge) e;
+        return xe.capacity();
+    }
+
+    int cost(Edge e) {
+        XEdge xe = (XEdge) e;
+        return xe.cost();
     }
 
     public static void main(String[] args) {

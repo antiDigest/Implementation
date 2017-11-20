@@ -23,41 +23,61 @@ public class CostScaling {
     int epsilon;
     public static final int INFINITY = Integer.MAX_VALUE;
 
-    CostScaling(Graph g, Graph.Vertex s, Graph.Vertex t,
+    public CostScaling(Graph g, Graph.Vertex s, Graph.Vertex t,
                 HashMap<Graph.Edge, Integer> capacity,
                 HashMap<Graph.Edge, Integer> cost) {
         this.g = new XGraph(g, capacity, cost);
-        this.source = s;
-        this.sink = t;
+        this.source = ((XGraph)this.g).getVertex(s.getName());
+        this.sink = ((XGraph)this.g).getVertex(t.getName());
         this.capacity = capacity;
         this.cost = cost;
     }
 
-    CostScaling(Graph g, Graph.Vertex s, Graph.Vertex t,
+    private CostScaling(Graph g, Graph.Vertex s, Graph.Vertex t,
                 HashMap<Graph.Edge, Integer> cost) {
         this.g = new XGraph(g, cost);
-        this.source = s;
-        this.sink = t;
+        this.source = ((XGraph)this.g).getVertex(s.getName());
+        this.sink = ((XGraph)this.g).getVertex(t.getName());
         this.cost = cost;
+        this.capacity = null;
+    }
+
+    private CostScaling(Graph g, Graph.Vertex s, Graph.Vertex t) {
+        this.g = new XGraph(g);
+        this.source = ((XGraph)this.g).getVertex(s.getName() + 1);
+        this.sink = ((XGraph)this.g).getVertex(t.getName() + 1);
+        this.cost = null;
+        this.capacity = null;
     }
 
     void minCostCirculation() {
         epsilon = maxCost();
 
         while (epsilon > 0) {
+            System.out.println("EPSILON: " + epsilon);
             refine();
         }
 
+        XVertex xsink = (XVertex) sink;
+        int minCost = 0;
+        for(Edge e: xsink.xrevAdj){
+            XEdge xe = (XEdge) e;
+            minCost += RC(xe);
+        }
+
+        System.out.println("Sink Price: " + minCost);
     }
 
-    void refine() {
+    private void refine() {
         epsilon = epsilon / 2;
-        for(Vertex u: g) {
+        for (Vertex u : g) {
             XVertex xu = (XVertex) u;
             for (Edge e : u) {
                 XEdge xe = (XEdge) e;
-                if (inResidualGraph(xu, xe) && RC(xe) < 0) {
+                if (inResidualGraph(xu, xe) && RC(u, xe) > 0) {
                     xe.flow = xe.capacity;
+                    ((XVertex) xe.toVertex()).excess = xe.flow;
+//                    ((XVertex) xe.toVertex()).price = xe.cost;
                 }
             }
         }
@@ -76,20 +96,20 @@ public class CostScaling {
         }
     }
 
-    void discharge(Vertex u) {
+    private void discharge(Vertex u) {
         XVertex xu = (XVertex) u;
         while (xu.excess > 0) {
             for (Edge e : xu) {
                 XEdge xe = (XEdge) e;
-                if (inResidualGraph(xu, xe) && RC(xe) < 0){
+                if (inResidualGraph(xu, xe) && RC(xe) > 0) {
                     push(xu, e.otherEnd(u), xe);
                 }
             }
         }
-        if(xu.excess > 0) relabel(u);
+        if (xu.excess > 0) relabel(u);
     }
 
-    void push(Vertex u, Vertex v, Edge e){
+    private void push(Vertex u, Vertex v, Edge e) {
         XEdge xe = (XEdge) e;
         XVertex xu = (XVertex) u;
         XVertex xv = (XVertex) v;
@@ -106,9 +126,11 @@ public class CostScaling {
     }
 
     /**
+     * Relabel
+     * Precondition: u.excess > 0, cost(u, v) >= 0, (u, v) ∈ Gf
      * @param u Vertex
      */
-    void relabel(Vertex u) {
+    private void relabel(Vertex u) {
         XVertex xu = (XVertex) u;
 
         int maxP = -INFINITY;
@@ -132,17 +154,35 @@ public class CostScaling {
 
     }
 
-    int RC(Edge e) {
+    /**
+     * Residual Cost
+     * @param e Edge (u, v)
+     * @return residual cost (int)
+     */
+    private int RC(Edge e) {
         XEdge xe = (XEdge) e;
         XVertex xu = (XVertex) xe.fromVertex();
         XVertex xv = (XVertex) xe.toVertex();
 
-        return xe.cost + xu.price + xv.price;
+        return xe.cost + xu.price - xv.price;
     }
 
-    int maxCost() {
+    private int RC(Vertex u, Edge e) {
+        XEdge xe = (XEdge) e;
+        XVertex xu = (XVertex) u;
+        XVertex xv = (XVertex) xe.otherEnd(u);
+
+        return xe.cost + xu.price - xv.price;
+    }
+
+    /**
+     * Calculate Maximum cost of all the edges in the graph;
+     * @return
+     */
+    private int maxCost() {
         int maxCost = -INFINITY;
         for (XEdge e : ((XGraph) g).edges) {
+            if(e == null) continue;
             if (maxCost < e.cost) {
                 maxCost = e.cost;
             }
@@ -157,7 +197,7 @@ public class CostScaling {
      * @param e Edge (u, ?)
      * @return true if in residual graph, else false
      */
-    static boolean inResidualGraph(Vertex u, Edge e) {
+    private static boolean inResidualGraph(Vertex u, Edge e) {
         XEdge xe = (XEdge) e;
         XVertex xu = (XVertex) u;
         return xe.fromVertex() == xu ? xe.flow < xe.capacity : xe.flow > 0;
@@ -181,12 +221,9 @@ public class CostScaling {
         Vertex source = g.getVertex(start);
         Vertex sink = g.getVertex(end);
 
-        HashMap<Graph.Edge, Integer> cost = new HashMap<>();
-
-        cost.put();
-
         Timer t = new Timer();
-        // TODO
+        CostScaling cs = new CostScaling(g, source, sink);
+        cs.minCostCirculation();
         t.end();
         System.out.println(t);
     }
