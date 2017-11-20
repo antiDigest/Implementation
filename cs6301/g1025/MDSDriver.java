@@ -2,15 +2,18 @@ package cs6301.g1025;
 
 import java.text.DecimalFormat;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Map.Entry;
 import java.util.Random;
+import java.util.TreeSet;
 
 import cs6301.g1025.MDS.Pair;
 
 public class MDSDriver {
 
 	static int Itemidslength = 10;
-	static int descriptionlength = 50;
-	static int supplierslength = 10;
+	static int descriptionlength = 7;
+	static int supplierslength = 7;
 	static int pairslength = 7;
 
 	static int supplierseed = 30;
@@ -26,10 +29,37 @@ public class MDSDriver {
 	static float[] reputation = new float[supplierslength];
 	static Pair[] pairs = new Pair[pairslength];
 
+	static HashSet<Long> descriptionset = new HashSet<Long>();
+
 	static MDS md = new MDS();
 
 	public static void main(String[] args) {
 		createData();
+		addData();
+		System.out.println("All maps like foreign and primary key relationships " + testMaps());
+
+		testQueries();
+
+	}
+
+	static void testQueries() {
+		testfindItem();
+
+	}
+
+	static void testfindItem() {
+		// public Long[] findItem(Long[] arr) {
+		Long[] arr = RandomSubArray(descriptionset.toArray(new Long[descriptionset.size()]), 50);
+		Long[] res = md.findItem(arr);
+		for (int i = 0; i < res.length; i++) {
+			for (int j = 0; j < arr.length; j++) {
+                 
+			}
+		}
+
+	}
+
+	static void addData() {
 
 		// public boolean add(Long id, Long[] description) {
 		for (int i = 0; i < ItemId.length; i++) {
@@ -43,18 +73,48 @@ public class MDSDriver {
 
 		// add(Long supplier, Pair[] idPrice) {
 		for (int i = 0; i < pairs.length; i++) {
-          Pair [] pairsubarray=  RandomSubArray(pairs,randomSubArraySeed);
-            md.add(supplierId[i], pairsubarray);
+			Pair[] pairsubarray = RandomSubArray(pairs, randomSubArraySeed);
+			md.add(supplierId[i], pairsubarray);
 		}
-		
-		
-		System.out.println(md.supplierTree);
-		System.out.println(md.supplierRating);
-		System.out.println(md.priceTable);
-		System.out.println(md.itemTree);
-		System.out.println(md.vendor);
-		System.out.println(md.descTable);
 
+		System.out.println("Supplier Tree data is " + md.supplierTree);
+		System.out.println("Supplier Rating data is " + md.supplierRating);
+		System.out.println("PriceTable data is " + md.priceTable);
+
+		System.out.println("Supplier + Pairs " + md.vendor);
+		System.out.println("desctable data is " + md.descTable);
+
+		System.out.println("Item description data is ");
+		for (Entry<Long, Long[]> e : md.itemTree.entrySet()) {
+			System.out.print("itemId : " + e.getKey() + " && description is" + Arrays.toString(e.getValue()) + ", ");
+		}
+
+		System.out.println();
+
+	}
+
+	static String testMaps() {
+
+		for (Entry<Long, Float> e : md.supplierTree.entrySet()) {
+			if (!md.supplierRating.containsKey(e.getValue())) {
+				return "SupplierRating does not contain reputation " + e.getValue() + " which is there for supplier "
+						+ e.getKey();
+			} else if (!md.supplierRating.get(e.getValue()).contains(e.getKey())) {
+				return "SupplierRating does not contain supplier :" + e.getKey() + " for reputation " + e.getValue();
+			}
+		}
+
+		for (Entry<Long, TreeSet<Pair>> e : md.vendor.entrySet()) {
+			for (Pair p : e.getValue()) {
+				if (!md.priceTable.containsKey(p)) {
+					return "PriceTable does not contain pair " + p + " which is there for supplier " + e.getKey();
+				} else if (!md.priceTable.get(p).contains(e.getKey())) {
+					return "priceTable does not contain supplier :" + e.getKey() + " for pair " + p;
+
+				}
+			}
+		}
+		return "PASS";
 	}
 
 	static <T> T[] RandomSubArray(T[] array, int seed) {
@@ -85,6 +145,7 @@ public class MDSDriver {
 			ItemId[i] = (long) rItem.nextInt(Itemidslength * 2);
 			for (int j = 0; j < descriptionlength; j++) {
 				descriptionId[i][j] = (long) rDescription.nextInt(descriptionlength * 2);
+				descriptionset.add(descriptionId[i][j]);
 			}
 		}
 
