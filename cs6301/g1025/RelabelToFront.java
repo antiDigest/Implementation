@@ -45,7 +45,6 @@ public class RelabelToFront {
             xe.flow = xe.capacity;
             xsource.excess = xsource.excess - xe.capacity;
             xu.excess = xu.excess + xe.capacity;
-            ((XGraph) this.g).addNewEdge(xu, xsource, xe.flow(), true);
         }
     }
 
