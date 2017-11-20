@@ -18,28 +18,48 @@ import java.util.*;
 
 
 public class XGraph extends Graph {
+    public static final int INFINITY = Integer.MAX_VALUE;
     public static class XVertex extends Vertex {
         boolean disabled;
         List<XEdge> xadj;
         List<XEdge> xrevAdj;
-        int price;
+        int height;
         int excess;
+        boolean seen;
+        int distance;
+        int price;
+        Vertex parent;
+        Edge parentEdge;
 
         XVertex(Vertex u) {
             super(u);
             disabled = false;
             xadj = new LinkedList<>();
             xrevAdj = new LinkedList<>();
-            price = 0;
+            height = 0;
             excess = 0;
+            price = 0;
+            distance = INFINITY;
+            parent = null;
+            parentEdge = null;
         }
 
-        boolean isDisabled() { return disabled; }
+        boolean isDisabled() {
+            return disabled;
+        }
 
-        void disable() { disabled = true; }
+        void disable() {
+            disabled = true;
+        }
 
         @Override
-        public Iterator<Edge> iterator() { return new XVertexIterator(this); }
+        public Iterator<Edge> iterator() {
+            return new XVertexIterator(this);
+        }
+
+        public Iterator<Edge> reverseIterator() {
+            return new XVertexIterator(this, this.xrevAdj);
+        }
 
         class XVertexIterator implements Iterator<Edge> {
             XEdge cur;
@@ -51,11 +71,20 @@ public class XGraph extends Graph {
                 ready = false;
             }
 
+            XVertexIterator(XVertex u, List<XEdge> edges) {
+                this.it = edges.iterator();
+                ready = false;
+            }
+
             public boolean hasNext() {
-                if(ready) { return true; }
-                if(!it.hasNext()) { return false; }
+                if (ready) {
+                    return true;
+                }
+                if (!it.hasNext()) {
+                    return false;
+                }
                 cur = it.next();
-                while(cur.isDisabled() && it.hasNext()) {
+                while (cur.isDisabled() && it.hasNext()) {
                     cur = it.next();
                 }
                 ready = true;
@@ -63,8 +92,8 @@ public class XGraph extends Graph {
             }
 
             public Edge next() {
-                if(!ready) {
-                    if(!hasNext()) {
+                if (!ready) {
+                    if (!hasNext()) {
                         throw new java.util.NoSuchElementException();
                     }
                 }
