@@ -16,7 +16,7 @@ public class Flow {
     Set<Vertex> minCutT;
 
     public Flow(Graph g, Vertex s, Vertex t, HashMap<Edge, Integer> capacity) {
-        this.g = g;
+        this.g = new XGraph(g);
         this.s = s;
         this.t = t;
         this.capacity = capacity;
@@ -49,7 +49,10 @@ public class Flow {
 
     // capacity of edge e
     public int capacity(Edge e) {
-        return ((XGraph) g).capacity(e);
+        if(((XGraph) g).capacity(e) != capacity.get(e)){
+            ((XGraph) g).setCapacity(e, capacity.get(e));
+        }
+        return capacity.get(e);
     }
 
     /* After maxflow has been computed, this method can be called to

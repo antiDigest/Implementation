@@ -13,7 +13,6 @@ import cs6301.g1025.XGraph.XVertex;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.nio.file.Path;
 import java.util.*;
 
 import static cs6301.g1025.XGraph.INFINITY;
@@ -30,7 +29,7 @@ public class Dinitz {
         Vertex from;
         Vertex to;
 
-        PathEdge(Edge e, Vertex from, Vertex to){
+        PathEdge(Edge e, Vertex from, Vertex to) {
             this.e = e;
             this.from = from;
             this.to = to;
@@ -54,14 +53,14 @@ public class Dinitz {
         this.sink = this.g.getVertex(sink.getName());
     }
 
-    void bfsInit(){
-        for(Vertex u: g){
+    void bfsInit() {
+        for (Vertex u : g) {
             XVertex xu = (XVertex) u;
             xu.seen = false;
         }
     }
 
-    void visit(Vertex v, Vertex u, Edge e){
+    void visit(Vertex v, Vertex u, Edge e) {
         XVertex xv = (XVertex) v;
         XVertex xu = (XVertex) u;
         XEdge xe = (XEdge) e;
@@ -76,23 +75,25 @@ public class Dinitz {
             BFS bfs = new BFS(g, source);
             bfs.bfs();
             BFS.BFSVertex bsink = bfs.getVertex(sink);
-            if(bsink.distance == INFINITY) break;
-            System.out.println("Sink Distance: " + bsink.distance);
+            if (bsink.distance == INFINITY) break;
+
             Set<List<PathEdge>> paths = new LinkedHashSet<>();
             List<PathEdge> path = new ArrayList<>();
             getAllPaths(paths, path, 0, source, bfs);
 
-            System.out.println(paths);
-            for(List<PathEdge> pathEdges: paths){
+            for (List<PathEdge> pathEdges : paths) {
                 int cMin = minCapacity(pathEdges);
-                System.out.println("FLOW: " + cMin);
-                for (PathEdge pe: pathEdges) {
+                for (PathEdge pe : pathEdges) {
                     XEdge xe = (XEdge) pe.e;
 
                     if (!isReverse(xe, pe.from)) {
                         xe.flow = xe.flow + cMin;
                     } else {
                         xe.flow = xe.flow - cMin;
+                    }
+
+                    if(xe.flow() == xe.capacity()){
+                        xe.disable();
                     }
                 }
             }
@@ -109,7 +110,7 @@ public class Dinitz {
 
     int minCapacity(List<PathEdge> path) {
         int minCapacity = INFINITY;
-        for (PathEdge pe: path) {
+        for (PathEdge pe : path) {
             XEdge xe = (XEdge) pe.e;
             if (minCapacity > xe.capacity()) {
                 minCapacity = xe.capacity();
@@ -118,36 +119,40 @@ public class Dinitz {
         return minCapacity;
     }
 
-    List<PathEdge> getAllPaths(Set<List<PathEdge>> paths, List<PathEdge> path, int dist, Vertex src, BFS b){
-        if(dist >= b.getVertex(sink).distance && !src.equals(sink)){
+    List<PathEdge> getAllPaths(Set<List<PathEdge>> paths, List<PathEdge> path, int dist, Vertex src, BFS b) {
+        if (dist >= b.getVertex(sink).distance && !src.equals(sink)) {
             return path;
         }
-        if(src.equals(sink)){
-            paths.add(path);
-            return new LinkedList<>();
+        if (src.equals(sink) && dist==b.getVertex(sink).distance) {
+            List<PathEdge> pathEdges = new ArrayList<>();
+            pathEdges.addAll(path);
+            paths.add(pathEdges);
+//            return new ArrayList<>();
         } else {
-            for(Edge e: src){
+            for (Edge e : src) {
                 Vertex v = e.otherEnd(src);
                 XVertex xv = (XVertex) v;
-                if(RelabelToFront.inResidualGraph(src, e)  && !xv.seen){
+                BFS.BFSVertex bv = (b.getVertex(xv));
+                if (RelabelToFront.inResidualGraph(src, e) && !xv.seen && bv.distance == dist + 1) {
                     path.add(new PathEdge(e, src, v));
                     xv.seen = true;
                     path = getAllPaths(paths, path, dist + 1, v, b);
-                    if(!path.isEmpty()) {
+                    if (!path.isEmpty()) {
                         path.remove(dist);
                         xv.seen = false;
                     }
                 }
             }
 
-            for(Edge e: ((XVertex) src).xrevAdj){
+            for (Edge e : ((XVertex) src).xrevAdj) {
                 Vertex v = e.otherEnd(src);
                 XVertex xv = (XVertex) v;
-                if(RelabelToFront.inResidualGraph(src, e) && !xv.seen){
+                BFS.BFSVertex bv = (b.getVertex(xv));
+                if (RelabelToFront.inResidualGraph(src, e) && !xv.seen && bv.distance == dist + 1) {
                     path.add(new PathEdge(e, src, v));
                     xv.seen = true;
-                    path =getAllPaths(paths, path, dist + 1, v, b);
-                    if(!path.isEmpty()) {
+                    path = getAllPaths(paths, path, dist + 1, v, b);
+                    if (!path.isEmpty()) {
                         path.remove(dist);
                         xv.seen = false;
                     }
@@ -177,7 +182,7 @@ public class Dinitz {
         return L;
     }
 
-    static Set<Vertex> reachableFrom(Vertex src){
+    static Set<Vertex> reachableFrom(Vertex src) {
         Set<Graph.Vertex> minCut = new LinkedHashSet<>();
         Queue<Graph.Vertex> q = new LinkedList<>();
         minCut.add((XVertex) src);
@@ -209,6 +214,7 @@ public class Dinitz {
 
     /**
      * Find Min-Cut reachable from s (source)
+     *
      * @return Set
      */
     Set<Graph.Vertex> minCutS() {
@@ -217,6 +223,7 @@ public class Dinitz {
 
     /**
      * Find Min-Cut reachable from t (sink)
+     *
      * @return Set
      */
     Set<Graph.Vertex> minCutT() {
@@ -236,11 +243,12 @@ public class Dinitz {
 
     /**
      * Given from and to vertices with an edge, checking if the edge is reverse
+     *
      * @param e
      * @param from
      * @return
      */
-    boolean isReverse(Edge e, Vertex from){
+    boolean isReverse(Edge e, Vertex from) {
         return !(e.fromVertex().equals(from));
     }
 
@@ -292,6 +300,11 @@ public class Dinitz {
         if (inFlow != outFlow) {
             System.out.println("Invalid: total flow from the source (" + outFlow + ") != total flow to the sink (" + inFlow + ")");
             return false;
+        }
+
+        for(Vertex u: g){
+            XVertex xu = (XVertex) u;
+            xu.seen = false;
         }
 
         Set<Vertex> minCutS = this.minCutS();

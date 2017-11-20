@@ -242,6 +242,11 @@ public class XGraph extends Graph {
         return xe.capacity();
     }
 
+    void setCapacity(Edge e, int capacity) {
+        XEdge xe = (XEdge) e;
+        xe.capacity = capacity;
+    }
+
     @Override
     public Iterator<Vertex> iterator() {
         return new XGraphIterator(this);
