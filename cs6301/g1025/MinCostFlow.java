@@ -1,11 +1,22 @@
 // Starter code for LP8
 package cs6301.g1025;
-import cs6301.g00.Graph;
-import cs6301.g00.Graph.*;
+import cs6301.g1025.Graph.*;
 import java.util.HashMap;
 
 public class MinCostFlow {
+
+    Graph g;
+    Vertex source;
+    Vertex sink;
+    HashMap<Edge, Integer> capacity;
+    HashMap<Edge, Integer> cost;
+
     public MinCostFlow(Graph g, Vertex s, Vertex t, HashMap<Edge, Integer> capacity, HashMap<Edge, Integer> cost) {
+        this.g = (XGraph) g;
+        this.source = s;
+        this.sink = t;
+        this.capacity = capacity;
+        this.cost = cost;
     }
 
     // Return cost of d units of flow found by cycle cancellation algorithm
@@ -20,6 +31,7 @@ public class MinCostFlow {
 
     // Return cost of d units of flow found by cost scaling algorithm
     int costScalingMinCostFlow(int d) {
+        CostScaling cs = new CostScaling(g, source, sink, capacity, cost);
         return 0;
     }
 

@@ -11,26 +11,27 @@
  *  in between, same element is returned.  Added UnsupportedOperationException to remove.
  **/
 
-package cs6301.g00;
-import cs6301.g00.Graph.Vertex;
-import cs6301.g00.Graph.Edge;
+package cs6301.g1025;
+import cs6301.g00.ArrayIterator;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.LinkedList;
-import java.util.Scanner;
-
+import java.util.*;
 
 
 public class XGraph extends Graph {
     public static class XVertex extends Vertex {
         boolean disabled;
         List<XEdge> xadj;
+        List<XEdge> xrevAdj;
+        int price;
+        int excess;
 
         XVertex(Vertex u) {
             super(u);
             disabled = false;
             xadj = new LinkedList<>();
+            xrevAdj = new LinkedList<>();
+            price = 0;
+            excess = 0;
         }
 
         boolean isDisabled() { return disabled; }
@@ -79,10 +80,21 @@ public class XGraph extends Graph {
 
     static class XEdge extends Edge {
         boolean disabled;
+        int capacity;
+        int cost;
+        int flow;
 
         XEdge(XVertex from, XVertex to, int weight) {
             super(from, to, weight);
             disabled = false;
+        }
+
+        XEdge(XVertex from, XVertex to, int capacity, int cost) {
+            super(from, to, 0);
+            disabled = false;
+            this.capacity = capacity;
+            this.cost = cost;
+            this.flow = 0;
         }
 
         boolean isDisabled() {
@@ -93,10 +105,14 @@ public class XGraph extends Graph {
     }
 
     XVertex[] xv; // vertices of graph
+    XEdge[] edges; // edges of graph
+    int numEdges;
 
     public XGraph(Graph g) {
         super(g);
-        xv = new XVertex[2*g.size()];  // Extra space is allocated in array for nodes to be added later
+        edges = new XEdge[g.m * 2];
+        numEdges = g.m;
+        xv = new XVertex[g.size()];  // Extra space is allocated in array for nodes to be added later
         for(Vertex u: g) {
             xv[u.getName()] = new XVertex(u);
         }
@@ -107,7 +123,57 @@ public class XGraph extends Graph {
                 Vertex v = e.otherEnd(u);
                 XVertex x1 = getVertex(u);
                 XVertex x2 = getVertex(v);
-                x1.xadj.add(new XEdge(x1, x2, e.weight));
+                XEdge edge = new XEdge(x1, x2, e.getWeight(), 1);
+                x1.xadj.add(edge);
+                x2.xrevAdj.add(edge);
+                edges[e.getName()] = edge;
+            }
+        }
+    }
+
+    XGraph(Graph g, HashMap<Graph.Edge, Integer> cost){
+        super(g);
+        xv = new XVertex[g.size()];  // Extra space is allocated in array for nodes to be added later
+        for(Vertex u: g) {
+            xv[u.getName()] = new XVertex(u);
+        }
+        edges = new XEdge[g.m * 2];
+        numEdges = g.m;
+
+        // Make copy of edges
+        for(Vertex u: g) {
+            for(Edge e: u) {
+                Vertex v = e.otherEnd(u);
+                XVertex x1 = getVertex(u);
+                XVertex x2 = getVertex(v);
+                XEdge edge = new XEdge(x1, x2, e.getWeight(), cost.get(e));
+                x1.xadj.add(edge);
+                x2.xrevAdj.add(edge);
+                edges[e.getName()] = edge;
+            }
+        }
+    }
+
+    XGraph(Graph g, HashMap<Graph.Edge, Integer> capacity,
+           HashMap<Graph.Edge, Integer> cost){
+        super(g);
+        xv = new XVertex[g.size()];  // Extra space is allocated in array for nodes to be added later
+        for(Vertex u: g) {
+            xv[u.getName()] = new XVertex(u);
+        }
+        edges = new XEdge[g.m * 2];
+        numEdges = g.m;
+
+        // Make copy of edges
+        for(Vertex u: g) {
+            for(Edge e: u) {
+                Vertex v = e.otherEnd(u);
+                XVertex x1 = getVertex(u);
+                XVertex x2 = getVertex(v);
+                XEdge edge = new XEdge(x1, x2, capacity.get(e), cost.get(e));
+                x1.xadj.add(edge);
+                x2.xrevAdj.add(edge);
+                edges[e.getName()] = edge;
             }
         }
     }
@@ -139,7 +205,6 @@ public class XGraph extends Graph {
 
         public void remove() {
         }
-
     }
 
 
