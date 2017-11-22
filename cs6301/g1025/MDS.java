@@ -4,6 +4,8 @@ package cs6301.g1025;
 import java.util.*;
 import java.util.Map.Entry;
 
+
+
 public class MDS {
 
 	static HashMap<Long, HashSet<Long>> itemTree = new HashMap<>();
@@ -24,6 +26,12 @@ public class MDS {
 		public Pair(long id, int price) {
 			this.id = id;
 			this.price = price;
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(id, price);
+
 		}
 
 		@Override
@@ -81,9 +89,9 @@ public class MDS {
 			TreeSet<Long> set = descTable.get(d);
 			if (set == null) {
 				set = new TreeSet<>();
+				descTable.put(d, set);
 			}
 			set.add(id);
-			descTable.put(d, set);
 			desc.add(d);
 		}
 		if (flag == null)
@@ -138,6 +146,7 @@ public class MDS {
 		TreeSet<Long> pt = priceTable.getOrDefault(p, new TreeSet<Long>());
 		pt.add(supplier);
 		priceTable.put(p, pt);
+		
 
 	}
 
@@ -152,34 +161,35 @@ public class MDS {
 		int count = 0;
 		TreeSet<Pair> vendorPairs = vendor.get(supplier);
 		for (Pair p : idPrice) {
+			Pair pair = new Pair(p.id, p.price);
 			if (vendorPairs != null) {
-				TreeSet<Pair> toadd = (TreeSet<Pair>) vendorPairs.subSet(new Pair(p.id, Integer.MIN_VALUE), true,
-						new Pair(p.id, Integer.MAX_VALUE), true);
+				TreeSet<Pair> toadd = (TreeSet<Pair>) vendorPairs.subSet(new Pair(pair.id, Integer.MIN_VALUE), true,
+						new Pair(pair.id, Integer.MAX_VALUE), true);
 				Pair p1 = null;
 				if (!toadd.isEmpty()) {
 					p1 = toadd.first();
-					if (!p1.equals(p)) {
+					if (!p1.equals(pair)) {
 						TreeSet<Long> t = priceTable.get(p1);
 						if (t.size() > 1) {
 							t.remove(supplier);
 						} else {
 							priceTable.remove(p1);
 						}
-						toadd.first().price = p.price;
-						addPriceTableEntry(p, supplier);
+						toadd.first().price = pair.price;
+						addPriceTableEntry(pair, supplier);
 					}
 
 				} else {
-					vendorPairs.add(p);
-					addPriceTableEntry(p, supplier);
+					vendorPairs.add(pair);
+					addPriceTableEntry(pair, supplier);
 					count++;
 				}
 
 			} else {
-				vendorPairs = vendor.getOrDefault(supplier, new TreeSet<Pair>());
-				vendorPairs.add(p);
+				vendorPairs = new TreeSet<Pair>();
+				vendorPairs.add(pair);
 				vendor.put(supplier, vendorPairs);
-				addPriceTableEntry(p, supplier);
+				addPriceTableEntry(pair, supplier);
 				count++;
 			}
 
@@ -206,7 +216,7 @@ public class MDS {
 	 * elements of the array that are in the item's description (non-increasing
 	 * order).
 	 */
-	// Overall time complexity nlogn
+	
 	public Long[] findItem(Long[] arr) {
 
 		HashMap<Long, Integer> itemCounts = new HashMap<>();
@@ -270,8 +280,8 @@ public class MDS {
 
 		for (Long id : ids) {
 			boolean flag = false;
-			for (Entry<Pair, TreeSet<Long>> e : priceTable.subMap(new Pair(id, minPrice), new Pair(id, maxPrice))
-					.entrySet()) {
+			for (Entry<Pair, TreeSet<Long>> e : priceTable
+					.subMap(new Pair(id, minPrice), true, new Pair(id, maxPrice), true).entrySet()) {
 				for (Long supplier : e.getValue()) {
 					if (supplierTree.get(supplier) >= minReputation) {
 						res.add(new PriceFrame(id, e.getKey().price));
@@ -302,7 +312,7 @@ public class MDS {
 
 		ArrayList<Long> res = new ArrayList<>();
 		for (Entry<Pair, TreeSet<Long>> e : priceTable
-				.subMap(new Pair(id, Integer.MIN_VALUE), new Pair(id, Integer.MAX_VALUE)).entrySet()) {
+				.subMap(new Pair(id, Integer.MIN_VALUE), true, new Pair(id, Integer.MAX_VALUE), true).entrySet()) {
 			res.addAll(e.getValue());
 		}
 		return res.toArray(new Long[res.size()]);
@@ -318,7 +328,7 @@ public class MDS {
 	public Long[] findSupplier(Long id, float minReputation) {
 		ArrayList<Long> res = new ArrayList<>();
 		for (Entry<Pair, TreeSet<Long>> e : priceTable
-				.subMap(new Pair(id, Integer.MIN_VALUE), new Pair(id, Integer.MAX_VALUE)).entrySet()) {
+				.subMap(new Pair(id, Integer.MIN_VALUE), true, new Pair(id, Integer.MAX_VALUE), true).entrySet()) {
 			for (Long t : e.getValue()) {
 				if (supplierTree.get(t) >= minReputation) {
 					res.add(t);
@@ -350,6 +360,11 @@ public class MDS {
 			}
 
 			@Override
+			public int hashCode() {
+				return Objects.hash(reputation, allPairs);
+			}
+
+			@Override
 			public boolean equals(Object obj) {
 				EqualFrame ef = (EqualFrame) obj;
 				return this.allPairs.equals(ef.allPairs) && this.reputation == ef.reputation;
@@ -367,15 +382,14 @@ public class MDS {
 
 			}
 		}
-		int maxSize = 0;
-		TreeSet<Long> maxResult = null;
+		
+		TreeSet<Long> result = new TreeSet<Long>();
 		for (Entry<EqualFrame, TreeSet<Long>> e : allVendors.entrySet()) {
-			if (maxSize < e.getValue().size()) {
-				maxSize = e.getValue().size();
-				maxResult = e.getValue();
+			if(e.getValue().size()>1){
+				result.addAll(e.getValue());
 			}
 		}
-		return  maxResult.toArray(new Long[maxResult.size()]);
+		return result.toArray(new Long[result.size()]);
 	}
 
 	/*
@@ -390,7 +404,7 @@ public class MDS {
 		for (Long id : arr) {
 			flag = false;
 			for (Entry<Pair, TreeSet<Long>> e : priceTable
-					.subMap(new Pair(id, Integer.MIN_VALUE), new Pair(id, Integer.MAX_VALUE)).entrySet()) {
+					.subMap(new Pair(id, Integer.MIN_VALUE), true, new Pair(id, Integer.MAX_VALUE), true).entrySet()) {
 				for (Long t : e.getValue()) {
 					if (supplierTree.get(t) >= minReputation) {
 						totalPrice += e.getKey().price;
@@ -446,20 +460,28 @@ public class MDS {
 			sum += d;
 		}
 
-		SortedMap<Pair, TreeSet<Long>> removePairsFromPriceTable = priceTable.subMap(new Pair(id, Integer.MIN_VALUE),
-				true, new Pair(id, Integer.MAX_VALUE), true);
-		for (Entry<Pair, TreeSet<Long>> e : removePairsFromPriceTable.entrySet()) {
+		// removing items from vendortree map and pricetable map
+		List<Pair> removePairsFrompriceTable = new ArrayList<Pair>();
+		for (Entry<Pair, TreeSet<Long>> e : priceTable
+				.subMap(new Pair(id, Integer.MIN_VALUE), true, new Pair(id, Integer.MAX_VALUE), true).entrySet()) {
 			for (Long supplier : e.getValue()) {
 				TreeSet<Pair> t = vendor.get(supplier);
 				if (t != null) {
 					TreeSet<Pair> removePairsFromVendor = (TreeSet<Pair>) t.subSet(new Pair(id, Integer.MIN_VALUE),
 							true, new Pair(id, Integer.MAX_VALUE), true);
-					t.removeAll(removePairsFromVendor);
+					t.removeAll((Collection<?>) removePairsFromVendor.clone());
+				}
+				if (t.size() == 0) {
+					vendor.remove(supplier);
 				}
 
 			}
-			priceTable.remove(e.getKey());
+			removePairsFrompriceTable.add(e.getKey());
 		}
+		for (Pair p : removePairsFrompriceTable) {
+			priceTable.remove(p);
+		}
+
 		return sum;
 	}
 
