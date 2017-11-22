@@ -55,6 +55,7 @@ public class CostScaling extends RelabelToFront {
 
     void minCostCirculation() {
         super.relabelToFront();
+//        this.g = super.g;
 
         epsilon = maxCost();
 

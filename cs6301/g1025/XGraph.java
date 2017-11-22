@@ -30,6 +30,7 @@ public class XGraph extends Graph {
         int price;
         Vertex parent;
         Edge parentEdge;
+        int count;
 
         XVertex(Vertex u) {
             super(u);
@@ -42,6 +43,7 @@ public class XGraph extends Graph {
             distance = INFINITY;
             parent = null;
             parentEdge = null;
+            count = 0;
         }
 
         boolean isDisabled() {
@@ -126,10 +128,23 @@ public class XGraph extends Graph {
             this.flow = 0;
         }
 
+        XEdge(XVertex from, XVertex to, int capacity, int name, int cost) {
+            super(from, to, 0);
+            disabled = false;
+            this.capacity = capacity;
+            this.cost = cost;
+            this.flow = 0;
+            this.name = name;
+        }
+
         boolean isDisabled() {
             XVertex xfrom = (XVertex) from;
             XVertex xto = (XVertex) to;
             return disabled || xfrom.isDisabled() || xto.isDisabled();
+        }
+
+        void disable(){
+            this.disabled = true;
         }
 
         int flow(){
@@ -151,7 +166,7 @@ public class XGraph extends Graph {
 
     public XGraph(Graph g) {
         super(g);
-        edges = new XEdge[g.m * 2];
+        edges = new XEdge[g.m * 3];
         numEdges = g.m;
         xv = new XVertex[g.size()];  // Extra space is allocated in array for nodes to be added later
         for(Vertex u: g) {
@@ -178,7 +193,7 @@ public class XGraph extends Graph {
         for(Vertex u: g) {
             xv[u.getName()] = new XVertex(u);
         }
-        edges = new XEdge[g.m * 2];
+        edges = new XEdge[g.m * 3];
         numEdges = g.m;
 
         // Make copy of edges
@@ -202,7 +217,7 @@ public class XGraph extends Graph {
         for(Vertex u: g) {
             xv[u.getName()] = new XVertex(u);
         }
-        edges = new XEdge[g.m + 1];
+        edges = new XEdge[g.m * 3];
         numEdges = g.m;
 
         // Make copy of edges
@@ -217,6 +232,15 @@ public class XGraph extends Graph {
                 edges[e.getName()] = edge;
             }
         }
+    }
+
+    public void addNewEdge(Vertex from, Vertex to, int capacity, int cost) {
+        XVertex x1 = getVertex(from);
+        XVertex x2 = getVertex(to);
+        XEdge edge = new XEdge(x1, x2, capacity, numEdges, cost);
+        x1.xadj.add(edge);
+        x2.xrevAdj.add(edge);
+        edges[numEdges++] = edge;
     }
 
     @Override
