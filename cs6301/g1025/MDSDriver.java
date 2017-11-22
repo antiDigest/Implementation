@@ -11,7 +11,7 @@ import cs6301.g1025.MDS.Pair;
 
 public class MDSDriver {
 
-	static int Itemidslength = 50000;
+	static int Itemidslength = 10000;
 	static int descriptionlength = 700;
 	static int supplierslength = 5000;
 	static int pairslength = 5000;
