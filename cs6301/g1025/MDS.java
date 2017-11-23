@@ -4,8 +4,6 @@ package cs6301.g1025;
 import java.util.*;
 import java.util.Map.Entry;
 
-
-
 public class MDS {
 
 	static HashMap<Long, HashSet<Long>> itemTree = new HashMap<>();
@@ -146,7 +144,6 @@ public class MDS {
 		TreeSet<Long> pt = priceTable.getOrDefault(p, new TreeSet<Long>());
 		pt.add(supplier);
 		priceTable.put(p, pt);
-		
 
 	}
 
@@ -216,7 +213,7 @@ public class MDS {
 	 * elements of the array that are in the item's description (non-increasing
 	 * order).
 	 */
-	
+
 	public Long[] findItem(Long[] arr) {
 
 		HashMap<Long, Integer> itemCounts = new HashMap<>();
@@ -382,10 +379,10 @@ public class MDS {
 
 			}
 		}
-		
+
 		TreeSet<Long> result = new TreeSet<Long>();
 		for (Entry<EqualFrame, TreeSet<Long>> e : allVendors.entrySet()) {
-			if(e.getValue().size()>1){
+			if (e.getValue().size() > 1) {
 				result.addAll(e.getValue());
 			}
 		}
@@ -427,25 +424,34 @@ public class MDS {
 	 * items removed.
 	 */
 	public Long[] purge(float maxReputation) {
-		List<Long> allVendors = new ArrayList<>();
-		for (Map.Entry<Float, TreeSet<Long>> key : supplierRating.subMap(0f, true, maxReputation, true).entrySet()) {
-			TreeSet<Long> set = key.getValue();
-			for (Long supplier : set) {
-				TreeSet<Pair> pairs = vendor.remove(supplier);
-				if (pairs != null) {
-					for (Pair pair : pairs) {
-						TreeSet<Long> suppliers = priceTable.get(pair);
-						if (suppliers.size() > 1)
-							suppliers.remove(supplier);
-						else
-							priceTable.remove(pair);
-					}
+		ArrayList<Long> allItems = new ArrayList<>();
+		Long prevItem = null;
+		boolean flag;
+		long currItem;
+		int lastIndex = 0;
+		for (Entry<Pair, TreeSet<Long>> entry : priceTable.entrySet()) {
+			currItem = entry.getKey().id;
+			flag = false;
+            for (Long supplier : entry.getValue()) {
+				if (supplierTree.get(supplier) > maxReputation) {
+					flag = true;
+					lastIndex = allItems.size() - 1;
+					if (lastIndex >= 0 && allItems.get(lastIndex) == currItem) {
+						allItems.remove(lastIndex);}
+					break;
 				}
 			}
-			allVendors.addAll(set);
-		}
+			if (!(flag || (prevItem != null && currItem == prevItem))) {
+				allItems.add(currItem);
 
-		return allVendors.toArray(new Long[allVendors.size()]);
+			}
+			prevItem = currItem;
+
+		}
+        for (Long Item : allItems) {
+			remove(Item);
+		}
+		return allItems.toArray(new Long[allItems.size()]);
 	}
 
 	/**
