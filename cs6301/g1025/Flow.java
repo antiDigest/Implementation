@@ -7,6 +7,8 @@ import cs6301.g1025.Graph.Vertex;
 import java.util.HashMap;
 import java.util.Set;
 
+import static java.lang.Math.abs;
+
 public class Flow {
     HashMap<Edge, Integer> capacity;
     Graph g;
@@ -27,6 +29,8 @@ public class Flow {
         Dinitz d = new Dinitz(g, s, t, capacity);
         int maxFlow = d.maxFlow();
         g = d.g;
+        s = d.source;
+        t = d.sink;
         minCutS = d.minCutS();
         minCutT = d.minCutT();
         return maxFlow;
@@ -37,6 +41,8 @@ public class Flow {
         RelabelToFront rtf = new RelabelToFront(g, s, t, capacity);
         rtf.relabelToFront();
         g = rtf.g;
+        s = rtf.source;
+        t = rtf.sink;
         minCutS = rtf.minCutS();
         minCutT = rtf.minCutT();
         return rtf.maxFlow();
@@ -67,5 +73,62 @@ public class Flow {
     */
     public Set<Vertex> minCutT() {
         return minCutT;
+    }
+
+    boolean verify() {
+        int outFlow = 0;
+        XGraph.XVertex xsource = (XGraph.XVertex) s;
+        for (Edge e : xsource) {
+            XGraph.XEdge xe = (XGraph.XEdge) e;
+            outFlow += flow(xe);
+        }
+
+        int inFlow = 0;
+        XGraph.XVertex xsink = (XGraph.XVertex) t;
+        for (Edge e : xsink.xrevAdj) {
+            XGraph.XEdge xe = (XGraph.XEdge) e;
+            inFlow += flow(xe);
+        }
+
+        if (inFlow != outFlow
+                && inFlow != abs(((XGraph.XVertex) s).excess)
+                && outFlow != abs(((XGraph.XVertex) t).excess)) {
+            System.out.println("Invalid: total flow from the source (" + outFlow + ") != total flow to the sink (" + inFlow + ")");
+            return false;
+        }
+
+        for(Vertex u: g){
+            XGraph.XVertex xu = (XGraph.XVertex) u;
+            xu.seen = false;
+        }
+
+        for (Vertex u : g) {
+            if (u != s && u != t) {
+                XGraph.XVertex xu = (XGraph.XVertex) u;
+                int outVertexFlow = 0;
+                for (Edge e : xu) {
+                    XGraph.XEdge xe = (XGraph.XEdge) e;
+                    outVertexFlow += flow(xe);
+                }
+
+                int inVertexFlow = 0;
+                for (Edge e : xu.xrevAdj) {
+                    XGraph.XEdge xe = (XGraph.XEdge) e;
+                    inVertexFlow += flow(xe);
+                }
+
+                if (inVertexFlow != outVertexFlow) {
+                    System.out.println("Invalid: Total incoming flow != Total outgoing flow at " + u);
+                    return false;
+                }
+            }
+        }
+
+        if (minCutS.size() + minCutT.size() != g.size()) {
+            System.out.println("Invalid size of Min-Cut: " + (minCutS.size() + minCutT.size()) + " vs " + g.size());
+            return false;
+        }
+
+        return true;
     }
 }

@@ -16,11 +16,7 @@ package cs6301.g1025;
 
 import cs6301.g00.ArrayIterator;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-
+import java.util.*;
 
 
 public class XGraph extends Graph {
@@ -116,15 +112,13 @@ public class XGraph extends Graph {
         boolean disabled;
         int capacity;
         int flow;
-        int name;
         boolean reverseEdge;
 
-        XEdge(XVertex from, XVertex to, int weight, int name) {
+        XEdge(XVertex from, XVertex to, int weight) {
             super(from, to, weight);
             disabled = false;
             capacity = weight;
             flow = 0;
-            this.name = name;
             reverseEdge = false;
         }
 
@@ -171,18 +165,20 @@ public class XGraph extends Graph {
         for (Vertex u : g) {
             xv[u.getName()] = new XVertex(u);
         }
-        numEdges = 0;
+        numEdges = g.m;
+        edges = new XEdge[g.m + 1];
 
         // Make copy of edges
         for (Vertex u : g) {
-            for (Edge e : u) {
+            for (Edge e : u.adj) {
                 Vertex v = e.otherEnd(u);
                 XVertex x1 = getVertex(u);
                 XVertex x2 = getVertex(v);
-                XEdge edge = new XEdge(x1, x2, capacity.get(e), numEdges);
+                XEdge edge = new XEdge(x1, x2, capacity.get(e));
                 x1.xadj.add(edge);
                 x2.xrevAdj.add(edge);
-                edges[numEdges++] = edge;
+                edge.name = e.getName();
+                edges[e.getName()] = edge;
             }
         }
         initialGraph = g;
@@ -194,8 +190,8 @@ public class XGraph extends Graph {
         for (Vertex u : g) {
             xv[u.getName()] = new XVertex(u);
         }
-        numEdges = 0;
-        edges = new XEdge[g.m * 2];
+        numEdges = g.m;
+        edges = new XEdge[g.m + 1];
 
         // Make copy of edges
         for (Vertex u : g) {
@@ -203,10 +199,11 @@ public class XGraph extends Graph {
                 Vertex v = e.otherEnd(u);
                 XVertex x1 = getVertex(u);
                 XVertex x2 = getVertex(v);
-                XEdge edge = new XEdge(x1, x2, e.getWeight(), numEdges);
+                XEdge edge = new XEdge(x1, x2, e.getWeight());
                 x1.xadj.add(edge);
                 x2.xrevAdj.add(edge);
-                edges[numEdges++] = edge;
+                edge.name = e.getName();
+                edges[e.getName()] = edge;
             }
         }
         initialGraph = g;
@@ -233,12 +230,12 @@ public class XGraph extends Graph {
     }
 
     int flow(Edge e) {
-        XEdge xe = (XEdge) e;
+        XEdge xe = getEdge(e.getName());
         return xe.flow();
     }
 
     int capacity(Edge e) {
-        XEdge xe = (XEdge) e;
+        XEdge xe = getEdge(e.getName());
         return xe.capacity();
     }
 
@@ -288,6 +285,10 @@ public class XGraph extends Graph {
 
     XVertex getVertex(Vertex u) {
         return Vertex.getVertex(xv, u);
+    }
+
+    XEdge getEdge(int name) {
+        return edges[name];
     }
 
     void disable(int i) {

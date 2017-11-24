@@ -20,11 +20,13 @@ public class RelabelToFront {
     Graph g;
     Vertex source;
     Vertex sink;
+    HashMap<Edge, Integer> capacity;
 
     RelabelToFront(Graph g, Vertex source, Vertex sink, HashMap<Edge, Integer> capacity) {
         this.g = new XGraph(g, capacity);
         this.source = this.g.getVertex(source.getName());
         this.sink = this.g.getVertex(sink.getName());
+        this.capacity = capacity;
     }
 
     RelabelToFront(Graph g, Vertex source, Vertex sink) {
@@ -61,7 +63,7 @@ public class RelabelToFront {
         XVertex xv = (XVertex) v;
 
         int delta = min(xu.excess, xe.capacity);
-        if (xe.fromVertex() == xu) {
+        if (xe.fromVertex().equals(xu)) {
             xe.flow = xe.flow + delta;
         } else {
             xe.flow = xe.flow - delta;
@@ -80,7 +82,7 @@ public class RelabelToFront {
     static boolean inResidualGraph(Vertex u, Edge e) {
         XEdge xe = (XEdge) e;
         XVertex xu = (XVertex) u;
-        return xe.fromVertex() == xu ? xe.flow < xe.capacity : xe.flow > 0;
+        return xe.fromVertex() == xu ? xe.flow() < xe.capacity() : xe.flow() > 0;
     }
 
     /**
@@ -93,25 +95,19 @@ public class RelabelToFront {
 
         int minHeight = INFINITY;
         for (Edge e : xu) {
-            XEdge xe = (XEdge) e;
             XVertex xv = (XVertex) e.otherEnd(xu);
-            if (xv.height < xu.height) continue;
-            if (xv.height < minHeight) {
+            if (xv.height >= xu.height && xv.height < minHeight && inResidualGraph(xu, e)) {
                 minHeight = xv.height;
             }
         }
-
         for (Edge e : xu.xrevAdj) {
-            XEdge xe = (XEdge) e;
             XVertex xv = (XVertex) e.otherEnd(xu);
-            if (xv.height < xu.height) continue;
-            if (xv.height < minHeight) {
+            if (xv.height >= xu.height && xv.height < minHeight && inResidualGraph(xu, e)) {
                 minHeight = xv.height;
             }
         }
 
         xu.height = 1 + minHeight;
-
     }
 
     /**
@@ -129,7 +125,6 @@ public class RelabelToFront {
                     if (xu.excess == 0) return;
                 }
             }
-
             for (Edge e : ((XVertex) u).xrevAdj) {
                 XEdge xe = (XEdge) e;
                 XVertex xv = (XVertex) e.otherEnd(xu);
@@ -157,6 +152,7 @@ public class RelabelToFront {
         boolean done = false;
 
         while (!done) {
+
             Iterator<Vertex> it = L.iterator();
             done = true;
             Vertex u = next(it);
@@ -168,12 +164,14 @@ public class RelabelToFront {
                 }
                 int oldHeight = xu.height;
                 discharge(xu);
+
                 if (xu.height != oldHeight) {
                     done = false;
                     break;
                 }
                 u = next(it);
             }
+
             if (!done) {
                 it.remove();
                 L.add(0, u);
@@ -194,6 +192,7 @@ public class RelabelToFront {
         return it.hasNext() ? it.next() : null;
     }
 
+
     /**
      * Find Min-Cut reachable from s (source)
      * @return Set
@@ -208,96 +207,6 @@ public class RelabelToFront {
      */
     Set<Graph.Vertex> minCutT() {
         return Dinitz.reachableFrom(sink);
-    }
-
-    public static void main(String[] args) throws FileNotFoundException {
-        Scanner in;
-        if (args.length > 0) {
-            File inputFile = new File(args[0]);
-            in = new Scanner(inputFile);
-        } else {
-            in = new Scanner(System.in);
-        }
-//        if (args.length > 1) {
-//            VERBOSE = Integer.parseInt(args[1]);
-//        }
-
-        int start = in.nextInt(); // root node of the MST
-        int end = in.nextInt();
-        Graph g = Graph.readDirectedGraph(in);
-        Vertex source = g.getVertex(start);
-        Vertex sink = g.getVertex(end);
-
-        Timer t = new Timer();
-        RelabelToFront rtf = new RelabelToFront(g, source, sink);
-        rtf.relabelToFront();
-        t.end();
-        System.out.println(t);
-        System.out.println(rtf.maxFlow());
-        System.out.println(rtf.minCutS());
-        System.out.println(rtf.minCutT());
-
-        rtf.verify();
-    }
-
-    boolean verify() {
-        int outFlow = 0;
-        XVertex xsource = (XVertex) source;
-        for (Edge e : xsource) {
-            XEdge xe = (XEdge) e;
-            outFlow += xe.flow();
-        }
-
-        int inFlow = 0;
-        XVertex xsink = (XVertex) sink;
-        for (Edge e : xsink.xrevAdj) {
-            XEdge xe = (XEdge) e;
-            inFlow += xe.flow();
-        }
-
-        if (inFlow != outFlow
-                && inFlow != abs(((XVertex) source).excess)
-                && outFlow != abs(((XVertex) sink).excess)) {
-            System.out.println("Invalid: total flow from the source (" + outFlow + ") != total flow to the sink (" + inFlow + ")");
-            return false;
-        }
-
-        for(Vertex u: g){
-            XVertex xu = (XVertex) u;
-            xu.seen = false;
-        }
-
-        Set<Vertex> minCutS = this.minCutS();
-        Set<Vertex> minCutT = this.minCutT();
-
-        if (minCutS.size() + minCutT.size() != g.size()) {
-            System.out.println("Invalid size of Min-Cut: " + (minCutS.size() + minCutT.size()));
-            return false;
-        }
-
-        for (Vertex u : g) {
-            if (u != source && u != sink) {
-                XVertex xu = (XVertex) u;
-                int outVertexFlow = 0;
-                for (Edge e : xu) {
-                    XEdge xe = (XEdge) e;
-                    outVertexFlow += xe.flow();
-                }
-
-                int inVertexFlow = 0;
-                for (Edge e : xu.xrevAdj) {
-                    XEdge xe = (XEdge) e;
-                    inVertexFlow += xe.flow();
-                }
-
-                if (inVertexFlow != outVertexFlow) {
-                    System.out.println("Invalid: Total incoming flow != Total outgoing flow at " + u);
-                    return false;
-                }
-            }
-        }
-
-        return true;
     }
 
 }
