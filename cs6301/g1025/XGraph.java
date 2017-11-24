@@ -209,40 +209,9 @@ public class XGraph extends Graph {
         initialGraph = g;
     }
 
-    public void addNewEdge(Vertex from, Vertex to, int weight, boolean reverse) {
-        XVertex x1 = getVertex(from);
-        XVertex x2 = getVertex(to);
-        XEdge edge = new XEdge(x1, x2, weight, numEdges, reverse);
-        x1.xadj.add(edge);
-        x2.xrevAdj.add(edge);
-        edges[numEdges++] = edge;
-    }
-
-    XEdge getEdge(Vertex from, Vertex to) {
-        XVertex x1 = getVertex(from);
-        XVertex x2 = getVertex(to);
-        for (Edge e : from) {
-            XEdge xe = (XEdge) e;
-            XVertex xv = (XVertex) e.otherEnd(x1);
-            if (xv == x2) return xe;
-        }
-        return null;
-    }
-
-    int flow(Edge e) {
-        XEdge xe = getEdge(e.getName());
-        return xe.flow();
-    }
-
-    int capacity(Edge e) {
-        XEdge xe = getEdge(e.getName());
-        return xe.capacity();
-    }
-
-    void setCapacity(Edge e, int capacity) {
-        XEdge xe = (XEdge) e;
-        xe.capacity = capacity;
-    }
+    /**
+     * ITERATOR
+     */
 
     @Override
     public Iterator<Vertex> iterator() {
@@ -277,6 +246,100 @@ public class XGraph extends Graph {
 
     }
 
+    /**
+     * HELPER METHODS
+     */
+
+    boolean seen(Vertex v){
+        XVertex xv = (XVertex) v;
+        return xv.seen;
+    }
+
+    void setSeen(Vertex v){
+        XVertex xv = (XVertex) v;
+        xv.seen = true;
+    }
+
+    void setDistance(Vertex v, int distance){
+        XVertex xv = (XVertex) v;
+        xv.distance = distance;
+    }
+
+    int getDistance(Vertex v){
+        XVertex xv = (XVertex) v;
+        return xv.distance;
+    }
+
+    void setParent(Vertex v, Vertex parent){
+        XVertex xv = (XVertex) v;
+        xv.parent = parent;
+    }
+
+    void resetDistance(Vertex v){
+        XVertex xv = (XVertex) v;
+        xv.distance = INFINITY;
+    }
+
+    void resetParent(Vertex v){
+        XVertex xv = (XVertex) v;
+        xv.parent = null;
+        xv.parentEdge = null;
+    }
+
+    void resetSeen(Vertex v){
+        XVertex xv = (XVertex) v;
+        xv.seen = false;
+    }
+
+    int getHeight(Vertex v){
+        XVertex xv = (XVertex) v;
+        return xv.height;
+    }
+
+    void setHeight(Vertex v, int value){
+        XVertex xv = (XVertex) v;
+        xv.height = value;
+    }
+
+    int getExcess(Vertex v){
+        XVertex xv = (XVertex) v;
+        return xv.excess;
+    }
+
+    void setExcess(Vertex v, int value){
+        XVertex xv = (XVertex) v;
+        xv.excess = value;
+    }
+
+    int flow(Edge e) {
+        XEdge xe = getEdge(e.getName());
+        return xe.flow();
+    }
+
+    void setFlow(Edge e, int value) {
+        XEdge xe = getEdge(e.getName());
+        xe.flow = value;
+    }
+
+    int capacity(Edge e) {
+        XEdge xe = getEdge(e.getName());
+        return xe.capacity();
+    }
+
+    void setCapacity(Edge e, int value) {
+        XEdge xe = getEdge(e.getName());
+        xe.capacity = value;
+    }
+
+    List<XEdge> getAdj(Vertex v){
+        XVertex xv = (XVertex) v;
+        return xv.xadj;
+    }
+
+    List<XEdge> getRevAdj(Vertex v){
+        XVertex xv = (XVertex) v;
+        return xv.xrevAdj;
+    }
 
     @Override
     public Vertex getVertex(int n) {
@@ -289,11 +352,6 @@ public class XGraph extends Graph {
 
     XEdge getEdge(int name) {
         return edges[name];
-    }
-
-    void disable(int i) {
-        XVertex u = (XVertex) getVertex(i);
-        u.disable();
     }
 
 //    void printGraph(BFS b) {

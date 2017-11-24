@@ -4,9 +4,9 @@ package cs6301.g1025;
 import cs6301.g1025.Graph.Edge;
 import cs6301.g1025.Graph.Vertex;
 
-import java.util.HashMap;
-import java.util.Set;
+import java.util.*;
 
+import static cs6301.g1025.RelabelToFront.inResidualGraph;
 import static java.lang.Math.abs;
 
 public class Flow {
@@ -14,8 +14,6 @@ public class Flow {
     Graph g;
     Vertex s;
     Vertex t;
-    Set<Vertex> minCutS;
-    Set<Vertex> minCutT;
 
     public Flow(Graph g, Vertex s, Vertex t, HashMap<Edge, Integer> capacity) {
         this.g = new XGraph(g);
@@ -31,8 +29,10 @@ public class Flow {
         g = d.g;
         s = d.source;
         t = d.sink;
-        minCutS = d.minCutS();
-        minCutT = d.minCutT();
+        Set<Vertex> minCutS = minCutS();
+        Set<Vertex> minCutT = minCutT();
+        System.out.println(minCutS);
+        System.out.println(minCutT);
         return maxFlow;
     }
 
@@ -43,8 +43,10 @@ public class Flow {
         g = rtf.g;
         s = rtf.source;
         t = rtf.sink;
-        minCutS = rtf.minCutS();
-        minCutT = rtf.minCutT();
+        Set<Vertex> minCutS = minCutS();
+        Set<Vertex> minCutT = minCutT();
+        System.out.println(minCutS);
+        System.out.println(minCutT);
         return rtf.maxFlow();
     }
 
@@ -55,24 +57,71 @@ public class Flow {
 
     // capacity of edge e
     public int capacity(Edge e) {
-        if(((XGraph) g).capacity(e) != capacity.get(e)){
-            ((XGraph) g).setCapacity(e, capacity.get(e));
+        if(xgraph(g).capacity(e) != capacity.get(e)){
+            xgraph(g).setCapacity(e, capacity.get(e));
         }
         return capacity.get(e);
     }
 
-    /* After maxflow has been computed, this method can be called to
-       get the "S"-side of the min-cut found by the algorithm
-    */
-    public Set<Vertex> minCutS() {
-        return minCutS;
+    /**
+     * All vertices reachable from the src vertex
+     *
+     * @param src: start vertex (could be source or sink)
+     * @return Set of Vertices reachable from src
+     */
+    static Set<Vertex> reachableFrom(Graph g, Vertex src) {
+        Set<Graph.Vertex> minCut = new LinkedHashSet<>();
+        Queue<Vertex> q = new LinkedList<>();
+        minCut.add(src);
+        q.add(src);
+        while (!q.isEmpty()) {
+            Vertex u = q.remove();
+            for (Graph.Edge e : xgraph(g).getAdj(u)) {
+                Vertex v = e.otherEnd(u);
+                if (!xgraph(g).seen(v) && inResidualGraph(g, u, e)) {
+                    xgraph(g).setSeen(v);
+                    minCut.add(v);
+                    q.add(v);
+                }
+            }
+
+            for (Graph.Edge e : xgraph(g).getRevAdj(u)) {
+                Vertex v = e.otherEnd(u);
+                if (!xgraph(g).seen(v) && inResidualGraph(g, u, e)) {
+                    xgraph(g).setSeen(v);
+                    minCut.add(v);
+                    q.add(v);
+                }
+            }
+        }
+        return minCut;
     }
 
-    /* After maxflow has been computed, this method can be called to
-       get the "T"-side of the min-cut found by the algorithm
-    */
-    public Set<Vertex> minCutT() {
-        return minCutT;
+    public static XGraph xgraph(Graph g){
+        return (XGraph) g;
+    }
+
+    /**
+     * After maxflow has been computed, this method can be called to
+     * get the "S"-side of the min-cut found by the algorithm
+     *
+     * @return Set
+     */
+    Set<Graph.Vertex> minCutS() {
+        for (Vertex u : g) {
+            xgraph(g).resetSeen(u);
+        }
+        return reachableFrom(g, s);
+    }
+
+    /**
+     * After maxflow has been computed, this method can be called to
+     * get the "T"-side of the min-cut found by the algorithm
+     *
+     * @return Set
+     */
+    Set<Graph.Vertex> minCutT() {
+        return reachableFrom(g, t);
     }
 
     boolean verify() {
@@ -97,11 +146,6 @@ public class Flow {
             return false;
         }
 
-        for(Vertex u: g){
-            XGraph.XVertex xu = (XGraph.XVertex) u;
-            xu.seen = false;
-        }
-
         for (Vertex u : g) {
             if (u != s && u != t) {
                 XGraph.XVertex xu = (XGraph.XVertex) u;
@@ -123,6 +167,9 @@ public class Flow {
                 }
             }
         }
+
+        Set<Vertex> minCutS = minCutS();
+        Set<Vertex> minCutT = minCutT();
 
         if (minCutS.size() + minCutT.size() != g.size()) {
             System.out.println("Invalid size of Min-Cut: " + (minCutS.size() + minCutT.size()) + " vs " + g.size());
