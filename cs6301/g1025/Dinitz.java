@@ -101,6 +101,8 @@ public class Dinitz {
             List<PathEdge> path = new ArrayList<>();
             getAllPaths(paths, path, 0, source);
 
+            System.out.println("Number of paths: " + paths.size());
+
             for (List<PathEdge> pathEdges : paths) {
                 int cMin = minCapacity(pathEdges);
                 for (PathEdge pe : pathEdges) {
@@ -157,35 +159,29 @@ public class Dinitz {
             pathEdges.addAll(path);
             paths.add(pathEdges);
         } else {
-            for (Edge e : ((XVertex) src).xadj) {
+            for (Edge e : src) {
                 Vertex v = e.otherEnd(src);
-                XVertex xv = (XVertex) v;
-                if (RelabelToFront.inResidualGraph(src, e) && !seen(v) && xv.distance == dist + 1) {
-                    path.add(new PathEdge(e, src, v));
-                    xv.seen = true;
-                    path = getAllPaths(paths, path, dist + 1, v);
-                    if (!path.isEmpty()) {
-                        path.remove(dist);
-                        xv.seen = false;
-                    }
-                }
+                relax(src, e, v, paths, path, dist);
             }
-
             for (Edge e : ((XVertex) src).xrevAdj) {
                 Vertex v = e.otherEnd(src);
-                XVertex xv = (XVertex) v;
-                if (RelabelToFront.inResidualGraph(src, e) && !seen(v) && xv.distance == dist + 1) {
-                    path.add(new PathEdge(e, src, v));
-                    xv.seen = true;
-                    path = getAllPaths(paths, path, dist + 1, v);
-                    if (!path.isEmpty()) {
-                        path.remove(dist);
-                        xv.seen = false;
-                    }
-                }
+                relax(src, e, v, paths, path, dist);
             }
         }
         return path;
+    }
+
+    void relax(Vertex src, Edge e, Vertex v, Set<List<PathEdge>> paths, List<PathEdge> path, int dist){
+        XVertex xv = (XVertex) v;
+        if (RelabelToFront.inResidualGraph(src, e) && !seen(v) && xv.distance == dist + 1) {
+            path.add(new PathEdge(e, src, v));
+            setSeen(v);
+            path = getAllPaths(paths, path, dist + 1, v);
+            if (!path.isEmpty()) {
+                path.remove(dist);
+                resetSeen(v);
+            }
+        }
     }
 
     /**
@@ -254,5 +250,15 @@ public class Dinitz {
 
     boolean seen(Graph.Vertex u) {
         return ((XVertex) g.getVertex(u.getName())).seen;
+    }
+
+    void setSeen(Vertex v){
+        XVertex xv = (XVertex) v;
+        xv.seen = true;
+    }
+
+    void resetSeen(Vertex v){
+        XVertex xv = (XVertex) v;
+        xv.seen = false;
     }
 }
