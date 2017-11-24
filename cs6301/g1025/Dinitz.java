@@ -128,6 +128,7 @@ public class Dinitz {
 
     /**
      * Calculate the minimum flow through the path
+     *
      * @param path List of edges in the path
      * @return Minimum path capacity
      */
@@ -144,10 +145,11 @@ public class Dinitz {
 
     /**
      * Enumerate all paths from source to sink at a distance sink.distance
+     *
      * @param paths: Storing all paths from s to t
-     * @param path: Enumerating current path from s to t
-     * @param dist: distance reached from s
-     * @param src: current node visiting
+     * @param path:  Enumerating current path from s to t
+     * @param dist:  distance reached from s
+     * @param src:   current node visiting
      * @return List of edges of one of the paths
      */
     List<PathEdge> getAllPaths(Set<List<PathEdge>> paths, List<PathEdge> path, int dist, Vertex src) {
@@ -171,7 +173,7 @@ public class Dinitz {
         return path;
     }
 
-    void relax(Vertex src, Edge e, Vertex v, Set<List<PathEdge>> paths, List<PathEdge> path, int dist){
+    void relax(Vertex src, Edge e, Vertex v, Set<List<PathEdge>> paths, List<PathEdge> path, int dist) {
         XVertex xv = (XVertex) v;
         if (RelabelToFront.inResidualGraph(src, e) && !seen(v) && xv.distance == dist + 1) {
             path.add(new PathEdge(e, src, v));
@@ -186,6 +188,7 @@ public class Dinitz {
 
     /**
      * All vertices reachable from the src vertex
+     *
      * @param src: start vertex (could be source or sink)
      * @return Set of Vertices reachable from src
      */
@@ -252,12 +255,12 @@ public class Dinitz {
         return ((XVertex) g.getVertex(u.getName())).seen;
     }
 
-    void setSeen(Vertex v){
+    void setSeen(Vertex v) {
         XVertex xv = (XVertex) v;
         xv.seen = true;
     }
 
-    void resetSeen(Vertex v){
+    void resetSeen(Vertex v) {
         XVertex xv = (XVertex) v;
         xv.seen = false;
     }
