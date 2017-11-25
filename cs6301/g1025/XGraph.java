@@ -291,7 +291,7 @@ public class XGraph extends Graph {
         xv.seen = false;
     }
 
-    int getHeight(Vertex v){
+    int height(Vertex v){
         XVertex xv = (XVertex) v;
         return xv.height;
     }
@@ -301,7 +301,7 @@ public class XGraph extends Graph {
         xv.height = value;
     }
 
-    int getExcess(Vertex v){
+    int excess(Vertex v){
         XVertex xv = (XVertex) v;
         return xv.excess;
     }

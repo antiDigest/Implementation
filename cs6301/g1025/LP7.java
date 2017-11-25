@@ -94,6 +94,8 @@ public class LP7 {
         }
 
         System.out.println(timer.end());
+
+//        f.crossVerify();
     }
 }
 	

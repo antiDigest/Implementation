@@ -6,7 +6,6 @@ import cs6301.g1025.Graph.Vertex;
 
 import java.util.*;
 
-import static cs6301.g1025.RelabelToFront.inResidualGraph;
 import static java.lang.Math.abs;
 
 public class Flow {
@@ -14,6 +13,9 @@ public class Flow {
     Graph g;
     Vertex s;
     Vertex t;
+
+    Graph dinitz;
+    Graph rtf;
 
     public Flow(Graph g, Vertex s, Vertex t, HashMap<Edge, Integer> capacity) {
         this.g = new XGraph(g);
@@ -29,10 +31,7 @@ public class Flow {
         g = d.g;
         s = d.source;
         t = d.sink;
-        Set<Vertex> minCutS = minCutS();
-        Set<Vertex> minCutT = minCutT();
-        System.out.println(minCutS);
-        System.out.println(minCutT);
+        dinitz = d.g;
         return maxFlow;
     }
 
@@ -43,16 +42,13 @@ public class Flow {
         g = rtf.g;
         s = rtf.source;
         t = rtf.sink;
-        Set<Vertex> minCutS = minCutS();
-        Set<Vertex> minCutT = minCutT();
-        System.out.println(minCutS);
-        System.out.println(minCutT);
+        this.rtf = rtf.g;
         return rtf.maxFlow();
     }
 
     // flow going through edge e
     public int flow(Edge e) {
-        return ((XGraph) g).flow(e);
+        return xgraph(g).flow(e);
     }
 
     // capacity of edge e
@@ -102,15 +98,23 @@ public class Flow {
     }
 
     /**
+     * Edge out of u in Residual Graph (Gf) because of e ?
+     *
+     * @param u From vertex
+     * @param e Edge (u, ?)
+     * @return true if in residual graph, else false
+     */
+    static boolean inResidualGraph(Graph g, Vertex u, Edge e) {
+        return e.fromVertex().equals(u) ? xgraph(g).flow(e) < xgraph(g).capacity(e) : xgraph(g).flow(e) > 0;
+    }
+
+    /**
      * After maxflow has been computed, this method can be called to
      * get the "S"-side of the min-cut found by the algorithm
      *
      * @return Set
      */
     Set<Graph.Vertex> minCutS() {
-        for (Vertex u : g) {
-            xgraph(g).resetSeen(u);
-        }
         return reachableFrom(g, s);
     }
 
@@ -149,6 +153,7 @@ public class Flow {
         for (Vertex u : g) {
             if (u != s && u != t) {
                 XGraph.XVertex xu = (XGraph.XVertex) u;
+
                 int outVertexFlow = 0;
                 for (Edge e : xu) {
                     XGraph.XEdge xe = (XGraph.XEdge) e;
@@ -170,12 +175,21 @@ public class Flow {
 
         Set<Vertex> minCutS = minCutS();
         Set<Vertex> minCutT = minCutT();
-
         if (minCutS.size() + minCutT.size() != g.size()) {
-            System.out.println("Invalid size of Min-Cut: " + (minCutS.size() + minCutT.size()) + " vs " + g.size());
+            System.out.println("Invalid size of Min-Cut: " +
+                    (minCutS.size() + minCutT.size()) + " vs " + g.size());
             return false;
         }
 
         return true;
+    }
+
+    void crossVerify() {
+        for(Edge e: xgraph(g).edges){
+            if(e == null) continue;
+            if(xgraph(dinitz).flow(e) != xgraph(rtf).flow(e)){
+                System.out.println("Not conforming edge: " + e);
+            }
+        }
     }
 }

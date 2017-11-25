@@ -12,8 +12,8 @@ import cs6301.g1025.XGraph.XVertex;
 
 import java.util.*;
 
+import static cs6301.g1025.Flow.inResidualGraph;
 import static cs6301.g1025.Flow.xgraph;
-import static cs6301.g1025.RelabelToFront.inResidualGraph;
 import static cs6301.g1025.XGraph.INFINITY;
 
 
@@ -73,6 +73,13 @@ public class Dinitz {
                     q.add(v);
                 }
             }
+            for (Graph.Edge e : xgraph(g).getRevAdj(u)) {
+                Vertex v = e.otherEnd(u);
+                if (!xgraph(g).seen(v) && inResidualGraph(g, u, e)) {
+                    visit(u, v, e);
+                    q.add(v);
+                }
+            }
         }
 
     }
@@ -98,8 +105,6 @@ public class Dinitz {
 
             for (List<PathEdge> pathEdges : paths) {
                 int cMin = minCapacity(pathEdges);
-//                System.out.println("Path: " + pathEdges);
-//                System.out.println("Capacity: " + cMin);
                 for (PathEdge pe : pathEdges) {
                     Edge e = pe.e;
                     Vertex u = pe.from;
@@ -113,7 +118,9 @@ public class Dinitz {
             }
         }
 
-        bfsInit();
+        for (Vertex u : g) {
+            xgraph(g).resetSeen(u);
+        }
 
         int flow = 0;
         for (Edge e : xgraph(g).getRevAdj(sink)) {
@@ -170,7 +177,6 @@ public class Dinitz {
     }
 
     void relax(Vertex src, Edge e, Vertex v, Set<List<PathEdge>> paths, List<PathEdge> path, int dist) {
-        XVertex xv = (XVertex) v;
         if (inResidualGraph(g, src, e) && !xgraph(g).seen(v) && xgraph(g).getDistance(v) == dist + 1) {
             path.add(new PathEdge(e, src, v));
             xgraph(g).setSeen(v);

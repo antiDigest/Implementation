@@ -6,7 +6,7 @@ import cs6301.g1025.XGraph.XVertex;
 
 import java.util.*;
 
-import static cs6301.g1025.Flow.reachableFrom;
+import static cs6301.g1025.Flow.inResidualGraph;
 import static cs6301.g1025.Flow.xgraph;
 import static cs6301.g1025.XGraph.INFINITY;
 import static java.lang.Integer.min;
@@ -38,15 +38,30 @@ public class RelabelToFront {
      */
     void initialize() {
 
+        for (Vertex u : g) {
+            xgraph(g).setHeight(u, 0);
+            xgraph(g).setExcess(u, 0);
+        }
+
         xgraph(g).setHeight(source, g.size());
 
         for (Edge e : xgraph(g).getAdj(source)) {
             Vertex u = e.otherEnd(source);
             xgraph(g).setFlow(e, xgraph(g).capacity(e));
-            xgraph(g).setExcess(source, xgraph(g).getExcess(source) - xgraph(g).capacity(e));
-            xgraph(g).setExcess(u, xgraph(g).getExcess(u) + xgraph(g).capacity(e));
+            xgraph(g).setExcess(source, xgraph(g).excess(source) - xgraph(g).capacity(e));
+            xgraph(g).setExcess(u, xgraph(g).excess(u) + xgraph(g).capacity(e));
         }
+        for (Edge e : xgraph(g).getRevAdj(source)) {
+            if(inResidualGraph(g, source, e)) {
+                Vertex u = e.otherEnd(source);
+                xgraph(g).setFlow(e, 0);
+                xgraph(g).setExcess(source, xgraph(g).excess(source) - xgraph(g).flow(e));
+                xgraph(g).setExcess(u, xgraph(g).excess(u) + xgraph(g).flow(e));
+            }
+        }
+
     }
+
 
     /**
      * Push flow out of u using e
@@ -58,7 +73,7 @@ public class RelabelToFront {
      */
     void push(Vertex u, Vertex v, Edge e) {
 
-        int delta = min(xgraph(g).getExcess(u), xgraph(g).capacity(e));
+        int delta = min(xgraph(g).excess(u), xgraph(g).capacity(e));
 
         if (e.fromVertex().equals(u)) {
             xgraph(g).setFlow(e, xgraph(g).flow(e) + delta);
@@ -66,19 +81,8 @@ public class RelabelToFront {
             xgraph(g).setFlow(e, xgraph(g).flow(e) - delta);
         }
 
-        xgraph(g).setExcess(u, xgraph(g).getExcess(u) - delta);
-        xgraph(g).setExcess(v, xgraph(g).getExcess(v) + delta);
-    }
-
-    /**
-     * Edge out of u in Residual Graph (Gf) because of e ?
-     *
-     * @param u From vertex
-     * @param e Edge (u, ?)
-     * @return true if in residual graph, else false
-     */
-    static boolean inResidualGraph(Graph g, Vertex u, Edge e) {
-        return e.fromVertex().equals(u) ? xgraph(g).flow(e) < xgraph(g).capacity(e) : xgraph(g).flow(e) > 0;
+        xgraph(g).setExcess(u, xgraph(g).excess(u) - delta);
+        xgraph(g).setExcess(v, xgraph(g).excess(v) + delta);
     }
 
     /**
@@ -88,19 +92,21 @@ public class RelabelToFront {
      * @param u Vertex
      */
     void relabel(Vertex u) {
+
         int minHeight = INFINITY;
+
         for (Edge e : xgraph(g).getAdj(u)) {
             Vertex v = e.otherEnd(u);
-            if (xgraph(g).getHeight(u) <= xgraph(g).getHeight(v)
-                    && xgraph(g).getHeight(v) < minHeight && inResidualGraph(g, u, e)) {
-                minHeight = xgraph(g).getHeight(v);
+            if (xgraph(g).height(u) > xgraph(g).height(v)) continue;
+            if (xgraph(g).height(v) < minHeight && inResidualGraph(g, u, e)) {
+                minHeight = xgraph(g).height(v);
             }
         }
         for (Edge e : xgraph(g).getRevAdj(u)) {
             Vertex v = e.otherEnd(u);
-            if (xgraph(g).getHeight(u) <= xgraph(g).getHeight(v)
-                    && xgraph(g).getHeight(v) < minHeight && inResidualGraph(g, u, e)) {
-                minHeight = xgraph(g).getHeight(v);
+            if (xgraph(g).height(u) > xgraph(g).height(v)) continue;
+            if (xgraph(g).height(v) < minHeight && inResidualGraph(g, u, e)) {
+                minHeight = xgraph(g).height(v);
             }
         }
 
@@ -114,19 +120,19 @@ public class RelabelToFront {
      */
     void discharge(Vertex u) {
 
-        while (xgraph(g).getExcess(u) > 0) {
+        while (xgraph(g).excess(u) > 0) {
             for (Edge e : xgraph(g).getAdj(u)) {
                 Vertex v = e.otherEnd(u);
-                if (inResidualGraph(g, u, e) && xgraph(g).getHeight(u) == 1 + xgraph(g).getHeight(v)) {
+                if (inResidualGraph(g, u, e) && xgraph(g).height(u) == 1 + xgraph(g).height(v)) {
                     push(u, v, e);
-                    if (xgraph(g).getExcess(v) == 0) return;
+                    if (xgraph(g).excess(u) == 0) return;
                 }
             }
             for (Edge e : xgraph(g).getRevAdj(u)) {
                 Vertex v = e.otherEnd(u);
-                if (inResidualGraph(g, u, e) && xgraph(g).getHeight(u) == 1 + xgraph(g).getHeight(v)) {
+                if (inResidualGraph(g, u, e) && xgraph(g).height(u) == 1 + xgraph(g).height(v)) {
                     push(u, v, e);
-                    if (xgraph(g).getExcess(v) == 0) return;
+                    if (xgraph(g).excess(u) == 0) return;
                 }
             }
             relabel(u);
@@ -154,14 +160,14 @@ public class RelabelToFront {
             done = true;
             Vertex u = next(it);
             while (u != null) {
-                if (xgraph(g).getExcess(u) == 0) {
+                if (xgraph(g).excess(u) == 0) {
                     u = next(it);
                     continue;
                 }
-                int oldHeight = xgraph(g).getHeight(u);
+                int oldHeight = xgraph(g).height(u);
                 discharge(u);
 
-                if (xgraph(g).getHeight(u) != oldHeight) {
+                if (xgraph(g).height(u) != oldHeight) {
                     done = false;
                     break;
                 }
@@ -173,6 +179,10 @@ public class RelabelToFront {
                 L.add(0, u);
             }
         }
+
+        for (Vertex u : g) {
+            xgraph(g).resetSeen(u);
+        }
     }
 
     /**
@@ -181,7 +191,7 @@ public class RelabelToFront {
      * @return int
      */
     int maxFlow() {
-        return abs(xgraph(g).getExcess(sink));
+        return abs(xgraph(g).excess(sink));
     }
 
     Vertex next(Iterator<Vertex> it) {
