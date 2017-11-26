@@ -14,9 +14,6 @@ public class Flow {
     Vertex s;
     Vertex t;
 
-    Graph dinitz;
-    Graph rtf;
-
     public Flow(Graph g, Vertex s, Vertex t, HashMap<Edge, Integer> capacity) {
         this.g = new XGraph(g);
         this.s = s;
@@ -31,7 +28,6 @@ public class Flow {
         g = d.g;
         s = d.source;
         t = d.sink;
-        dinitz = d.g;
         return maxFlow;
     }
 
@@ -42,7 +38,6 @@ public class Flow {
         g = rtf.g;
         s = rtf.source;
         t = rtf.sink;
-        this.rtf = rtf.g;
         return rtf.maxFlow();
     }
 

@@ -44,38 +44,18 @@ public class XGraph extends Graph {
             parentEdge = null;
         }
 
-        boolean isDisabled() {
-            return disabled;
-        }
-
-        void disable() {
-            disabled = true;
-        }
-
         @Override
         public Iterator<Edge> iterator() {
             return new XVertexIterator(this);
-        }
-
-        public Iterator<Edge> reverseIterator() {
-            return new XVertexIterator(this, this.xrevAdj);
         }
 
         class XVertexIterator implements Iterator<Edge> {
             XEdge cur;
             Iterator<XEdge> it;
             boolean ready;
-            XVertex u;
 
             XVertexIterator(XVertex u) {
-                this.u = u;
                 this.it = u.xadj.iterator();
-                ready = false;
-            }
-
-            XVertexIterator(XVertex u, List<XEdge> edges) {
-                this.u = u;
-                this.it = edges.iterator();
                 ready = false;
             }
 
@@ -87,11 +67,17 @@ public class XGraph extends Graph {
                     return false;
                 }
                 cur = it.next();
-                while (!inResidualGraph(cur) && it.hasNext()) {
+                while (cur.flow >= cur.capacity && it.hasNext()) {
                     cur = it.next();
                 }
-                ready = true;
-                return (inResidualGraph(cur) && !cur.isDisabled());
+                if (cur.flow < cur.capacity) {
+                    ready = true;
+
+                } else {
+                    ready = false;
+
+                }
+                return ready;
             }
 
             public Edge next() {
@@ -108,50 +94,25 @@ public class XGraph extends Graph {
                 throw new java.lang.UnsupportedOperationException();
             }
         }
-
-        /**
-         * Edge out of u in Residual Graph (Gf) because of e ?
-         * @param u From vertex
-         * @param e Edge (u, ?)
-         * @return true if in residual graph, else false
-         */
-        boolean inResidualGraph(Vertex u, Edge e) {
-            XEdge xe = (XEdge) e;
-            return e.fromVertex().equals(u) ? xe.flow() < xe.capacity() : xe.flow() > 0;
-        }
-
-        /**
-         * Edge out of "this" vertex in Residual Graph (Gf) because of e ?
-         * @param e Edge (u, ?)
-         * @return true if in residual graph, else false
-         */
-        boolean inResidualGraph(Edge e) {
-            XEdge xe = (XEdge) e;
-            return e.fromVertex().equals(this) ? xe.flow() < xe.capacity() : xe.flow() > 0;
-        }
     }
 
     static class XEdge extends Edge {
-        boolean disabled;
         int capacity;
         int flow;
+        XEdge reverseEdge;
 
-        XEdge(XVertex from, XVertex to, int weight, int capacity) {
+        XEdge(XVertex from, XVertex to, int weight) {
             super(from, to, weight);
-            disabled = false;
-            this.weight = weight;
-            this.capacity = capacity;
+            capacity = weight;
             flow = 0;
         }
 
-        boolean isDisabled() {
-            XVertex xfrom = (XVertex) from;
-            XVertex xto = (XVertex) to;
-            return disabled || xfrom.isDisabled() || xto.isDisabled();
-        }
-
-        void disable() {
-            this.disabled = true;
+        XEdge(XVertex from, XVertex to, int flow, int capacity, int name) {
+            super(from, to, 0, name);
+            this.capacity = capacity;
+            this.flow = flow;
+            this.from = from;
+            this.to = to;
         }
 
         int capacity() {
@@ -161,45 +122,22 @@ public class XGraph extends Graph {
         int flow() {
             return flow;
         }
+
     }
 
     XVertex[] xv; // vertices of graph
-    XEdge[] edges; //Edges of Graph
-    int numEdges;
-    Graph initialGraph;
+    XEdge[] edges;
 
     public XGraph(Graph g, HashMap<Edge, Integer> capacity) {
         super(g);
-        xv = new XVertex[g.size()];  // Extra space is allocated in array for nodes to be added later
+        xv = new XVertex[g.size()]; // Extra space is allocated in array for
+        // nodes to be added later
         for (Vertex u : g) {
             xv[u.getName()] = new XVertex(u);
-        }
-        numEdges = g.m;
-        edges = new XEdge[g.m + 1];
+            xv[u.getName()].height=0;
+            xv[u.getName()].excess=0;
 
-        // Make copy of edges
-        for (Vertex u : g) {
-            for (Edge e : u.adj) {
-                Vertex v = e.otherEnd(u);
-                XVertex x1 = getVertex(u);
-                XVertex x2 = getVertex(v);
-                XEdge edge = new XEdge(x1, x2, e.getWeight(), capacity.get(e));
-                x1.xadj.add(edge);
-                x2.xrevAdj.add(edge);
-                edge.name = e.getName();
-                edges[e.getName()] = edge;
-            }
         }
-        initialGraph = g;
-    }
-
-    public XGraph(Graph g) {
-        super(g);
-        xv = new XVertex[g.size()];  // Extra space is allocated in array for nodes to be added later
-        for (Vertex u : g) {
-            xv[u.getName()] = new XVertex(u);
-        }
-        numEdges = g.m;
         edges = new XEdge[g.m + 1];
 
         // Make copy of edges
@@ -208,19 +146,22 @@ public class XGraph extends Graph {
                 Vertex v = e.otherEnd(u);
                 XVertex x1 = getVertex(u);
                 XVertex x2 = getVertex(v);
-                XEdge edge = new XEdge(x1, x2, e.getWeight(), e.getWeight());
-                x1.xadj.add(edge);
-                x2.xrevAdj.add(edge);
-                edge.name = e.getName();
-                edges[e.getName()] = edge;
+                XEdge xe1 = new XEdge(x1, x2, 0, capacity.get(e), e.getName());
+                XEdge xe2 = new XEdge(x2, x1, 0, 0, -e.getName());
+                xe1.reverseEdge = xe2;// adding the corresponding reverse edge
+                // to these edges
+                xe2.reverseEdge = xe1;// adding the corresponding reverse edge
+
+                edges[e.getName()] = xe1;
+                // to these edges
+                x1.xadj.add(xe1);
+                x2.xadj.add(xe2);
+                x1.xrevAdj.add(xe2);
+                x2.xrevAdj.add(xe1);
+
             }
         }
-        initialGraph = g;
     }
-
-    /**
-     * ITERATOR
-     */
 
     @Override
     public Iterator<Vertex> iterator() {
@@ -230,30 +171,60 @@ public class XGraph extends Graph {
     class XGraphIterator implements Iterator<Vertex> {
         Iterator<XVertex> it;
         XVertex xcur;
+        boolean ready;
 
         XGraphIterator(XGraph xg) {
-            this.it = new ArrayIterator<XVertex>(xg.xv, 0, xg.size() - 1);  // Iterate over existing elements only
+            this.it = new ArrayIterator<XVertex>(xg.xv, 0, xg.size() - 1);
         }
 
         public boolean hasNext() {
+            if (ready) {
+                return true;
+            }
             if (!it.hasNext()) {
                 return false;
             }
             xcur = it.next();
-            while (xcur.isDisabled() && it.hasNext()) {
-                xcur = it.next();
-            }
-            return !xcur.isDisabled();
+            ready = true;
+            return ready;
         }
 
         public Vertex next() {
+            if (!ready) {
+                if (!hasNext()) {
+                    throw new java.util.NoSuchElementException();
+                }
+            }
+            ready = false;
             return xcur;
         }
 
         public void remove() {
+            throw new java.lang.UnsupportedOperationException();
         }
 
     }
+
+    XEdge getEdge(Edge e) {
+        return edges[e.getName()];
+    }
+
+    @Override
+    public String toString() {
+        for (Vertex u : this) {
+            XVertex xu = this.getVertex(u);
+            System.out.println("AjacencyList for Vertex " + u + " :"+ "and its excess  "+xu.excess+" height  "+xu.height);
+            for (Edge e : xu.xadj) {
+                XEdge xe = (XEdge) e;
+                XVertex xv=this.getVertex(xe.otherEnd(xu));
+                System.out.print(e + " flow " + xe.flow + " capacity " + xe.capacity+",");
+            }
+            System.out.println();
+        }
+
+        return "";
+    }
+
 
     /**
      * HELPER METHODS
