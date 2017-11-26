@@ -41,23 +41,18 @@ public class RelabelToFront {
         for (Vertex u : g) {
             xgraph(g).setHeight(u, 0);
             xgraph(g).setExcess(u, 0);
+            for(Edge e : ((XVertex) u)){
+                xgraph(g).setFlow(e, 0);
+            }
         }
 
         xgraph(g).setHeight(source, g.size());
 
-        for (Edge e : xgraph(g).getAdj(source)) {
+        for (Edge e : ((XVertex) source)) {
             Vertex u = e.otherEnd(source);
             xgraph(g).setFlow(e, xgraph(g).capacity(e));
             xgraph(g).setExcess(source, xgraph(g).excess(source) - xgraph(g).capacity(e));
             xgraph(g).setExcess(u, xgraph(g).excess(u) + xgraph(g).capacity(e));
-        }
-        for (Edge e : xgraph(g).getRevAdj(source)) {
-            if(inResidualGraph(g, source, e)) {
-                Vertex u = e.otherEnd(source);
-                xgraph(g).setFlow(e, 0);
-                xgraph(g).setExcess(source, xgraph(g).excess(source) - xgraph(g).flow(e));
-                xgraph(g).setExcess(u, xgraph(g).excess(u) + xgraph(g).flow(e));
-            }
         }
 
     }
@@ -73,7 +68,10 @@ public class RelabelToFront {
      */
     void push(Vertex u, Vertex v, Edge e) {
 
-        int delta = min(xgraph(g).excess(u), xgraph(g).capacity(e));
+        int delta = min(xgraph(g).excess(u), xgraph(g).capacity(e) - xgraph(g).flow(e));
+        if(!e.fromVertex().equals(u)){
+            delta = min(xgraph(g).excess(u), xgraph(g).flow(e));
+        }
 
         if (e.fromVertex().equals(u)) {
             xgraph(g).setFlow(e, xgraph(g).flow(e) + delta);
@@ -95,14 +93,8 @@ public class RelabelToFront {
 
         int minHeight = INFINITY;
 
-        for (Edge e : xgraph(g).getAdj(u)) {
-            Vertex v = e.otherEnd(u);
-            if (xgraph(g).height(u) > xgraph(g).height(v)) continue;
-            if (xgraph(g).height(v) < minHeight && inResidualGraph(g, u, e)) {
-                minHeight = xgraph(g).height(v);
-            }
-        }
-        for (Edge e : xgraph(g).getRevAdj(u)) {
+        XVertex xu = (XVertex) u;
+        for (Edge e : xu) {
             Vertex v = e.otherEnd(u);
             if (xgraph(g).height(u) > xgraph(g).height(v)) continue;
             if (xgraph(g).height(v) < minHeight && inResidualGraph(g, u, e)) {
@@ -121,14 +113,8 @@ public class RelabelToFront {
     void discharge(Vertex u) {
 
         while (xgraph(g).excess(u) > 0) {
-            for (Edge e : xgraph(g).getAdj(u)) {
-                Vertex v = e.otherEnd(u);
-                if (inResidualGraph(g, u, e) && xgraph(g).height(u) == 1 + xgraph(g).height(v)) {
-                    push(u, v, e);
-                    if (xgraph(g).excess(u) == 0) return;
-                }
-            }
-            for (Edge e : xgraph(g).getRevAdj(u)) {
+            XVertex xu = (XVertex) u;
+            for (Edge e : xu) {
                 Vertex v = e.otherEnd(u);
                 if (inResidualGraph(g, u, e) && xgraph(g).height(u) == 1 + xgraph(g).height(v)) {
                     push(u, v, e);
@@ -144,7 +130,14 @@ public class RelabelToFront {
      * Algorithm to find max flow !
      */
     void relabelToFront() {
+
+        for(Vertex u: g){
+            XVertex xu = (XVertex) u;
+            xu.xadj.addAll(xu.xrevAdj);
+        }
+
         initialize();
+
         List<Vertex> L = new LinkedList<>();
         for (Vertex u : g) {
             if (!u.equals(source) && !u.equals(sink)) {
@@ -165,6 +158,7 @@ public class RelabelToFront {
                     continue;
                 }
                 int oldHeight = xgraph(g).height(u);
+
                 discharge(u);
 
                 if (xgraph(g).height(u) != oldHeight) {

@@ -66,20 +66,21 @@ public class Dinitz {
 
         while (!q.isEmpty()) {
             Vertex u = q.remove();
-            for (Graph.Edge e : xgraph(g).getAdj(u)) {
+            XVertex xu = (XVertex) u;
+            for (Graph.Edge e : xu) {
                 Vertex v = e.otherEnd(u);
                 if (!xgraph(g).seen(v) && inResidualGraph(g, u, e)) {
                     visit(u, v, e);
                     q.add(v);
                 }
             }
-            for (Graph.Edge e : xgraph(g).getRevAdj(u)) {
-                Vertex v = e.otherEnd(u);
-                if (!xgraph(g).seen(v) && inResidualGraph(g, u, e)) {
-                    visit(u, v, e);
-                    q.add(v);
-                }
-            }
+//            for (Graph.Edge e : xgraph(g).getRevAdj(u)) {
+//                Vertex v = e.otherEnd(u);
+//                if (!xgraph(g).seen(v) && inResidualGraph(g, u, e)) {
+//                    visit(u, v, e);
+//                    q.add(v);
+//                }
+//            }
         }
 
     }
@@ -139,8 +140,8 @@ public class Dinitz {
         int minCapacity = INFINITY;
         for (PathEdge pe : path) {
             Edge e = pe.e;
-            if (minCapacity > xgraph(g).capacity(e)) {
-                minCapacity = xgraph(g).capacity(e);
+            if (minCapacity > xgraph(g).capacity(e) - xgraph(g).flow(e)) {
+                minCapacity = xgraph(g).capacity(e) - xgraph(g).flow(e);
             }
         }
         return minCapacity;
@@ -164,14 +165,15 @@ public class Dinitz {
             pathEdges.addAll(path);
             paths.add(pathEdges);
         } else {
-            for (Edge e : xgraph(g).getAdj(src)) {
+            XVertex xsrc = (XVertex) src;
+            for (Edge e : xsrc) {
                 Vertex v = e.otherEnd(src);
                 relax(src, e, v, paths, path, dist);
             }
-            for (Edge e : xgraph(g).getRevAdj(src)) {
-                Vertex v = e.otherEnd(src);
-                relax(src, e, v, paths, path, dist);
-            }
+//            for (Edge e : xgraph(g).getRevAdj(src)) {
+//                Vertex v = e.otherEnd(src);
+//                relax(src, e, v, paths, path, dist);
+//            }
         }
         return path;
     }

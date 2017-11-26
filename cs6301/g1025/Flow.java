@@ -53,15 +53,11 @@ public class Flow {
 
     // capacity of edge e
     public int capacity(Edge e) {
-        if(xgraph(g).capacity(e) != capacity.get(e)){
-            xgraph(g).setCapacity(e, capacity.get(e));
-        }
-        return capacity.get(e);
+        return xgraph(g).capacity(e);
     }
 
     /**
      * All vertices reachable from the src vertex
-     *
      * @param src: start vertex (could be source or sink)
      * @return Set of Vertices reachable from src
      */
@@ -72,16 +68,8 @@ public class Flow {
         q.add(src);
         while (!q.isEmpty()) {
             Vertex u = q.remove();
-            for (Graph.Edge e : xgraph(g).getAdj(u)) {
-                Vertex v = e.otherEnd(u);
-                if (!xgraph(g).seen(v) && inResidualGraph(g, u, e)) {
-                    xgraph(g).setSeen(v);
-                    minCut.add(v);
-                    q.add(v);
-                }
-            }
-
-            for (Graph.Edge e : xgraph(g).getRevAdj(u)) {
+            XGraph.XVertex xu = (XGraph.XVertex) u;
+            for (Graph.Edge e : xu) {
                 Vertex v = e.otherEnd(u);
                 if (!xgraph(g).seen(v) && inResidualGraph(g, u, e)) {
                     xgraph(g).setSeen(v);
@@ -93,13 +81,12 @@ public class Flow {
         return minCut;
     }
 
-    public static XGraph xgraph(Graph g){
+    static XGraph xgraph(Graph g){
         return (XGraph) g;
     }
 
     /**
      * Edge out of u in Residual Graph (Gf) because of e ?
-     *
      * @param u From vertex
      * @param e Edge (u, ?)
      * @return true if in residual graph, else false
@@ -111,7 +98,6 @@ public class Flow {
     /**
      * After maxflow has been computed, this method can be called to
      * get the "S"-side of the min-cut found by the algorithm
-     *
      * @return Set
      */
     Set<Graph.Vertex> minCutS() {
@@ -121,7 +107,6 @@ public class Flow {
     /**
      * After maxflow has been computed, this method can be called to
      * get the "T"-side of the min-cut found by the algorithm
-     *
      * @return Set
      */
     Set<Graph.Vertex> minCutT() {
@@ -130,23 +115,26 @@ public class Flow {
 
     boolean verify() {
         int outFlow = 0;
+        int inFlow = 0;
         XGraph.XVertex xsource = (XGraph.XVertex) s;
-        for (Edge e : xsource) {
+        for (Edge e : xsource.xadj) {
             XGraph.XEdge xe = (XGraph.XEdge) e;
-            outFlow += flow(xe);
+            if(e.fromVertex().equals(s))
+                outFlow += flow(xe);
         }
 
-        int inFlow = 0;
         XGraph.XVertex xsink = (XGraph.XVertex) t;
-        for (Edge e : xsink.xrevAdj) {
+        for (Edge e : xsink.xadj) {
             XGraph.XEdge xe = (XGraph.XEdge) e;
-            inFlow += flow(xe);
+            if(!e.fromVertex().equals(t))
+                inFlow += flow(xe);
         }
 
         if (inFlow != outFlow
-                && inFlow != abs(((XGraph.XVertex) s).excess)
-                && outFlow != abs(((XGraph.XVertex) t).excess)) {
-            System.out.println("Invalid: total flow from the source (" + outFlow + ") != total flow to the sink (" + inFlow + ")");
+                && inFlow != abs(xsource.excess)
+                && outFlow != abs(xsink.excess)) {
+            System.out.println("Invalid: total flow from the source (" + outFlow + ") " +
+                    "!= total flow to the sink (" + inFlow + ")");
             return false;
         }
 
@@ -155,19 +143,18 @@ public class Flow {
                 XGraph.XVertex xu = (XGraph.XVertex) u;
 
                 int outVertexFlow = 0;
-                for (Edge e : xu) {
-                    XGraph.XEdge xe = (XGraph.XEdge) e;
-                    outVertexFlow += flow(xe);
-                }
-
                 int inVertexFlow = 0;
-                for (Edge e : xu.xrevAdj) {
+                for (Edge e : xu.xadj) {
                     XGraph.XEdge xe = (XGraph.XEdge) e;
-                    inVertexFlow += flow(xe);
+                    if(!e.fromVertex().equals(u))
+                        inVertexFlow += flow(xe);
+                    else
+                        outVertexFlow += flow(xe);
                 }
 
                 if (inVertexFlow != outVertexFlow) {
-                    System.out.println("Invalid: Total incoming flow != Total outgoing flow at " + u);
+                    System.out.println("Invalid: Total incoming flow (" + inVertexFlow + ") " +
+                            "!= Total outgoing flow (" + outVertexFlow + ") at " + u);
                     return false;
                 }
             }
@@ -182,14 +169,5 @@ public class Flow {
         }
 
         return true;
-    }
-
-    void crossVerify() {
-        for(Edge e: xgraph(g).edges){
-            if(e == null) continue;
-            if(xgraph(dinitz).flow(e) != xgraph(rtf).flow(e)){
-                System.out.println("Not conforming edge: " + e);
-            }
-        }
     }
 }
