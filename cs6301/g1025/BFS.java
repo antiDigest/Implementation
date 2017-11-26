@@ -40,6 +40,7 @@ public class BFS extends GraphAlgorithm<BFS.BFSVertex> {
         }
         // Set source to be at distance 0
         getVertex(src).distance = 0;
+        getVertex(src).seen= true;
     }
 
     // reinitialize allows running BFS many times, with different sources
@@ -52,6 +53,7 @@ public class BFS extends GraphAlgorithm<BFS.BFSVertex> {
             bu.distance = INFINITY;
         }
         getVertex(src).distance = 0;
+        getVertex(src).seen= true;
     }
 
     void bfs() {
