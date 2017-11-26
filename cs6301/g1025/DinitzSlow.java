@@ -7,7 +7,6 @@ package cs6301.g1025;
 
 import cs6301.g1025.Graph.Edge;
 import cs6301.g1025.Graph.Vertex;
-import cs6301.g1025.XGraph.XEdge;
 import cs6301.g1025.XGraph.XVertex;
 
 import java.util.*;
@@ -111,9 +110,9 @@ public class DinitzSlow {
                     Vertex u = pe.from;
 
                     if (e.fromVertex().equals(u)) {
-                        xgraph(g).setFlow(e, xgraph(g).flow(e) + cMin );
+                        xgraph(g).setFlow(e, xgraph(g).flow(e) + cMin);
                     } else {
-                        xgraph(g).setFlow(e, xgraph(g).flow(e) - cMin );
+                        xgraph(g).setFlow(e, xgraph(g).flow(e) - cMin);
                     }
                 }
             }

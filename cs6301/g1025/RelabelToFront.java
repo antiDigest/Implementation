@@ -4,7 +4,9 @@ import cs6301.g1025.Graph.Edge;
 import cs6301.g1025.Graph.Vertex;
 import cs6301.g1025.XGraph.XVertex;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 import static cs6301.g1025.Flow.inResidualGraph;
 import static cs6301.g1025.Flow.xgraph;
@@ -18,17 +20,9 @@ public class RelabelToFront {
     Graph g;
     Vertex source;
     Vertex sink;
-    HashMap<Edge, Integer> capacity;
-
-    RelabelToFront(Graph g, Vertex source, Vertex sink, HashMap<Edge, Integer> capacity) {
-        this.g = new XGraph(g, capacity);
-        this.source = this.g.getVertex(source.getName());
-        this.sink = this.g.getVertex(sink.getName());
-        this.capacity = capacity;
-    }
 
     RelabelToFront(Graph g, Vertex source, Vertex sink) {
-        this.g = new XGraph(g);
+        this.g = g;
         this.source = this.g.getVertex(source.getName());
         this.sink = this.g.getVertex(sink.getName());
     }
@@ -41,7 +35,7 @@ public class RelabelToFront {
         for (Vertex u : g) {
             xgraph(g).setHeight(u, 0);
             xgraph(g).setExcess(u, 0);
-            for(Edge e : ((XVertex) u)){
+            for (Edge e : ((XVertex) u)) {
                 xgraph(g).setFlow(e, 0);
             }
         }
@@ -69,7 +63,7 @@ public class RelabelToFront {
     void push(Vertex u, Vertex v, Edge e) {
 
         int delta = min(xgraph(g).excess(u), xgraph(g).capacity(e) - xgraph(g).flow(e));
-        if(!e.fromVertex().equals(u)){
+        if (!e.fromVertex().equals(u)) {
             delta = min(xgraph(g).excess(u), xgraph(g).flow(e));
         }
 
@@ -116,7 +110,7 @@ public class RelabelToFront {
             XVertex xu = (XVertex) u;
             for (Edge e : xu) {
                 Vertex v = e.otherEnd(u);
-                if (inResidualGraph(g, u, e) && xgraph(g).height(u) == 1 + xgraph(g).height(v)) {
+                if (xgraph(g).height(u) == 1 + xgraph(g).height(v)) {
                     push(u, v, e);
                     if (xgraph(g).excess(u) == 0) return;
                 }

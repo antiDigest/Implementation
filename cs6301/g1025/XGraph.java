@@ -16,7 +16,10 @@ package cs6301.g1025;
 
 import cs6301.g00.ArrayIterator;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 public class XGraph extends Graph {
     public static final int INFINITY = Integer.MAX_VALUE;
@@ -44,6 +47,14 @@ public class XGraph extends Graph {
             parentEdge = null;
         }
 
+        boolean isDisabled() {
+            return disabled;
+        }
+
+        void disable() {
+            disabled = true;
+        }
+
         @Override
         public Iterator<Edge> iterator() {
             return new XVertexIterator(this);
@@ -67,17 +78,11 @@ public class XGraph extends Graph {
                     return false;
                 }
                 cur = it.next();
-                while (cur.flow >= cur.capacity && it.hasNext()) {
+                while (!inResidualGraph(cur) && it.hasNext()) {
                     cur = it.next();
                 }
-                if (cur.flow < cur.capacity) {
-                    ready = true;
-
-                } else {
-                    ready = false;
-
-                }
-                return ready;
+                ready = true;
+                return (inResidualGraph(cur));
             }
 
             public Edge next() {
@@ -94,25 +99,47 @@ public class XGraph extends Graph {
                 throw new java.lang.UnsupportedOperationException();
             }
         }
+
+        /**
+         * Edge out of u in Residual Graph (Gf) because of e ?
+         * @param u From vertex
+         * @param e Edge (u, ?)
+         * @return true if in residual graph, else false
+         */
+        boolean inResidualGraph(Vertex u, Edge e) {
+            XEdge xe = (XEdge) e;
+            return e.fromVertex().equals(u) ? xe.flow() < xe.capacity() : xe.flow() > 0;
+        }
+
+        /**
+         * Edge out of "this" vertex in Residual Graph (Gf) because of e ?
+         * @param e Edge (u, ?)
+         * @return true if in residual graph, else false
+         */
+        boolean inResidualGraph(Edge e) {
+            return inResidualGraph(this, e);
+        }
     }
 
     static class XEdge extends Edge {
         int capacity;
         int flow;
-        XEdge reverseEdge;
+        boolean disabled;
 
         XEdge(XVertex from, XVertex to, int weight) {
             super(from, to, weight);
             capacity = weight;
             flow = 0;
+            this.disabled = false;
         }
 
-        XEdge(XVertex from, XVertex to, int flow, int capacity, int name) {
-            super(from, to, 0, name);
+        XEdge(XVertex from, XVertex to, int weight, int capacity, int name) {
+            super(from, to, weight, name);
             this.capacity = capacity;
-            this.flow = flow;
+            this.flow = 0;
             this.from = from;
             this.to = to;
+            this.name = name;
         }
 
         int capacity() {
@@ -121,6 +148,16 @@ public class XGraph extends Graph {
 
         int flow() {
             return flow;
+        }
+
+        boolean isDisabled() {
+            XVertex xfrom = (XVertex) from;
+            XVertex xto = (XVertex) to;
+            return disabled || xfrom.isDisabled() || xto.isDisabled();
+        }
+
+        void disable() {
+            this.disabled = true;
         }
 
     }
@@ -134,8 +171,8 @@ public class XGraph extends Graph {
         // nodes to be added later
         for (Vertex u : g) {
             xv[u.getName()] = new XVertex(u);
-            xv[u.getName()].height=0;
-            xv[u.getName()].excess=0;
+            xv[u.getName()].height = 0;
+            xv[u.getName()].excess = 0;
 
         }
         edges = new XEdge[g.m + 1];
@@ -146,17 +183,17 @@ public class XGraph extends Graph {
                 Vertex v = e.otherEnd(u);
                 XVertex x1 = getVertex(u);
                 XVertex x2 = getVertex(v);
-                XEdge xe1 = new XEdge(x1, x2, 0, capacity.get(e), e.getName());
-                XEdge xe2 = new XEdge(x2, x1, 0, 0, -e.getName());
-                xe1.reverseEdge = xe2;// adding the corresponding reverse edge
+                XEdge xe1 = new XEdge(x1, x2, e.getWeight(), capacity.get(e), e.getName());
+//                XEdge xe2 = new XEdge(x2, x1, 0, 0, -e.getName());
+//                xe1.reverseEdge = xe2;// adding the corresponding reverse edge
                 // to these edges
-                xe2.reverseEdge = xe1;// adding the corresponding reverse edge
+//                xe2.reverseEdge = xe1;// adding the corresponding reverse edge
 
                 edges[e.getName()] = xe1;
                 // to these edges
                 x1.xadj.add(xe1);
-                x2.xadj.add(xe2);
-                x1.xrevAdj.add(xe2);
+//                x2.xadj.add(xe2);
+//                x1.xrevAdj.add(xe2);
                 x2.xrevAdj.add(xe1);
 
             }
@@ -213,11 +250,11 @@ public class XGraph extends Graph {
     public String toString() {
         for (Vertex u : this) {
             XVertex xu = this.getVertex(u);
-            System.out.println("AjacencyList for Vertex " + u + " :"+ "and its excess  "+xu.excess+" height  "+xu.height);
+            System.out.println("AjacencyList for Vertex " + u + " :" + "and its excess  " + xu.excess + " height  " + xu.height);
             for (Edge e : xu.xadj) {
                 XEdge xe = (XEdge) e;
-                XVertex xv=this.getVertex(xe.otherEnd(xu));
-                System.out.print(e + " flow " + xe.flow + " capacity " + xe.capacity+",");
+                XVertex xv = this.getVertex(xe.otherEnd(xu));
+                System.out.print(e + " flow " + xe.flow + " capacity " + xe.capacity + ",");
             }
             System.out.println();
         }
@@ -230,63 +267,63 @@ public class XGraph extends Graph {
      * HELPER METHODS
      */
 
-    boolean seen(Vertex v){
+    boolean seen(Vertex v) {
         XVertex xv = (XVertex) v;
         return xv.seen;
     }
 
-    void setSeen(Vertex v){
+    void setSeen(Vertex v) {
         XVertex xv = (XVertex) v;
         xv.seen = true;
     }
 
-    void setDistance(Vertex v, int distance){
+    void setDistance(Vertex v, int distance) {
         XVertex xv = (XVertex) v;
         xv.distance = distance;
     }
 
-    int getDistance(Vertex v){
+    int getDistance(Vertex v) {
         XVertex xv = (XVertex) v;
         return xv.distance;
     }
 
-    void setParent(Vertex v, Vertex parent){
+    void setParent(Vertex v, Vertex parent) {
         XVertex xv = (XVertex) v;
         xv.parent = parent;
     }
 
-    void resetDistance(Vertex v){
+    void resetDistance(Vertex v) {
         XVertex xv = (XVertex) v;
         xv.distance = INFINITY;
     }
 
-    void resetParent(Vertex v){
+    void resetParent(Vertex v) {
         XVertex xv = (XVertex) v;
         xv.parent = null;
         xv.parentEdge = null;
     }
 
-    void resetSeen(Vertex v){
+    void resetSeen(Vertex v) {
         XVertex xv = (XVertex) v;
         xv.seen = false;
     }
 
-    int height(Vertex v){
+    int height(Vertex v) {
         XVertex xv = (XVertex) v;
         return xv.height;
     }
 
-    void setHeight(Vertex v, int value){
+    void setHeight(Vertex v, int value) {
         XVertex xv = (XVertex) v;
         xv.height = value;
     }
 
-    int excess(Vertex v){
+    int excess(Vertex v) {
         XVertex xv = (XVertex) v;
         return xv.excess;
     }
 
-    void setExcess(Vertex v, int value){
+    void setExcess(Vertex v, int value) {
         XVertex xv = (XVertex) v;
         xv.excess = value;
     }
@@ -311,12 +348,12 @@ public class XGraph extends Graph {
         xe.capacity = value;
     }
 
-    List<XEdge> getAdj(Vertex v){
+    List<XEdge> getAdj(Vertex v) {
         XVertex xv = (XVertex) v;
         return xv.xadj;
     }
 
-    List<XEdge> getRevAdj(Vertex v){
+    List<XEdge> getRevAdj(Vertex v) {
         XVertex xv = (XVertex) v;
         return xv.xrevAdj;
     }

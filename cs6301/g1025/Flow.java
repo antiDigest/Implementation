@@ -6,8 +6,6 @@ import cs6301.g1025.Graph.Vertex;
 
 import java.util.*;
 
-import static java.lang.Math.abs;
-
 public class Flow {
     HashMap<Edge, Integer> capacity;
     Graph g;
@@ -15,7 +13,7 @@ public class Flow {
     Vertex t;
 
     public Flow(Graph g, Vertex s, Vertex t, HashMap<Edge, Integer> capacity) {
-        this.g = new XGraph(g);
+        this.g = new XGraph(g, capacity);
         this.s = s;
         this.t = t;
         this.capacity = capacity;
@@ -23,7 +21,7 @@ public class Flow {
 
     // Return max flow found by Dinitz's algorithm
     public int dinitzMaxFlow() {
-        Dinitz d = new Dinitz(g, s, t, capacity);
+        Dinitz d = new Dinitz(g, s, t);
         int maxFlow = d.maxFlow();
         g = d.g;
         s = d.source;
@@ -33,7 +31,7 @@ public class Flow {
 
     // Return max flow found by relabelToFront algorithm
     public int relabelToFront() {
-        RelabelToFront rtf = new RelabelToFront(g, s, t, capacity);
+        RelabelToFront rtf = new RelabelToFront(g, s, t);
         rtf.relabelToFront();
         g = rtf.g;
         s = rtf.source;
@@ -53,6 +51,7 @@ public class Flow {
 
     /**
      * All vertices reachable from the src vertex
+     *
      * @param src: start vertex (could be source or sink)
      * @return Set of Vertices reachable from src
      */
@@ -76,12 +75,13 @@ public class Flow {
         return minCut;
     }
 
-    static XGraph xgraph(Graph g){
+    static XGraph xgraph(Graph g) {
         return (XGraph) g;
     }
 
     /**
      * Edge out of u in Residual Graph (Gf) because of e ?
+     *
      * @param u From vertex
      * @param e Edge (u, ?)
      * @return true if in residual graph, else false
@@ -93,6 +93,7 @@ public class Flow {
     /**
      * After maxflow has been computed, this method can be called to
      * get the "S"-side of the min-cut found by the algorithm
+     *
      * @return Set
      */
     Set<Graph.Vertex> minCutS() {
@@ -102,6 +103,7 @@ public class Flow {
     /**
      * After maxflow has been computed, this method can be called to
      * get the "T"-side of the min-cut found by the algorithm
+     *
      * @return Set
      */
     Set<Graph.Vertex> minCutT() {
@@ -113,21 +115,18 @@ public class Flow {
         int inFlow = 0;
         XGraph.XVertex xsource = (XGraph.XVertex) s;
         for (Edge e : xsource.xadj) {
-            XGraph.XEdge xe = (XGraph.XEdge) e;
+            XGraph.XEdge xe = ((XGraph) g).getEdge(e);
             if(e.fromVertex().equals(s))
                 outFlow += flow(xe);
         }
-
         XGraph.XVertex xsink = (XGraph.XVertex) t;
         for (Edge e : xsink.xadj) {
-            XGraph.XEdge xe = (XGraph.XEdge) e;
-            if(!e.fromVertex().equals(t))
+            XGraph.XEdge xe = ((XGraph) g).getEdge(e);
+            if(e.toVertex().equals(t))
                 inFlow += flow(xe);
         }
 
-        if (inFlow != outFlow
-                && inFlow != abs(xsource.excess)
-                && outFlow != abs(xsink.excess)) {
+        if (inFlow != outFlow) {
             System.out.println("Invalid: total flow from the source (" + outFlow + ") " +
                     "!= total flow to the sink (" + inFlow + ")");
             return false;
@@ -135,13 +134,11 @@ public class Flow {
 
         for (Vertex u : g) {
             if (u != s && u != t) {
-                XGraph.XVertex xu = (XGraph.XVertex) u;
-
                 int outVertexFlow = 0;
                 int inVertexFlow = 0;
-                for (Edge e : xu.xadj) {
+                for (Edge e : xgraph(g).getAdj(u)) {
                     XGraph.XEdge xe = (XGraph.XEdge) e;
-                    if(!e.fromVertex().equals(u))
+                    if (!e.fromVertex().equals(u))
                         inVertexFlow += flow(xe);
                     else
                         outVertexFlow += flow(xe);
