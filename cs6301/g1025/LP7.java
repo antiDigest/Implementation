@@ -44,34 +44,35 @@ public class LP7 {
 
         Flow f = new Flow(g, g.getVertex(s), g.getVertex(t), capacity);
         //f.setVerbose(VERBOSE);
-//        int value = f.dinitzMaxFlow();
-//
-//        // Uncomment this if you have implemented verify()
-//        if (f.verify()) {
-//            System.out.println("Max flow is verified");
-//        } else {
-//            System.out.println("Algorithm is wrong. Verification failed.");
-//        }
-//
-//
-//        System.out.println(value);
-//
-//        if (VERBOSE > 0) {
-//            for (Vertex u : g) {
-//                System.out.print(u + " : ");
-//                for (Edge e : u) {
-//                    System.out.print(e + ":" + f.flow(e) + "/" + f.capacity(e) + " | ");
-//                }
-//                System.out.println();
-//            }
-//            System.out.println("Min cut: S = " + f.minCutS());
-//            System.out.println("Min cut: T = " + f.minCutT());
-//        }
-//
-//        System.out.println(timer.end());
-//
+        System.out.println("Dinitz");
+        int value = f.dinitzMaxFlow();
+
+        // Uncomment this if you have implemented verify()
+        if (f.verify()) {
+            System.out.println("Max flow is verified");
+        } else {
+            System.out.println("Algorithm is wrong. Verification failed.");
+        }
+
+        System.out.println(value);
+
+        if (VERBOSE > 0) {
+            for (Vertex u : g) {
+                System.out.print(u + " : ");
+                for (Edge e : u) {
+                    System.out.print(e + ":" + f.flow(e) + "/" + f.capacity(e) + " | ");
+                }
+                System.out.println();
+            }
+            System.out.println("Min cut: S = " + f.minCutS());
+            System.out.println("Min cut: T = " + f.minCutT());
+        }
+
+        System.out.println(timer.end());
+
+        System.out.println("Relabel to Front");
         timer = new cs6301.g00.Timer();
-        int value = f.relabelToFront();
+        value = f.relabelToFront();
 
         // Uncomment this if you have implemented verify()
         if (f.verify()) {

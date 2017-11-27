@@ -21,10 +21,10 @@ public class Dinitz {
     Vertex sink;
 
     Dinitz(Graph g, Graph.Vertex src, Graph.Vertex sink) {
-        this.g = g;
-        this.source = this.g.getVertex(src.getName());
-        this.sink = this.g.getVertex(sink.getName());
-        bfshandle = new BFS(g, (XGraph.XVertex) src);
+        this.g = (XGraph) g;
+        this.source = ((XGraph) this.g).getVertex(src);
+        this.sink = ((XGraph) this.g).getVertex(sink);
+        bfshandle = new BFS(g, source);
     }
 
     /**

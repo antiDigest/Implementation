@@ -14,8 +14,8 @@ public class Flow {
 
     public Flow(Graph g, Vertex s, Vertex t, HashMap<Edge, Integer> capacity) {
         this.g = new XGraph(g, capacity);
-        this.s = s;
-        this.t = t;
+        this.s = ((XGraph) this.g).getVertex(s);
+        this.t = ((XGraph) this.g).getVertex(t);
         this.capacity = capacity;
     }
 
