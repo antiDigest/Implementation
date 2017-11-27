@@ -63,10 +63,12 @@ public class XGraph extends Graph {
         class XVertexIterator implements Iterator<Edge> {
             XEdge cur;
             Iterator<XEdge> it;
+            Iterator<XEdge> itrev;
             boolean ready;
 
             XVertexIterator(XVertex u) {
                 this.it = u.xadj.iterator();
+                this.itrev = u.xrevAdj.iterator();
                 ready = false;
             }
 
@@ -75,14 +77,22 @@ public class XGraph extends Graph {
                     return true;
                 }
                 if (!it.hasNext()) {
+                    it = itrev;
+                }
+                if (!it.hasNext()) {
                     return false;
                 }
                 cur = it.next();
                 while (!inResidualGraph(cur) && it.hasNext()) {
                     cur = it.next();
+                    if (!it.hasNext() && !inResidualGraph(cur) && it!=itrev)
+                        it = itrev;
                 }
                 ready = true;
-                return (inResidualGraph(cur));
+                if(it == itrev && !inResidualGraph(cur))
+                    return false;
+                else
+                    return true;
             }
 
             public Edge next() {
@@ -246,21 +256,21 @@ public class XGraph extends Graph {
         return edges[e.getName()];
     }
 
-    @Override
-    public String toString() {
-        for (Vertex u : this) {
-            XVertex xu = this.getVertex(u);
-            System.out.println("AjacencyList for Vertex " + u + " :" + "and its excess  " + xu.excess + " height  " + xu.height);
-            for (Edge e : xu.xadj) {
-                XEdge xe = (XEdge) e;
-                XVertex xv = this.getVertex(xe.otherEnd(xu));
-                System.out.print(e + " flow " + xe.flow + " capacity " + xe.capacity + ",");
-            }
-            System.out.println();
-        }
-
-        return "";
-    }
+//    @Override
+//    public String toString() {
+//        for (Vertex u : this) {
+//            XVertex xu = this.getVertex(u);
+//            System.out.println("AjacencyList for Vertex " + u + " :" + "and its excess  " + xu.excess + " height  " + xu.height);
+//            for (Edge e : xu.xadj) {
+//                XEdge xe = (XEdge) e;
+//                XVertex xv = this.getVertex(xe.otherEnd(xu));
+//                System.out.print(e + " flow " + xe.flow + " capacity " + xe.capacity + ",");
+//            }
+//            System.out.println();
+//        }
+//
+//        return "";
+//    }
 
 
     /**

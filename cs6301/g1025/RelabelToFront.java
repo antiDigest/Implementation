@@ -32,17 +32,10 @@ public class RelabelToFront {
      */
     void initialize() {
 
-        for (Vertex u : g) {
-            xgraph(g).setHeight(u, 0);
-            xgraph(g).setExcess(u, 0);
-            for (Edge e : ((XVertex) u)) {
-                xgraph(g).setFlow(e, 0);
-            }
-        }
-
         xgraph(g).setHeight(source, g.size());
 
-        for (Edge e : ((XVertex) source)) {
+        XVertex xsource = (XVertex) source;
+        for (Edge e : xsource) {
             Vertex u = e.otherEnd(source);
             xgraph(g).setFlow(e, xgraph(g).capacity(e));
             xgraph(g).setExcess(source, xgraph(g).excess(source) - xgraph(g).capacity(e));
@@ -63,7 +56,7 @@ public class RelabelToFront {
     void push(Vertex u, Vertex v, Edge e) {
 
         int delta = min(xgraph(g).excess(u), xgraph(g).capacity(e) - xgraph(g).flow(e));
-        if (!e.fromVertex().equals(u)) {
+        if (e.toVertex().equals(u)) {
             delta = min(xgraph(g).excess(u), xgraph(g).flow(e));
         }
 
@@ -124,11 +117,6 @@ public class RelabelToFront {
      * Algorithm to find max flow !
      */
     void relabelToFront() {
-
-        for(Vertex u: g){
-            XVertex xu = (XVertex) u;
-            xu.xadj.addAll(xu.xrevAdj);
-        }
 
         initialize();
 

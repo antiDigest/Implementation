@@ -120,7 +120,7 @@ public class Flow {
                 outFlow += flow(xe);
         }
         XGraph.XVertex xsink = (XGraph.XVertex) t;
-        for (Edge e : xsink.xadj) {
+        for (Edge e : xsink.xrevAdj) {
             XGraph.XEdge xe = ((XGraph) g).getEdge(e);
             if(e.toVertex().equals(t))
                 inFlow += flow(xe);
@@ -136,12 +136,14 @@ public class Flow {
             if (u != s && u != t) {
                 int outVertexFlow = 0;
                 int inVertexFlow = 0;
-                for (Edge e : xgraph(g).getAdj(u)) {
+                XGraph.XVertex xu = (XGraph.XVertex) u;
+                for (Edge e : xu.xadj) {
                     XGraph.XEdge xe = (XGraph.XEdge) e;
-                    if (!e.fromVertex().equals(u))
-                        inVertexFlow += flow(xe);
-                    else
-                        outVertexFlow += flow(xe);
+                    outVertexFlow += flow(xe);
+                }
+                for (Edge e : xu.xrevAdj) {
+                    XGraph.XEdge xe = (XGraph.XEdge) e;
+                    inVertexFlow += flow(xe);
                 }
 
                 if (inVertexFlow != outVertexFlow) {

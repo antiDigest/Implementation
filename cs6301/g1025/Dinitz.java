@@ -8,10 +8,12 @@ package cs6301.g1025;
 import cs6301.g1025.Graph.Edge;
 import cs6301.g1025.Graph.Vertex;
 import cs6301.g1025.XGraph.XEdge;
+import cs6301.g1025.XGraph.XVertex;
 
 import java.util.Iterator;
 
 import static cs6301.g1025.Flow.xgraph;
+import static java.lang.Integer.min;
 
 public class Dinitz {
     public static final int INFINITY = Integer.MAX_VALUE;
@@ -24,7 +26,7 @@ public class Dinitz {
         this.g = (XGraph) g;
         this.source = ((XGraph) this.g).getVertex(src);
         this.sink = ((XGraph) this.g).getVertex(sink);
-        bfshandle = new BFS(g, source);
+        bfshandle = new BFS(g, (XVertex) source);
     }
 
     /**
@@ -40,25 +42,27 @@ public class Dinitz {
      */
     int EnumBFSTree(Vertex s, int flow, Iterator<Edge> itr) {
         if (s.equals(sink)) {
+            System.out.println("Flow: " + flow);
             return flow;
         }
         while (itr.hasNext()) {
             Edge e = itr.next();
             XEdge xe = (XEdge) e;
             if (bfshandle.distance(xe.otherEnd(s)) == bfshandle.distance(s) + 1) {
-                if (flow > xe.capacity - xe.flow) {
-                    flow = xe.capacity - xe.flow;
+                if (e.toVertex().equals(s)) {
+                    flow = min(flow, xgraph(g).flow(e));
+                } else {
+                    flow = min(flow, xgraph(g).capacity(e) - xgraph(g).flow(e));
                 }
-                int minedgeflow = EnumBFSTree(xe.otherEnd(s), flow,
-                        xe.otherEnd(s).iterator());
+
+                int minedgeflow = EnumBFSTree(xe.otherEnd(s), flow, xe.otherEnd(s).iterator());
+
                 if (minedgeflow > 0) {
                     if (e.fromVertex().equals(s)) {
                         xgraph(g).setFlow(e, xgraph(g).flow(e) + minedgeflow);
                     } else {
                         xgraph(g).setFlow(e, xgraph(g).flow(e) - minedgeflow);
                     }
-//                    xe.flow = xe.flow + minedgeflow;
-//                    xe.reverseEdge.flow = xe.reverseEdge.flow - minedgeflow;
                     return minedgeflow;
                 }
             }
@@ -74,14 +78,9 @@ public class Dinitz {
      */
     int maxFlow() {
 
-        for(Vertex u: g){
-            XGraph.XVertex xu = (XGraph.XVertex) u;
-            xu.xadj.addAll(xu.xrevAdj);
-        }
-
         int flow = 0;
         while (true) {
-            XGraph.XVertex xsource = ((XGraph.XVertex) source);
+            XVertex xsource = (XVertex) source;
             bfshandle.bfs();
             if (!bfshandle.getVertex(sink).seen)
                 break;
