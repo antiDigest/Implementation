@@ -14,8 +14,8 @@ public class Flow {
 
     public Flow(Graph g, Vertex s, Vertex t, HashMap<Edge, Integer> capacity) {
         this.g = new XGraph(g, capacity);
-        this.s = ((XGraph) this.g).getVertex(s);
-        this.t = ((XGraph) this.g).getVertex(t);
+        this.s = s;
+        this.t = t;
         this.capacity = capacity;
     }
 
@@ -113,17 +113,13 @@ public class Flow {
     boolean verify() {
         int outFlow = 0;
         int inFlow = 0;
-        XGraph.XVertex xsource = (XGraph.XVertex) s;
+        XGraph.XVertex xsource = xgraph(g).getVertex(s);
         for (Edge e : xsource.xadj) {
-            XGraph.XEdge xe = ((XGraph) g).getEdge(e);
-            if(e.fromVertex().equals(s))
-                outFlow += flow(xe);
+            outFlow += flow(e);
         }
         XGraph.XVertex xsink = (XGraph.XVertex) t;
         for (Edge e : xsink.xrevAdj) {
-            XGraph.XEdge xe = ((XGraph) g).getEdge(e);
-            if(e.toVertex().equals(t))
-                inFlow += flow(xe);
+            inFlow += flow(e);
         }
 
         if (inFlow != outFlow) {
@@ -139,11 +135,11 @@ public class Flow {
                 XGraph.XVertex xu = (XGraph.XVertex) u;
                 for (Edge e : xu.xadj) {
                     XGraph.XEdge xe = (XGraph.XEdge) e;
-                    outVertexFlow += flow(xe);
+                    outVertexFlow += xgraph(g).flow(xe);
                 }
                 for (Edge e : xu.xrevAdj) {
                     XGraph.XEdge xe = (XGraph.XEdge) e;
-                    inVertexFlow += flow(xe);
+                    inVertexFlow += xgraph(g).flow(xe);
                 }
 
                 if (inVertexFlow != outVertexFlow) {

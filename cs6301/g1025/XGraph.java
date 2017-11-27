@@ -85,11 +85,11 @@ public class XGraph extends Graph {
                 cur = it.next();
                 while (!inResidualGraph(cur) && it.hasNext()) {
                     cur = it.next();
-                    if (!it.hasNext() && !inResidualGraph(cur) && it!=itrev)
+                    if (it!=itrev && !it.hasNext() && !inResidualGraph(cur))
                         it = itrev;
                 }
                 ready = true;
-                if(it == itrev && !inResidualGraph(cur))
+                if((it == itrev && !inResidualGraph(cur)))
                     return false;
                 else
                     return true;
@@ -194,18 +194,9 @@ public class XGraph extends Graph {
                 XVertex x1 = getVertex(u);
                 XVertex x2 = getVertex(v);
                 XEdge xe1 = new XEdge(x1, x2, e.getWeight(), capacity.get(e), e.getName());
-//                XEdge xe2 = new XEdge(x2, x1, 0, 0, -e.getName());
-//                xe1.reverseEdge = xe2;// adding the corresponding reverse edge
-                // to these edges
-//                xe2.reverseEdge = xe1;// adding the corresponding reverse edge
-
                 edges[e.getName()] = xe1;
-                // to these edges
                 x1.xadj.add(xe1);
-//                x2.xadj.add(xe2);
-//                x1.xrevAdj.add(xe2);
                 x2.xrevAdj.add(xe1);
-
             }
         }
     }

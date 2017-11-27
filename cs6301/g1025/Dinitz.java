@@ -26,7 +26,7 @@ public class Dinitz {
         this.g = (XGraph) g;
         this.source = ((XGraph) this.g).getVertex(src);
         this.sink = ((XGraph) this.g).getVertex(sink);
-        bfshandle = new BFS(g, (XVertex) source);
+        bfshandle = new BFS(g, source);
     }
 
     /**
@@ -80,19 +80,18 @@ public class Dinitz {
 
         int flow = 0;
         while (true) {
-            XVertex xsource = (XVertex) source;
             bfshandle.bfs();
             if (!bfshandle.getVertex(sink).seen)
                 break;
             while (true) {
-                int minflow = EnumBFSTree(source, INFINITY, xsource.iterator());
+                int minflow = EnumBFSTree(source, INFINITY, source.iterator());
                 if (minflow == -1) {
                     break;
                 } else {
                     flow = flow + minflow;
                 }
             }
-            bfshandle.reinitialize(xsource);
+            bfshandle.reinitialize(source);
         }
         return flow;
     }

@@ -11,8 +11,9 @@ import java.util.List;
 import static cs6301.g1025.Flow.inResidualGraph;
 import static cs6301.g1025.Flow.xgraph;
 import static cs6301.g1025.XGraph.INFINITY;
-import static java.lang.Integer.min;
+import static java.lang.Math.min;
 import static java.lang.Math.abs;
+import static java.lang.Math.max;
 
 
 public class RelabelToFront {
@@ -34,8 +35,7 @@ public class RelabelToFront {
 
         xgraph(g).setHeight(source, g.size());
 
-        XVertex xsource = (XVertex) source;
-        for (Edge e : xsource) {
+        for (Edge e : source) {
             Vertex u = e.otherEnd(source);
             xgraph(g).setFlow(e, xgraph(g).capacity(e));
             xgraph(g).setExcess(source, xgraph(g).excess(source) - xgraph(g).capacity(e));
@@ -56,7 +56,7 @@ public class RelabelToFront {
     void push(Vertex u, Vertex v, Edge e) {
 
         int delta = min(xgraph(g).excess(u), xgraph(g).capacity(e) - xgraph(g).flow(e));
-        if (e.toVertex().equals(u)) {
+        if (!e.fromVertex().equals(u)) {
             delta = min(xgraph(g).excess(u), xgraph(g).flow(e));
         }
 
@@ -80,11 +80,10 @@ public class RelabelToFront {
 
         int minHeight = INFINITY;
 
-        XVertex xu = (XVertex) u;
-        for (Edge e : xu) {
+        for (Edge e : u) {
             Vertex v = e.otherEnd(u);
             if (xgraph(g).height(u) > xgraph(g).height(v)) continue;
-            if (xgraph(g).height(v) < minHeight && inResidualGraph(g, u, e)) {
+            if (xgraph(g).height(v) < minHeight) {
                 minHeight = xgraph(g).height(v);
             }
         }
@@ -100,8 +99,7 @@ public class RelabelToFront {
     void discharge(Vertex u) {
 
         while (xgraph(g).excess(u) > 0) {
-            XVertex xu = (XVertex) u;
-            for (Edge e : xu) {
+            for (Edge e : u) {
                 Vertex v = e.otherEnd(u);
                 if (xgraph(g).height(u) == 1 + xgraph(g).height(v)) {
                     push(u, v, e);
