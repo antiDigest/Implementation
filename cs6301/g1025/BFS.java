@@ -11,7 +11,6 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 
-
 public class BFS extends GraphAlgorithm<BFS.BFSVertex> {
     public static final int INFINITY = Integer.MAX_VALUE;
 

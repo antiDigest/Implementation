@@ -13,6 +13,7 @@ public class LP7 {
     static int VERBOSE = 0;
     public static void main(String[] args) throws FileNotFoundException {
         if(args.length > 0) { VERBOSE = Integer.parseInt(args[0]); }
+//        java.util.Scanner in = new java.util.Scanner(System.in);
         Scanner in;
         if (args.length > 1) {
             File inputFile = new File(args[1]);
@@ -42,9 +43,9 @@ public class LP7 {
 
         Flow f = new Flow(g, g.getVertex(s), g.getVertex(t), capacity);
         //f.setVerbose(VERBOSE);
-        int value = f.dinitzMaxFlow();
+        int value = f.relabelToFront();
 
-	// Uncomment this if you have implemented verify()
+	/* Uncomment this if you have implemented verify() */
 	if(f.verify()) {
 	    System.out.println("Max flow is verified");
 	} else {
@@ -67,35 +68,6 @@ public class LP7 {
         }
 
         System.out.println(timer.end());
-
-        timer = new cs6301.g00.Timer();
-        value = f.relabelToFront();
-
-        // Uncomment this if you have implemented verify()
-        if(f.verify()) {
-            System.out.println("Max flow is verified");
-        } else {
-            System.out.println("Algorithm is wrong. Verification failed.");
-        }
-
-
-        System.out.println(value);
-
-        if(VERBOSE > 0) {
-            for(Vertex u: g) {
-                System.out.print(u + " : ");
-                for(Edge e: u) {
-                    System.out.print(e + ":" + f.flow(e) + "/" + f.capacity(e) + " | ");
-                }
-                System.out.println();
-            }
-            System.out.println("Min cut: S = " + f.minCutS());
-            System.out.println("Min cut: T = " + f.minCutT());
-        }
-
-        System.out.println(timer.end());
-
-//        f.crossVerify();
     }
 }
 	
