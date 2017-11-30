@@ -7,14 +7,16 @@ package cs6301.g1025;
 
 import cs6301.g1025.Graph.Edge;
 import cs6301.g1025.Graph.Vertex;
-import cs6301.g1025.XGraph.XEdge;
 import cs6301.g1025.XGraph.XVertex;
+import cs6301.g1025.XGraph.XEdge;
 
+import java.nio.file.Path;
 import java.util.*;
 
 import static cs6301.g1025.Flow.inResidualGraph;
 import static cs6301.g1025.Flow.xgraph;
 import static cs6301.g1025.XGraph.INFINITY;
+import static java.lang.Math.min;
 
 
 public class Dinitz {
@@ -23,25 +25,14 @@ public class Dinitz {
     Graph.Vertex source;
     Graph.Vertex sink;
 
-    class PathEdge {
-        Edge e;
-        Vertex from;
-        Vertex to;
-
-        PathEdge(Edge e, Vertex from, Vertex to) {
-            this.e = e;
-            this.from = from;
-            this.to = to;
-        }
-
-        @Override
-        public String toString() {
-            return this.e + "";
-        }
-    }
-
     Dinitz(Graph g, Graph.Vertex src, Graph.Vertex sink, HashMap<Graph.Edge, Integer> capacity) {
         this.g = new XGraph(g, capacity);
+        this.source = this.g.getVertex(src.getName());
+        this.sink = this.g.getVertex(sink.getName());
+    }
+
+    Dinitz(Graph g, Graph.Vertex src, Graph.Vertex sink) {
+        this.g = new XGraph(g);
         this.source = this.g.getVertex(src.getName());
         this.sink = this.g.getVertex(sink.getName());
     }
@@ -49,6 +40,7 @@ public class Dinitz {
     void bfsInit() {
         for (Vertex u : g) {
             xgraph(g).resetSeen(u);
+            xgraph(g).resetTaken(u);
         }
     }
 
@@ -74,13 +66,6 @@ public class Dinitz {
                     q.add(v);
                 }
             }
-//            for (Graph.Edge e : xgraph(g).getRevAdj(u)) {
-//                Vertex v = e.otherEnd(u);
-//                if (!xgraph(g).seen(v) && inResidualGraph(g, u, e)) {
-//                    visit(u, v, e);
-//                    q.add(v);
-//                }
-//            }
         }
 
     }
@@ -91,113 +76,73 @@ public class Dinitz {
         xgraph(g).setDistance(v, xgraph(g).getDistance(u) + 1);
     }
 
-    int maxFlow() {
+    /**
+     * Caclulating maximum flow
+     *
+     * @return
+     */
+    int maxFlowDinitz() {
 
+        int flow = 0;
         while (true) {
             BFS(source);
-            if (xgraph(g).getDistance(sink) == INFINITY) break;
-
-            bfsInit();
-            Set<List<PathEdge>> paths = new LinkedHashSet<>();
-            List<PathEdge> path = new ArrayList<>();
-            getAllPaths(paths, path, 0, source);
-
-            System.out.println("Number of paths: " + paths.size());
-
-            for (List<PathEdge> pathEdges : paths) {
-                int cMin = minCapacity(pathEdges);
-                for (PathEdge pe : pathEdges) {
-                    Edge e = pe.e;
-                    Vertex u = pe.from;
-
-                    if (e.fromVertex().equals(u)) {
-                        xgraph(g).setFlow(e, xgraph(g).flow(e) + cMin );
-                    } else {
-                        xgraph(g).setFlow(e, xgraph(g).flow(e) - cMin );
-                    }
+            if (xgraph(g).getDistance(sink) == INFINITY)
+                break;
+            while (true) {
+                bfsInit();
+                xgraph(g).setSeen(source);
+                int minflow = EnumBFSTree(source, INFINITY, source.iterator(), 0);
+                if (minflow == -1) {
+                    break;
+                } else {
+                    flow = flow + minflow;
                 }
             }
         }
-
-        for (Vertex u : g) {
-            xgraph(g).resetSeen(u);
-        }
-
-        int flow = 0;
-        for (Edge e : xgraph(g).getRevAdj(sink)) {
-            flow += xgraph(g).flow(e);
-        }
+        bfsInit();
         return flow;
     }
 
     /**
-     * Calculate the minimum flow through the path
+     * Approach:
+     * updating minflow for a path while enumerating augmenting paths-
+     * (optimizing like reward problem  in lp4 without storing all paths) and
+     * skipping over edges with the help of iterator
      *
-     * @param path List of edges in the path
-     * @return Minimum path capacity
+     * @param s    Vertex
+     * @param flow Min flow calculated
+     * @param itr  Edge iterator
+     * @return Max Flow through the path
      */
-    int minCapacity(List<PathEdge> path) {
-        int minCapacity = INFINITY;
-        for (PathEdge pe : path) {
-            Edge e = pe.e;
-            if (minCapacity > xgraph(g).capacity(e) - xgraph(g).flow(e)) {
-                minCapacity = xgraph(g).capacity(e) - xgraph(g).flow(e);
-            }
-        }
-        return minCapacity;
-    }
-
-    /**
-     * Enumerate all paths from source to sink at a distance sink.distance
-     *
-     * @param paths: Storing all paths from s to t
-     * @param path:  Enumerating current path from s to t
-     * @param dist:  distance reached from s
-     * @param src:   current node visiting
-     * @return List of edges of one of the paths
-     */
-    List<PathEdge> getAllPaths(Set<List<PathEdge>> paths, List<PathEdge> path, int dist, Vertex src) {
+    int EnumBFSTree(Vertex s, int flow, Iterator<Edge> itr, int dist) {
         if (dist > xgraph(g).getDistance(sink)) {
-            return path;
+            return -1;
         }
-        if (src.equals(sink) && dist == xgraph(g).getDistance(sink)) {
-            List<PathEdge> pathEdges = new ArrayList<>();
-            pathEdges.addAll(path);
-            paths.add(pathEdges);
-        } else {
-            XVertex xsrc = (XVertex) src;
-            for (Edge e : xsrc) {
-                Vertex v = e.otherEnd(src);
-                relax(src, e, v, paths, path, dist);
-            }
-//            for (Edge e : xgraph(g).getRevAdj(src)) {
-//                Vertex v = e.otherEnd(src);
-//                relax(src, e, v, paths, path, dist);
-//            }
+        if (s.equals(sink) && dist == xgraph(g).getDistance(sink)) {
+            return flow;
         }
-        return path;
-    }
+        while (itr.hasNext()) {
+            Edge e = itr.next();
+            XEdge xe = (XEdge) e;
+            Vertex v = xe.otherEnd(s);
+            if (!xgraph(g).seen(v) && inResidualGraph(g, s, e) && xgraph(g).getDistance(v) == dist + 1) {
+                if(xgraph(g).cf(s, e) > 0)
+                    flow = min(flow, xgraph(g).cf(s, e));
 
-    void relax(Vertex src, Edge e, Vertex v, Set<List<PathEdge>> paths, List<PathEdge> path, int dist) {
-        if (inResidualGraph(g, src, e) && !xgraph(g).seen(v) && xgraph(g).getDistance(v) == dist + 1) {
-            path.add(new PathEdge(e, src, v));
-            xgraph(g).setSeen(v);
-            path = getAllPaths(paths, path, dist + 1, v);
-            if (!path.isEmpty()) {
-                path.remove(dist);
-                xgraph(g).resetSeen(v);
+                xgraph(g).setSeen(v);
+                int minedgeflow = EnumBFSTree(xe.otherEnd(s), flow, xe.otherEnd(s).iterator(), dist + 1);
+
+                if (minedgeflow > 0) {
+                    if (e.fromVertex().equals(s)) {
+                        xgraph(g).setFlow(e, xgraph(g).flow(e) + minedgeflow);
+                    } else {
+                        xgraph(g).setFlow(e, xgraph(g).flow(e) - minedgeflow);
+                    }
+                    return minedgeflow;
+                }
             }
         }
-    }
 
-    /**
-     * Given from and to vertices with an edge, checking if the edge is reverse
-     *
-     * @param e
-     * @param from
-     * @return
-     */
-    boolean isReverse(Edge e, Vertex from) {
-        return !(e.fromVertex().equals(from));
+        return -1; // meaning didn't find the augmenting path
     }
 }

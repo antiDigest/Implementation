@@ -14,8 +14,6 @@ public class Flow {
     Vertex s;
     Vertex t;
 
-    Graph dinitz;
-    Graph rtf;
 
     public Flow(Graph g, Vertex s, Vertex t, HashMap<Edge, Integer> capacity) {
         this.g = new XGraph(g);
@@ -26,12 +24,11 @@ public class Flow {
 
     // Return max flow found by Dinitz's algorithm
     public int dinitzMaxFlow() {
-        Dinitz d = new Dinitz(g, s, t, capacity);
-        int maxFlow = d.maxFlow();
+        Dinitz d = new Dinitz(g, xgraph(g).getVertex(s), xgraph(g).getVertex(t), capacity);
+        int maxFlow = d.maxFlowDinitz();
         g = d.g;
         s = d.source;
         t = d.sink;
-        dinitz = d.g;
         return maxFlow;
     }
 
@@ -42,7 +39,6 @@ public class Flow {
         g = rtf.g;
         s = rtf.source;
         t = rtf.sink;
-        this.rtf = rtf.g;
         return rtf.maxFlow();
     }
 

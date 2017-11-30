@@ -31,6 +31,7 @@ public class XGraph extends Graph {
         int distance;
         Vertex parent;
         Edge parentEdge;
+        boolean taken;
 
         XVertex(Vertex u) {
             super(u);
@@ -42,6 +43,7 @@ public class XGraph extends Graph {
             distance = INFINITY;
             parent = null;
             parentEdge = null;
+            taken = false;
         }
 
         boolean isDisabled() {
@@ -64,12 +66,14 @@ public class XGraph extends Graph {
         class XVertexIterator implements Iterator<Edge> {
             XEdge cur;
             Iterator<XEdge> it;
+            Iterator<XEdge> itrev;
             boolean ready;
             XVertex u;
 
             XVertexIterator(XVertex u) {
                 this.u = u;
                 this.it = u.xadj.iterator();
+                this.itrev = u.xrevAdj.iterator();
                 ready = false;
             }
 
@@ -83,6 +87,8 @@ public class XGraph extends Graph {
                 if (ready) {
                     return true;
                 }
+                if(!it.hasNext())
+                    it = itrev;
                 if (!it.hasNext()) {
                     return false;
                 }
@@ -90,8 +96,13 @@ public class XGraph extends Graph {
                 while (!inResidualGraph(cur) && it.hasNext()) {
                     cur = it.next();
                 }
-                ready = true;
-                return (inResidualGraph(cur) && !cur.isDisabled());
+                if(!inResidualGraph(cur) && !it.hasNext())
+                    it = itrev;
+                while (!inResidualGraph(cur) && it.hasNext()) {
+                    cur = it.next();
+                }
+                ready = it != itrev || inResidualGraph(cur);
+                return ready;
             }
 
             public Edge next() {
@@ -269,6 +280,21 @@ public class XGraph extends Graph {
         xv.seen = true;
     }
 
+    boolean taken(Vertex v){
+        XVertex xv = (XVertex) v;
+        return xv.taken;
+    }
+
+    void setTaken(Vertex v){
+        XVertex xv = (XVertex) v;
+        xv.taken = true;
+    }
+
+    void resetTaken(Vertex v){
+        XVertex xv = (XVertex) v;
+        xv.taken = false;
+    }
+
     void setDistance(Vertex v, int distance){
         XVertex xv = (XVertex) v;
         xv.distance = distance;
@@ -333,6 +359,14 @@ public class XGraph extends Graph {
     int capacity(Edge e) {
         XEdge xe = getEdge(e.getName());
         return xe.capacity();
+    }
+
+    int cf(Vertex v, Edge e){
+        XEdge xe = getEdge(e.getName());
+        if(e.fromVertex().equals(v))
+            return xe.capacity() - xe.flow();
+        else
+            return xe.flow();
     }
 
     void setCapacity(Edge e, int value) {
