@@ -31,7 +31,6 @@ public class XGraph extends Graph {
         int distance;
         Vertex parent;
         Edge parentEdge;
-        boolean taken;
 
         XVertex(Vertex u) {
             super(u);
@@ -43,7 +42,6 @@ public class XGraph extends Graph {
             distance = INFINITY;
             parent = null;
             parentEdge = null;
-            taken = false;
         }
 
         boolean isDisabled() {
@@ -278,21 +276,6 @@ public class XGraph extends Graph {
     void setSeen(Vertex v){
         XVertex xv = (XVertex) v;
         xv.seen = true;
-    }
-
-    boolean taken(Vertex v){
-        XVertex xv = (XVertex) v;
-        return xv.taken;
-    }
-
-    void setTaken(Vertex v){
-        XVertex xv = (XVertex) v;
-        xv.taken = true;
-    }
-
-    void resetTaken(Vertex v){
-        XVertex xv = (XVertex) v;
-        xv.taken = false;
     }
 
     void setDistance(Vertex v, int distance){

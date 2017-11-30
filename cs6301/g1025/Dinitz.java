@@ -40,7 +40,6 @@ public class Dinitz {
     void bfsInit() {
         for (Vertex u : g) {
             xgraph(g).resetSeen(u);
-            xgraph(g).resetTaken(u);
         }
     }
 
@@ -143,6 +142,7 @@ public class Dinitz {
             }
         }
 
-        return -1; // meaning didn't find the augmenting path
+        // no augmenting path found
+        return -1;
     }
 }
