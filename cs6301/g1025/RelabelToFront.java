@@ -68,9 +68,7 @@ public class RelabelToFront {
      */
     void push(Vertex u, Vertex v, Edge e) {
 
-        int delta = xgraph(g).excess(u);
-        if(xgraph(g).cf(u, e) > 0)
-            delta = Math.min(delta, xgraph(g).cf(u, e));
+        int delta = Math.min(xgraph(g).excess(u), xgraph(g).cf(u, e));
 
 
         if (e.fromVertex().equals(u)) {
