@@ -21,7 +21,7 @@ import java.util.*;
 public class XGraph extends Graph {
     public static final int INFINITY = Integer.MAX_VALUE;
 
-    public static class XVertex extends Vertex {
+    public static class XVertex extends Vertex implements Comparable<XVertex> {
         boolean disabled;
         List<XEdge> xadj;
         List<XEdge> xrevAdj;
@@ -31,6 +31,8 @@ public class XGraph extends Graph {
         int distance;
         Vertex parent;
         Edge parentEdge;
+
+        boolean moveUp;
 
         XVertex(Vertex u) {
             super(u);
@@ -42,6 +44,7 @@ public class XGraph extends Graph {
             distance = INFINITY;
             parent = null;
             parentEdge = null;
+            moveUp = false;
         }
 
         boolean isDisabled() {
@@ -59,6 +62,11 @@ public class XGraph extends Graph {
 
         public Iterator<Edge> reverseIterator() {
             return new XVertexIterator(this, this.xrevAdj);
+        }
+
+        @Override
+        public int compareTo(XVertex o) {
+            return Integer.compare(this.height, o.height);
         }
 
         class XVertexIterator implements Iterator<Edge> {
@@ -267,6 +275,21 @@ public class XGraph extends Graph {
     /**
      * HELPER METHODS
      */
+
+    boolean moveUp(Vertex v){
+        XVertex xv = (XVertex) v;
+        return xv.moveUp;
+    }
+
+    void setMoveUp(Vertex v){
+        XVertex xv = (XVertex) v;
+        xv.moveUp = true;
+    }
+
+    void resetMoveUp(Vertex v){
+        XVertex xv = (XVertex) v;
+        xv.moveUp = false;
+    }
 
     boolean seen(Vertex v){
         XVertex xv = (XVertex) v;

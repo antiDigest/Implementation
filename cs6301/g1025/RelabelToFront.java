@@ -68,7 +68,9 @@ public class RelabelToFront {
      */
     void push(Vertex u, Vertex v, Edge e) {
 
-        int delta = Math.min(xgraph(g).excess(u), xgraph(g).cf(u, e));
+        int delta = xgraph(g).excess(u);
+        if(xgraph(g).cf(u, e) > 0)
+            delta = Math.min(xgraph(g).excess(u), xgraph(g).cf(u, e));
 
 
         if (e.fromVertex().equals(u)) {
@@ -77,8 +79,16 @@ public class RelabelToFront {
             xgraph(g).setFlow(e, xgraph(g).flow(e) - delta);
         }
 
+//        int excessu = xgraph(g).excess(u);
+//        int excessv = xgraph(g).excess(v);
+
         xgraph(g).setExcess(u, xgraph(g).excess(u) - delta);
         xgraph(g).setExcess(v, xgraph(g).excess(v) + delta);
+
+        if(xgraph(g).excess(u) == 0)
+            xgraph(g).resetMoveUp(u);
+//        if(xgraph(g).excess(v) > excessv)
+//            xgraph(g).setMoveUp(v);
     }
 
     /**
@@ -101,6 +111,8 @@ public class RelabelToFront {
         }
 
         xgraph(g).setHeight(u, 1 + minHeight);
+
+
     }
 
     /**
@@ -147,6 +159,8 @@ public class RelabelToFront {
             Vertex u = next(it);
             while (u != null) {
                 if (xgraph(g).excess(u) == 0) {
+//                    it.remove();
+                    xgraph(g).resetMoveUp(u);
                     u = next(it);
                     continue;
                 }
@@ -155,6 +169,8 @@ public class RelabelToFront {
                 discharge(u);
 
                 if (xgraph(g).height(u) != oldHeight) {
+                    if(xgraph(g).height(u) < oldHeight)
+                        xgraph(g).setMoveUp(u);
                     done = false;
                     break;
                 }
@@ -163,7 +179,10 @@ public class RelabelToFront {
 
             if (!done) {
                 it.remove();
-                L.add(0, u);
+                if(xgraph(g).moveUp(u))
+                    L.add(0, u);
+                else
+                    L.add(u);
             }
         }
 
